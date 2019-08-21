@@ -1,11 +1,16 @@
 import * as express from 'express';
 import { Request, Response, Application } from 'express';
 import { resolve } from 'path';
-import { getSentenceSet, putSentenceSet } from './DynamoDB/dynamoDBApi';
+import {
+  getSentenceSet,
+  putSentenceSet,
+  getSentencePair,
+} from './DynamoDB/dynamoDBApi';
 import { loadConfig } from './config';
 import {
   getSentenceSetCallback,
   putSentenceSetCallback,
+  getSentencePairCallback,
 } from './DynamoDB/dynamoDBCallbacks';
 import { SentenceSetRequest, SentenceSetRequestBody } from './models';
 
@@ -47,6 +52,12 @@ app.put('/sentenceSet/:setId', (req: SentenceSetRequest, res: Response) => {
       .status(400)
       .send({ error: 'Content-Type header must be application/json' });
   }
+});
+
+app.get('/sentencePair/:id', (req: Request, res: Response) => {
+  const id: string = req.params.id;
+  const callback = getSentencePairCallback(id, res);
+  getSentencePair(id, callback);
 });
 
 app.listen(port, () => {

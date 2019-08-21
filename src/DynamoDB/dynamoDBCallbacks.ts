@@ -41,4 +41,33 @@ const putSentenceSetCallback = (
   };
 };
 
-export { getSentenceSetCallback, putSentenceSetCallback };
+const getSentencePairCallback = (
+  id: string,
+  response: Response
+): ((error: AWSError, output: QueryOutput) => void) => {
+  return (error: AWSError, output: QueryOutput) => {
+    if (error) {
+      response
+        .status(500)
+        .send({ error: `Unable to fulfill the request. Error: ${error}` });
+    } else {
+      if (
+        output.Count === undefined ||
+        output.Count < 1 ||
+        output.Items === undefined
+      ) {
+        response
+          .status(404)
+          .send({ error: `Sentence pair with the ID ${id} does not exist` });
+      } else {
+        response.status(200).send(output.Items[0]);
+      }
+    }
+  };
+};
+
+export {
+  getSentenceSetCallback,
+  putSentenceSetCallback,
+  getSentencePairCallback,
+};

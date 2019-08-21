@@ -8,6 +8,10 @@ const getSentenceSetsTableName = (): string => {
   return process.env.SENTENCE_SETS_TABLE_NAME || 'none';
 };
 
+const getSentencesTableName = (): string => {
+  return process.env.SENTENCES_TABLE_NAME || 'none';
+};
+
 const getSentenceSet = (
   setId: string,
   callback: (err: AWSError, output: QueryOutput) => void
@@ -40,4 +44,19 @@ const putSentenceSet = (
   client.put(input, callback);
 };
 
-export { getSentenceSet, putSentenceSet };
+const getSentencePair = (
+  id: string,
+  callback: (err: AWSError, output: QueryOutput) => void
+) => {
+  const input = {
+    TableName: getSentencesTableName(),
+    KeyConditionExpression: `sentenceId = :id`,
+    ExpressionAttributeValues: {
+      ':id': id,
+    },
+  };
+
+  client.query(input, callback);
+};
+
+export { getSentenceSet, putSentenceSet, getSentencePair };

@@ -9,4 +9,19 @@ interface SentenceSetRequest extends Request {
   body: SentenceSetRequestBody;
 }
 
-export { SentenceSetRequest, SentenceSetRequestBody };
+interface SentencePairRequestBody {
+  original: string;
+  humanTranslation: string;
+  machineTranslation: string;
+}
+
+interface SentencePairRequest extends Request {
+  body: SentencePairRequestBody;
+}
+
+export {
+  SentenceSetRequest,
+  SentenceSetRequestBody,
+  SentencePairRequest,
+  SentencePairRequestBody,
+};

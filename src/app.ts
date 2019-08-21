@@ -5,14 +5,23 @@ import {
   getSentenceSet,
   putSentenceSet,
   getSentencePair,
+  putSentencePair as dynamoPutSentencePair,
 } from './DynamoDB/dynamoDBApi';
 import { loadConfig } from './config';
 import {
-  getSentenceSetCallback,
-  putSentenceSetCallback,
-  getSentencePairCallback,
+  generateGetSentenceSetCallback,
+  generatePutSentenceSetCallback,
+  generateGetSentencePairCallback,
+  generatePutSentencePairCallback,
 } from './DynamoDB/dynamoDBCallbacks';
-import { SentenceSetRequest, SentenceSetRequestBody } from './models';
+import {
+  SentenceSetRequest,
+  SentenceSetRequestBody,
+  SentencePairRequest,
+  SentencePairRequestBody,
+} from './models';
+
+import * as uuidv1 from 'uuid/v1';
 
 loadConfig();
 
@@ -38,7 +47,7 @@ app.get('/status', (req: Request, res: Response) => {
 
 app.get('/sentenceSet/:setId', (req: Request, res: Response) => {
   const setId: string = req.params.setId;
-  const callback = getSentenceSetCallback(setId, res);
+  const callback = generateGetSentenceSetCallback(setId, res);
   getSentenceSet(setId, callback);
 });
 
@@ -46,7 +55,7 @@ app.put('/sentenceSet/:setId', (req: SentenceSetRequest, res: Response) => {
   if (req.is('application/json')) {
     const setId: string = req.params.setId;
     const body: SentenceSetRequestBody = req.body;
-    putSentenceSet(setId, body, putSentenceSetCallback(res));
+    putSentenceSet(setId, body, generatePutSentenceSetCallback(res));
   } else {
     res
       .status(400)
@@ -56,9 +65,29 @@ app.put('/sentenceSet/:setId', (req: SentenceSetRequest, res: Response) => {
 
 app.get('/sentencePair/:id', (req: Request, res: Response) => {
   const id: string = req.params.id;
-  const callback = getSentencePairCallback(id, res);
+  const callback = generateGetSentencePairCallback(id, res);
   getSentencePair(id, callback);
 });
+
+app.put('/sentencePair/:id', (req: SentencePairRequest, res: Response) => {
+  putSentencePair(req, res);
+});
+
+app.post('/sentencePair', (req: SentencePairRequest, res: Response) => {
+  putSentencePair(req, res);
+});
+
+const putSentencePair = (req: SentencePairRequest, res: Response) => {
+  if (req.is('application/json')) {
+    const id: string = req.params.id || uuidv1();
+    const body: SentencePairRequestBody = req.body;
+    dynamoPutSentencePair(id, body, generatePutSentencePairCallback(res));
+  } else {
+    res
+      .status(400)
+      .send({ error: 'Content-Type header must be application/json' });
+  }
+};
 
 app.listen(port, () => {
   // tslint:disable-next-line:no-console

@@ -2,7 +2,7 @@ import { Response } from 'express';
 import { AWSError } from 'aws-sdk/lib/error';
 import { QueryOutput } from 'aws-sdk/clients/dynamodb';
 
-const getSentenceSetCallback = (
+const generateGetSentenceSetCallback = (
   setId: string,
   response: Response
 ): ((error: AWSError, output: QueryOutput) => void) => {
@@ -27,7 +27,7 @@ const getSentenceSetCallback = (
   };
 };
 
-const putSentenceSetCallback = (
+const generatePutSentenceSetCallback = (
   response: Response
 ): ((error: AWSError, output: QueryOutput) => void) => {
   return (error: AWSError, output: QueryOutput) => {
@@ -41,7 +41,7 @@ const putSentenceSetCallback = (
   };
 };
 
-const getSentencePairCallback = (
+const generateGetSentencePairCallback = (
   id: string,
   response: Response
 ): ((error: AWSError, output: QueryOutput) => void) => {
@@ -66,8 +66,23 @@ const getSentencePairCallback = (
   };
 };
 
+const generatePutSentencePairCallback = (
+  response: Response
+): ((error: AWSError, output: QueryOutput) => void) => {
+  return (error: AWSError, output: QueryOutput) => {
+    if (error) {
+      response
+        .status(500)
+        .send({ error: `Unable to fulfill the request. Error: ${error}` });
+    } else {
+      response.status(204).send();
+    }
+  };
+};
+
 export {
-  getSentenceSetCallback,
-  putSentenceSetCallback,
-  getSentencePairCallback,
+  generateGetSentenceSetCallback,
+  generatePutSentenceSetCallback,
+  generateGetSentencePairCallback,
+  generatePutSentencePairCallback,
 };

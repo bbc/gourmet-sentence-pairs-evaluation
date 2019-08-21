@@ -64,13 +64,26 @@ const putSentencePair = (
   sentenceData: SentencePairRequestBody,
   callback: (err: AWSError, output: QueryOutput) => void
 ): void => {
+  const scores: number[] = sentenceData.scores || [];
+  // Slightly verbose way of ensuring createSet is not called with an empty list
+  const item =
+    scores.length > 0
+      ? {
+          sentenceId: id,
+          original: sentenceData.original,
+          humanTranslation: sentenceData.humanTranslation,
+          machineTranslation: sentenceData.machineTranslation,
+          scores: client.createSet(scores),
+        }
+      : {
+          sentenceId: id,
+          original: sentenceData.original,
+          humanTranslation: sentenceData.humanTranslation,
+          machineTranslation: sentenceData.machineTranslation,
+        };
+
   const input = {
-    Item: {
-      sentenceId: id,
-      original: sentenceData.original,
-      humanTranslation: sentenceData.humanTranslation,
-      machineTranslation: sentenceData.machineTranslation,
-    },
+    Item: item,
     TableName: getSentencesTableName(),
   };
 

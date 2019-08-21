@@ -13,6 +13,7 @@ interface SentencePairRequestBody {
   original: string;
   humanTranslation: string;
   machineTranslation: string;
+  scores?: number[];
 }
 
 interface SentencePairRequest extends Request {

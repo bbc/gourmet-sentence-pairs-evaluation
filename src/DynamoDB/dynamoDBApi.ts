@@ -1,5 +1,6 @@
 import { DocumentClient, QueryOutput } from 'aws-sdk/clients/dynamodb';
 import { AWSError } from 'aws-sdk/lib/error';
+import { SentenceSetRequestBody } from '../models';
 
 const client = new DocumentClient({ region: 'eu-west-1' });
 
@@ -10,7 +11,7 @@ const getSentenceSetsTableName = (): string => {
 const getSentenceSet = (
   setId: string,
   callback: (err: AWSError, output: QueryOutput) => void
-) => {
+): void => {
   const input = {
     TableName: getSentenceSetsTableName(),
     KeyConditionExpression: `setId = :id`,
@@ -19,7 +20,24 @@ const getSentenceSet = (
     },
   };
 
-  return client.query(input, callback);
+  client.query(input, callback);
 };
 
-export { getSentenceSet };
+const putSentenceSet = (
+  setId: string,
+  setData: SentenceSetRequestBody,
+  callback: (err: AWSError, output: QueryOutput) => void
+): void => {
+  const input = {
+    Item: {
+      setId,
+      feedback: client.createSet(setData.feedback),
+      sentenceIds: client.createSet(setData.sentenceIds),
+    },
+    TableName: getSentenceSetsTableName(),
+  };
+
+  client.put(input, callback);
+};
+
+export { getSentenceSet, putSentenceSet };

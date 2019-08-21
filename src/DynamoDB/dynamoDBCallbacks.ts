@@ -27,4 +27,18 @@ const getSentenceSetCallback = (
   };
 };
 
-export { getSentenceSetCallback };
+const putSentenceSetCallback = (
+  response: Response
+): ((error: AWSError, output: QueryOutput) => void) => {
+  return (error: AWSError, output: QueryOutput) => {
+    if (error) {
+      response
+        .status(500)
+        .send({ error: `Unable to fulfill the request. Error: ${error}` });
+    } else {
+      response.status(204).send();
+    }
+  };
+};
+
+export { getSentenceSetCallback, putSentenceSetCallback };

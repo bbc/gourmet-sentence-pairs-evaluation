@@ -1,8 +1,52 @@
 <!DOCTYPE html>
 <html>
 
+    <head>
+        <!-- Adding bootstrap CSS styles -->
+        <link rel="stylesheet"
+              href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+              integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+              crossorigin="anonymous">
+
+        <meta charset="utf-8">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <title>Sentence Pairs</title>
+        <link rel="stylesheet"
+              type="text/css"
+              href="main.css" />
+    </head>
+
     <body>
-        Hello
+        <div class="container">
+            <div class="row align-items-center height-70percent">
+                <div class="col">
+                    <h1 class="text-center">Sentence Pair Evaluation</h1>
+                    <p class="text-center">The purpose of the evaluation is to assess how well machine translation
+                        performs
+                        when
+                        presented with English sentences to be translated into another language. You will be presented
+                        with
+                        a
+                        series of pairs of sentences. Sentence 1 has been
+                        translated by a human and sentence 2 has been translated by a machine. Please use the slider to
+                        indicate
+                        how closely the meaning of the first sentence matches the meaning of the second.</p>
+                    <div class="row justify-content-center">
+                        <div class="col-sm-2">
+                            <form action="/evaluation"
+                                  method="post">
+                                <button type="button"
+                                        class="btn btn-primary btn-block"
+                                        onclick="submit()">Begin</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </body>
 
 </html>

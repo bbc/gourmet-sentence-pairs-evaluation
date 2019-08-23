@@ -41,6 +41,14 @@ app.get('/', (req: Request, res: Response) =>
   res.sendFile(publicAssetsPath + '/index.html')
 );
 
+app.get('/evaluation', (req: Request, res: Response) =>
+  res.sendFile(publicAssetsPath + '/evaluation.html')
+);
+
+app.post('/evaluation', (req: Request, res: Response) => {
+  res.redirect('/evaluation');
+});
+
 app.get('/status', (req: Request, res: Response) => {
   res.status(200).send(`OK`);
 });

@@ -27,14 +27,22 @@
                         below:</h2>
                     <form action="/feedback"
                           method="POST">
-                        <input type="hidden"
-                               name="setId"
-                               value={{setId}} />
-                        <textarea class="form-control"
-                                  name="feedback"
-                                  rows="3"></textarea>
-                        <button type="submit"
-                                class="btn btn-primary btn-block">Submit</button>
+                        <div class="row justify-content-center form-group">
+                            <div class="col">
+                                <input type="hidden"
+                                       name="setId"
+                                       value={{setId}} />
+                                <textarea class="form-control"
+                                          name="feedback"
+                                          rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center form-group">
+                            <div class="col-sm-2">
+                                <button type="submit"
+                                        class="btn btn-primary btn-block">Submit</button>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>

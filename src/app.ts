@@ -85,7 +85,7 @@ app.get('/evaluation', (req: Request, res: Response) => {
         res.redirect('/error?errorCode=getEvaluation');
       });
   } else {
-    res.render('feedback', { setId });
+    res.redirect(`/feedback?setId=${setId}`);
   }
 });
 
@@ -100,6 +100,11 @@ app.post('/feedback', (req: FeedbackRequest, res: Response) => {
       );
       res.redirect('/error?errorCode=postFeedback');
     });
+});
+
+app.get('/feedback', (req: Request, res: Response) => {
+  const setId = req.query.setId;
+  res.render('feedback', { setId });
 });
 
 app.get('/end', (req: Request, res: Response) => {

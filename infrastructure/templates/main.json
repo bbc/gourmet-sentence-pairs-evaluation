@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "GoURMET Translation UI",
+    "Description": "GoURMET Sentence Pairs Evaluation",
     "Parameters": {
         "CnameEntry": {
             "Description": "The CNAME DNS entry for the component",
@@ -116,7 +116,7 @@
                     {
                         "Key": "BBCComponent",
                         "PropagateAtLaunch": true,
-                        "Value": "translation-ui"
+                        "Value": "sentence-pairs-evaluation"
                     },
                     {
                         "Key": "BBCEnvironment",
@@ -135,7 +135,7 @@
                                     {
                                         "Ref": "Environment"
                                     },
-                                    "translation-ui"
+                                    "sentence-pairs-evaluation"
                                 ]
                             ]
                         }
@@ -317,7 +317,7 @@
                                 },
                                 {
                                     "Key": "BBCComponent",
-                                    "Value": "translation-ui"
+                                    "Value": "sentence-pairs-evaluation"
                                 },
                                 {
                                     "Key": "BBCEnvironment",

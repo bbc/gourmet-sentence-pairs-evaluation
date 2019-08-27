@@ -61,8 +61,8 @@
       "./bake-scripts/*"
     ],
     "post": [
-      "mkdir -p /etc/bake-scripts/gourmet-translation-ui",
-      "cp -rf /usr/lib/gourmet-translation-ui/bake-scripts/* /etc/bake-scripts/gourmet-translation-ui/"
+      "mkdir -p /etc/bake-scripts/gourmet-sentence-pairs-evaluation",
+      "cp -rf /usr/lib/gourmet-sentence-pairs-evaluation/bake-scripts/* /etc/bake-scripts/gourmet-sentence-pairs-evaluation/"
     ]
   }
 }

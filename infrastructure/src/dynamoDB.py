@@ -78,6 +78,27 @@ sentenceScoreTableHashkeyType = t.add_parameter(Parameter(
     ConstraintDescription="must be either S or N"
 ))
 
+sentenceSetFeedbackTableHashkeyName = t.add_parameter(Parameter(
+    "SentenceSetFeedbackTableHashKeyElementName",
+    Description="Sentence Set Feedback Table HashType PrimaryKey Name",
+    Type="String",
+    AllowedPattern="[a-zA-Z0-9]*",
+    MinLength="1",
+    MaxLength="2048",
+    ConstraintDescription="must contain only alphanumberic characters"
+))
+
+sentenceSetFeedbackTableHashkeyType = t.add_parameter(Parameter(
+    "SentenceSetFeedbackTableHashKeyElementType",
+    Description="Sentence Set Feedback HashType PrimaryKey Type",
+    Type="String",
+    Default="S",
+    AllowedPattern="[S|N]",
+    MinLength="1",
+    MaxLength="1",
+    ConstraintDescription="must be either S or N"
+))
+
 readunits = t.add_parameter(Parameter(
     "ReadCapacityUnits",
     Description="Provisioned read throughput",
@@ -164,6 +185,28 @@ sentenceScoreDynamoDBTable = t.add_resource(Table(
     TableName=Join("-", ["SentenceScoreDynamoDBTable", Ref(stage)])
 ))
 
+sentenceSetFeedbackDynamoDBTable = t.add_resource(Table(
+    "sentenceSetFeedbackDynamoDBTable",
+    AttributeDefinitions=[
+        AttributeDefinition(
+            AttributeName=Ref(sentenceSetFeedbackTableHashkeyName),
+            AttributeType=Ref(sentenceSetFeedbackTableHashkeyType)
+        ),
+    ],
+    KeySchema=[
+        KeySchema(
+            AttributeName=Ref(sentenceSetFeedbackTableHashkeyName),
+            KeyType="HASH"
+        )
+    ],
+    ProvisionedThroughput=ProvisionedThroughput(
+        ReadCapacityUnits=Ref(readunits),
+        WriteCapacityUnits=Ref(writeunits)
+    ),
+    Tags=Tags(app="sentence-pairs-evaluation", stage=Ref(stage)),
+    TableName=Join("-", ["SentenceSetFeedbackDynamoDBTable", Ref(stage)])
+))
+
 t.add_output(Output(
     "SentenceTableName",
     Value=Ref(sentenceDynamoDBTable),
@@ -173,6 +216,18 @@ t.add_output(Output(
 t.add_output(Output(
     "SentenceSetTableName",
     Value=Ref(sentenceSetDynamoDBTable),
+    Description="Table name of the newly create DynamoDB table",
+))
+
+t.add_output(Output(
+    "SentenceScoreTableName",
+    Value=Ref(sentenceScoreDynamoDBTable),
+    Description="Table name of the newly create DynamoDB table",
+))
+
+t.add_output(Output(
+    "SentenceSetFeedbackTableName",
+    Value=Ref(sentenceSetFeedbackDynamoDBTable),
     Description="Table name of the newly create DynamoDB table",
 ))
 

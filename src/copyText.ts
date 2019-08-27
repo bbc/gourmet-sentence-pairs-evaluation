@@ -6,6 +6,8 @@ const getErrorText = (errorCode: string): string => {
       return 'Unable to retrieve sentence pair.';
     case 'postStart':
       return 'Could not get set of sentences for evaluation.';
+    case 'postFeedback':
+      return 'Could not save feedback';
     default:
       return 'It is not possible to complete that action right now.';
   }

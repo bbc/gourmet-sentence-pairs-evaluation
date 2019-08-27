@@ -1,6 +1,18 @@
 {
     "Description": "DynamoDB tables for storing data for analysing sentence data",
     "Outputs": {
+        "SentenceScoreTableName": {
+            "Description": "Table name of the newly create DynamoDB table",
+            "Value": {
+                "Ref": "sentenceScoreDynamoDBTable"
+            }
+        },
+        "SentenceSetFeedbackTableName": {
+            "Description": "Table name of the newly create DynamoDB table",
+            "Value": {
+                "Ref": "sentenceSetFeedbackDynamoDBTable"
+            }
+        },
         "SentenceSetTableName": {
             "Description": "Table name of the newly create DynamoDB table",
             "Value": {
@@ -36,6 +48,23 @@
             "ConstraintDescription": "must be either S or N",
             "Default": "S",
             "Description": "Sentence Score HashType PrimaryKey Type",
+            "MaxLength": "1",
+            "MinLength": "1",
+            "Type": "String"
+        },
+        "SentenceSetFeedbackTableHashKeyElementName": {
+            "AllowedPattern": "[a-zA-Z0-9]*",
+            "ConstraintDescription": "must contain only alphanumberic characters",
+            "Description": "Sentence Set Feedback Table HashType PrimaryKey Name",
+            "MaxLength": "2048",
+            "MinLength": "1",
+            "Type": "String"
+        },
+        "SentenceSetFeedbackTableHashKeyElementType": {
+            "AllowedPattern": "[S|N]",
+            "ConstraintDescription": "must be either S or N",
+            "Default": "S",
+            "Description": "Sentence Set Feedback HashType PrimaryKey Type",
             "MaxLength": "1",
             "MinLength": "1",
             "Type": "String"
@@ -176,6 +205,60 @@
                         "-",
                         [
                             "SentenceScoreDynamoDBTable",
+                            {
+                                "Ref": "Stage"
+                            }
+                        ]
+                    ]
+                },
+                "Tags": [
+                    {
+                        "Key": "app",
+                        "Value": "sentence-pairs-evaluation"
+                    },
+                    {
+                        "Key": "stage",
+                        "Value": {
+                            "Ref": "Stage"
+                        }
+                    }
+                ]
+            },
+            "Type": "AWS::DynamoDB::Table"
+        },
+        "sentenceSetFeedbackDynamoDBTable": {
+            "Properties": {
+                "AttributeDefinitions": [
+                    {
+                        "AttributeName": {
+                            "Ref": "SentenceSetFeedbackTableHashKeyElementName"
+                        },
+                        "AttributeType": {
+                            "Ref": "SentenceSetFeedbackTableHashKeyElementType"
+                        }
+                    }
+                ],
+                "KeySchema": [
+                    {
+                        "AttributeName": {
+                            "Ref": "SentenceSetFeedbackTableHashKeyElementName"
+                        },
+                        "KeyType": "HASH"
+                    }
+                ],
+                "ProvisionedThroughput": {
+                    "ReadCapacityUnits": {
+                        "Ref": "ReadCapacityUnits"
+                    },
+                    "WriteCapacityUnits": {
+                        "Ref": "WriteCapacityUnits"
+                    }
+                },
+                "TableName": {
+                    "Fn::Join": [
+                        "-",
+                        [
+                            "SentenceSetFeedbackDynamoDBTable",
                             {
                                 "Ref": "Stage"
                             }

@@ -11,12 +11,22 @@ interface SentenceSetRequest extends Request {
 
 interface SentencePairEvaluationRequestBody {
   id: string;
+  setId: string;
   idList: string[];
   score: number;
 }
 
 interface SentencePairEvaluationRequest extends Request {
   body: SentencePairEvaluationRequestBody;
+}
+
+interface FeedbackRequest extends Request {
+  body: FeedbackRequestBody;
+}
+
+interface FeedbackRequestBody {
+  setId: string;
+  feedback: string;
 }
 
 interface SentenceSet {
@@ -39,4 +49,5 @@ export {
   SentencePairEvaluationRequestBody,
   SentenceSet,
   SentencePair,
+  FeedbackRequest,
 };

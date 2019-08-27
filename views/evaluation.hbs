@@ -40,12 +40,18 @@
                         <div class="col-sm-2">
                             <form action="/evaluation"
                                   method="POST">
+                                <div class="col-sm-6">
+                                    <div id="slider"></div>
+                                </div>
                                 <input type="hidden"
                                        name="idList"
                                        value={{idList}} />
                                 <input type="hidden"
                                        name="id"
                                        value={{sentencePairId}} />
+                                <input type="hidden"
+                                       name="setId"
+                                       value={{setId}} />
                                 <input type="hidden"
                                        name="score"
                                        id="sliderVal"

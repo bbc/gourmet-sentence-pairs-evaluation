@@ -16,6 +16,10 @@ const getSentencePairScoresTableName = (): string => {
   return process.env.SENTENCE_SCORES_TABLE_NAME || 'none';
 };
 
+const getSentenceSetFeedbackTableName = (): string => {
+  return process.env.SENTENCE_SET_FEEDBACK_TABLE_NAME || 'none';
+};
+
 const getSentenceSet = (setId: string): Promise<SentenceSet> => {
   const input = {
     TableName: getSentenceSetsTableName(),
@@ -132,10 +136,30 @@ const putSentencePairScore = (sentencePairId: string, score: number) => {
     });
 };
 
+const putSentenceSetFeedback = (setId: string, feedback: string) => {
+  const feedbackId = uuidv1();
+  const input = {
+    Item: {
+      feedbackId,
+      setId,
+      feedback,
+    },
+    TableName: getSentenceSetFeedbackTableName(),
+  };
+
+  return client
+    .put(input)
+    .promise()
+    .then(result => {
+      return 'ok';
+    });
+};
+
 export {
   getSentenceSet,
   putSentenceSet,
   getSentencePair,
   putSentencePair,
   putSentencePairScore,
+  putSentenceSetFeedback,
 };

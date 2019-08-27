@@ -22,8 +22,20 @@
         <div class="container">
             <div class="row align-items-center height-70percent">
                 <div class="col">
-                    <h1 class="text-center">Evaluation Complete</h1>
-                    <h2 class="text-center text-secondary">Thank you for taking part.</h2>
+                    <h1 class="text-center">Evaluation Set Complete</h1>
+                    <h2 class="text-center text-secondary">Please submit any additional feedback you would like to give
+                        below:</h2>
+                    <form action="/feedback"
+                          method="POST">
+                        <input type="hidden"
+                               name="setId"
+                               value={{setId}} />
+                        <textarea class="form-control"
+                                  name="feedback"
+                                  rows="3"></textarea>
+                        <button type="submit"
+                                class="btn btn-primary btn-block">Submit</button>
+                    </form>
                 </div>
             </div>
         </div>

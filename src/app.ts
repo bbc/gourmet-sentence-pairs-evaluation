@@ -4,11 +4,13 @@ import {
   getSentenceSet,
   getSentencePair,
   putSentencePairScore,
+  putSentenceSetFeedback,
 } from './DynamoDB/dynamoDBApi';
 import { loadConfig } from './config';
 import {
   SentencePairEvaluationRequest,
   SentencePairEvaluationRequestBody,
+  FeedbackRequest,
 } from './models';
 import { getErrorText } from './copyText';
 
@@ -28,13 +30,31 @@ app.set('view engine', 'hbs');
 
 app.get('/', (req: Request, res: Response) => res.render('index'));
 
+app.post('/start', (req: Request, res: Response) => {
+  const setId = '1';
+  getSentenceSet(setId)
+    .then(sentenceSet => {
+      res.redirect(
+        `/evaluation?idList=${JSON.stringify(sentenceSet.sentenceIds) ||
+          []}&setId=${setId}`
+      );
+    })
+    .catch(error => {
+      console.error(
+        `Unable to retrieve sentence set with id: ${setId}. Error: ${error}`
+      );
+      res.redirect('/error?errorCode=postStart');
+    });
+});
+
 app.post('/evaluation', (req: SentencePairEvaluationRequest, res: Response) => {
   const body: SentencePairEvaluationRequestBody = req.body;
   const id: string = body.id;
+  const setId: string = body.setId;
   const score: number = body.score;
 
   putSentencePairScore(id, score)
-    .then(x => res.redirect(`/evaluation?idList=${body.idList}`))
+    .then(x => res.redirect(`/evaluation?idList=${body.idList}&setId=${setId}`))
     .catch(error => {
       console.error(
         `Unable to put score for id: ${id} and score: ${score}. Error${error}`
@@ -45,6 +65,7 @@ app.post('/evaluation', (req: SentencePairEvaluationRequest, res: Response) => {
 
 app.get('/evaluation', (req: Request, res: Response) => {
   const idList = JSON.parse(req.query.idList || '[]');
+  const setId = req.query.setId;
   if (idList.length > 0) {
     const sentencePairId = idList[0];
     getSentencePair(sentencePairId)
@@ -53,6 +74,7 @@ app.get('/evaluation', (req: Request, res: Response) => {
           sentence1: sentencePair.humanTranslation,
           sentence2: sentencePair.machineTranslation,
           idList: JSON.stringify(idList.slice(1)),
+          setId,
           sentencePairId,
         });
       })
@@ -63,24 +85,25 @@ app.get('/evaluation', (req: Request, res: Response) => {
         res.redirect('/error?errorCode=getEvaluation');
       });
   } else {
-    res.render('end');
+    res.render('feedback', { setId });
   }
 });
 
-app.post('/start', (req: Request, res: Response) => {
-  const setId = '1232323';
-  getSentenceSet(setId)
-    .then(sentenceSet => {
-      res.redirect(
-        `/evaluation?idList=${JSON.stringify(sentenceSet.sentenceIds) || []}`
-      );
-    })
+app.post('/feedback', (req: FeedbackRequest, res: Response) => {
+  const feedback: string = req.body.feedback;
+  const setId: string = req.body.setId;
+  putSentenceSetFeedback(setId, feedback)
+    .then(result => res.redirect('/end'))
     .catch(error => {
       console.error(
-        `Unable to retrieve sentence set with id: ${setId}. Error: ${error}`
+        `Could not save feedback: ${feedback} for sentence set id: ${setId}`
       );
-      res.redirect('/error?errorCode=postStart');
+      res.redirect('/error?errorCode=postFeedback');
     });
+});
+
+app.get('/end', (req: Request, res: Response) => {
+  res.render('end');
 });
 
 app.get('/error', (req: Request, res: Response) => {

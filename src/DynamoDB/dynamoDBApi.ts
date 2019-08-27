@@ -20,6 +20,21 @@ const getSentenceSetFeedbackTableName = (): string => {
   return process.env.SENTENCE_SET_FEEDBACK_TABLE_NAME || 'none';
 };
 
+const getSentenceSets = (): Promise<SentenceSet[]> => {
+  const input = {
+    TableName: getSentenceSetsTableName(),
+  };
+  return client
+    .scan(input)
+    .promise()
+    .then(output => {
+      const items = output.Items || [];
+      return items.map(sentenceSet => {
+        return (sentenceSet as unknown) as SentenceSet;
+      });
+    });
+};
+
 const getSentenceSet = (setId: string): Promise<SentenceSet> => {
   const input = {
     TableName: getSentenceSetsTableName(),
@@ -162,4 +177,5 @@ export {
   putSentencePair,
   putSentencePairScore,
   putSentenceSetFeedback,
+  getSentenceSets,
 };

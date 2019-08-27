@@ -31,6 +31,7 @@ interface FeedbackRequestBody {
 
 interface SentenceSet {
   setId: string;
+  name: string;
   sentenceIds?: string[];
   feedback?: string[];
 }

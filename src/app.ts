@@ -5,6 +5,7 @@ import {
   getSentencePair,
   putSentencePairScore,
   putSentenceSetFeedback,
+  getSentenceSets,
 } from './DynamoDB/dynamoDBApi';
 import { loadConfig } from './config';
 import {
@@ -28,10 +29,14 @@ app.use(express.static('public'));
 // Use handlebars to render templates
 app.set('view engine', 'hbs');
 
-app.get('/', (req: Request, res: Response) => res.render('index'));
+app.get('/', (req: Request, res: Response) => {
+  getSentenceSets().then(sentenceSets => {
+    res.render('index', { sentenceSets });
+  });
+});
 
 app.post('/start', (req: Request, res: Response) => {
-  const setId = '1';
+  const setId = req.body.setId;
   getSentenceSet(setId)
     .then(sentenceSet => {
       res.redirect(

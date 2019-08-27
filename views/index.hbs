@@ -23,7 +23,9 @@
             <div class="row align-items-center height-70percent">
                 <div class="col">
                     <h1 class="text-center">Sentence Pair Evaluation</h1>
-                    <p class="text-center">The purpose of the evaluation is to assess how well machine translation
+                    <h3 class="text-center text-secondary margin-top-bottom">The purpose of the evaluation is to assess
+                        how well machine
+                        translation
                         performs
                         when
                         presented with English sentences to be translated into another language. You will be presented
@@ -32,24 +34,31 @@
                         series of pairs of sentences. Sentence 1 has been
                         translated by a human and sentence 2 has been translated by a machine. Please use the slider to
                         indicate
-                        how closely the meaning of the first sentence matches the meaning of the second.</p>
-                    <div class="row justify-content-center">
-                        <div class="col-sm-2">
-                            <form action="/start"
-                                  method="POST">
-                                <input type="hidden"
-                                       name="setId"
-                                       value="1" />
-                                <button type="button"
-                                        class="btn btn-primary btn-block"
-                                        onclick="submit()">Begin</button>
-                            </form>
+                        how closely the meaning of the first sentence matches the meaning of the second.</h3>
+                    <form action="/start"
+                          method="POST">
+                        <div class="row justify-content-center form-group">
+                            <div class="col-sm-6">
+                                <label for="setId">Pick the set you have been asked to
+                                    evaluate:</label>
+                                <select class="form-control"
+                                        name="setId">
+                                    {{#each sentenceSets}}
+                                    <option value="{{this.setId}}">{{this.name}}</option>
+                                    {{/each}}
+                                </select>
+                            </div>
                         </div>
-                    </div>
+                        <div class="row justify-content-center form-group">
+                            <div class="col-sm-2">
+                                <button type="submit"
+                                        class="btn btn-primary btn-block">Begin</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-
     </body>
 
 </html>

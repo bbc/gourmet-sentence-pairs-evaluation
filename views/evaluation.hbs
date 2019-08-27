@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <!-- Adding bootstrap CSS styles -->
+        <link rel="stylesheet"
+              href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+              integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+              crossorigin="anonymous">
+
+        <link rel="stylesheet"
+              href="jquery-ui.min.css">
+
+        <meta charset="utf-8">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <title>Sentence Pairs</title>
+        <link rel="stylesheet"
+              type="text/css"
+              href="main.css" />
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="row align-items-center height-70percent">
+                <div class="col">
+                    <h1 class="text-center">Sentence Pair Evaluation</h1>
+                    <p class="text-center test">How closely in meaning does sentence 1 match sentence 2?</p>
+                    <h2 class="text-secondary">Sentence 1</h2>
+                    <p>{{sentence1}}</p>
+                    <h2 class="text-secondary">Sentence 2</h2>
+                    <p>{{sentence2}}</p>
+                    <div class="row justify-content-center">
+                        <div class="col-sm-6">
+                            <div id="slider"></div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col-sm-2">
+                            <form action="/evaluation"
+                                  method="POST">
+                                <input type="hidden"
+                                       name="idList"
+                                       value={{idList}} />
+                                <input type="hidden"
+                                       name="id"
+                                       value={{sentencePairId}} />
+                                <input type="hidden"
+                                       name="score"
+                                       id="sliderVal"
+                                       value="0" />
+                                <button type="submit"
+                                        class="btn btn-primary btn-block">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="jquery.js"></script>
+        <script src="jquery-ui.min.js"></script>
+        <script src="script.js"></script>
+    </body>
+
+</html>

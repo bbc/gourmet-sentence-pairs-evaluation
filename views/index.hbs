@@ -35,8 +35,11 @@
                         how closely the meaning of the first sentence matches the meaning of the second.</p>
                     <div class="row justify-content-center">
                         <div class="col-sm-2">
-                            <form action="/evaluation"
-                                  method="post">
+                            <form action="/start"
+                                  method="POST">
+                                <input type="hidden"
+                                       name="setId"
+                                       value="1" />
                                 <button type="button"
                                         class="btn btn-primary btn-block"
                                         onclick="submit()">Begin</button>

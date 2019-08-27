@@ -1,6 +1,6 @@
-import { DocumentClient, QueryOutput } from 'aws-sdk/clients/dynamodb';
-import { AWSError } from 'aws-sdk/lib/error';
-import { SentenceSetRequestBody, SentencePairRequestBody } from '../models';
+import { DocumentClient } from 'aws-sdk/clients/dynamodb';
+import { SentenceSetRequestBody, SentencePair, SentenceSet } from '../models';
+import * as uuidv1 from 'uuid/v1';
 
 const client = new DocumentClient({ region: 'eu-west-1' });
 
@@ -12,10 +12,11 @@ const getSentencesTableName = (): string => {
   return process.env.SENTENCES_TABLE_NAME || 'none';
 };
 
-const getSentenceSet = (
-  setId: string,
-  callback: (err: AWSError, output: QueryOutput) => void
-): void => {
+const getSentencePairScoresTableName = (): string => {
+  return process.env.SENTENCE_SCORES_TABLE_NAME || 'none';
+};
+
+const getSentenceSet = (setId: string): Promise<SentenceSet> => {
   const input = {
     TableName: getSentenceSetsTableName(),
     KeyConditionExpression: `setId = :id`,
@@ -24,14 +25,28 @@ const getSentenceSet = (
     },
   };
 
-  client.query(input, callback);
+  return client
+    .query(input)
+    .promise()
+    .then(output => {
+      if (
+        output.Count === undefined ||
+        output.Count < 1 ||
+        output.Items === undefined
+      ) {
+        throw new Error(`Item with id: ${setId} does not exist.`);
+      } else {
+        const sentenceSet: SentenceSet = (output
+          .Items[0] as unknown) as SentenceSet;
+        return sentenceSet;
+      }
+    });
 };
 
 const putSentenceSet = (
   setId: string,
-  setData: SentenceSetRequestBody,
-  callback: (err: AWSError, output: QueryOutput) => void
-): void => {
+  setData: SentenceSetRequestBody
+): Promise<string> => {
   const input = {
     Item: {
       setId,
@@ -41,13 +56,15 @@ const putSentenceSet = (
     TableName: getSentenceSetsTableName(),
   };
 
-  client.put(input, callback);
+  return client
+    .put(input)
+    .promise()
+    .then(result => {
+      return 'Successfully put sentence set.';
+    });
 };
 
-const getSentencePair = (
-  id: string,
-  callback: (err: AWSError, output: QueryOutput) => void
-) => {
+const getSentencePair = (id: string): Promise<SentencePair> => {
   const input = {
     TableName: getSentencesTableName(),
     KeyConditionExpression: `sentenceId = :id`,
@@ -56,38 +73,69 @@ const getSentencePair = (
     },
   };
 
-  client.query(input, callback);
+  return client
+    .query(input)
+    .promise()
+    .then(output => {
+      if (
+        output.Count === undefined ||
+        output.Count < 1 ||
+        output.Items === undefined
+      ) {
+        throw new Error(`Item with id: ${id} does not exist.`);
+      } else {
+        const sentencePair: SentencePair = (output
+          .Items[0] as unknown) as SentencePair;
+        return sentencePair;
+      }
+    });
 };
 
 const putSentencePair = (
   id: string,
-  sentenceData: SentencePairRequestBody,
-  callback: (err: AWSError, output: QueryOutput) => void
-): void => {
-  const scores: number[] = sentenceData.scores || [];
-  // Slightly verbose way of ensuring createSet is not called with an empty list
-  const item =
-    scores.length > 0
-      ? {
-          sentenceId: id,
-          original: sentenceData.original,
-          humanTranslation: sentenceData.humanTranslation,
-          machineTranslation: sentenceData.machineTranslation,
-          scores: client.createSet(scores),
-        }
-      : {
-          sentenceId: id,
-          original: sentenceData.original,
-          humanTranslation: sentenceData.humanTranslation,
-          machineTranslation: sentenceData.machineTranslation,
-        };
-
+  sentenceData: SentencePair
+): Promise<string> => {
   const input = {
-    Item: item,
+    Item: {
+      sentenceId: id,
+      original: sentenceData.original,
+      humanTranslation: sentenceData.humanTranslation,
+      machineTranslation: sentenceData.machineTranslation,
+    },
     TableName: getSentencesTableName(),
   };
 
-  client.put(input, callback);
+  return client
+    .put(input)
+    .promise()
+    .then(result => {
+      return 'ok';
+    });
 };
 
-export { getSentenceSet, putSentenceSet, getSentencePair, putSentencePair };
+const putSentencePairScore = (sentencePairId: string, score: number) => {
+  const scoreId = uuidv1();
+  const input = {
+    Item: {
+      scoreId,
+      sentencePairId,
+      score,
+    },
+    TableName: getSentencePairScoresTableName(),
+  };
+
+  return client
+    .put(input)
+    .promise()
+    .then(result => {
+      return 'ok';
+    });
+};
+
+export {
+  getSentenceSet,
+  putSentenceSet,
+  getSentencePair,
+  putSentencePair,
+  putSentencePairScore,
+};

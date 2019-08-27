@@ -57,6 +57,27 @@ sentenceSetTableHashkeyType = t.add_parameter(Parameter(
     ConstraintDescription="must be either S or N"
 ))
 
+sentenceScoreTableHashkeyName = t.add_parameter(Parameter(
+    "SentenceScoreTableHashKeyElementName",
+    Description="Sentence Score Table HashType PrimaryKey Name",
+    Type="String",
+    AllowedPattern="[a-zA-Z0-9]*",
+    MinLength="1",
+    MaxLength="2048",
+    ConstraintDescription="must contain only alphanumberic characters"
+))
+
+sentenceScoreTableHashkeyType = t.add_parameter(Parameter(
+    "SentenceScoreTableHashKeyElementType",
+    Description="Sentence Score HashType PrimaryKey Type",
+    Type="String",
+    Default="S",
+    AllowedPattern="[S|N]",
+    MinLength="1",
+    MaxLength="1",
+    ConstraintDescription="must be either S or N"
+))
+
 readunits = t.add_parameter(Parameter(
     "ReadCapacityUnits",
     Description="Provisioned read throughput",
@@ -119,6 +140,28 @@ sentenceSetDynamoDBTable = t.add_resource(Table(
     ),
     Tags=Tags(app="sentence-pairs-evaluation", stage=Ref(stage)),
     TableName=Join("-", ["SentenceSetsDynamoDBTable", Ref(stage)])
+))
+
+sentenceScoreDynamoDBTable = t.add_resource(Table(
+    "sentenceScoreDynamoDBTable",
+    AttributeDefinitions=[
+        AttributeDefinition(
+            AttributeName=Ref(sentenceScoreTableHashkeyName),
+            AttributeType=Ref(sentenceScoreTableHashkeyType)
+        ),
+    ],
+    KeySchema=[
+        KeySchema(
+            AttributeName=Ref(sentenceScoreTableHashkeyName),
+            KeyType="HASH"
+        )
+    ],
+    ProvisionedThroughput=ProvisionedThroughput(
+        ReadCapacityUnits=Ref(readunits),
+        WriteCapacityUnits=Ref(writeunits)
+    ),
+    Tags=Tags(app="sentence-pairs-evaluation", stage=Ref(stage)),
+    TableName=Join("-", ["SentenceScoreDynamoDBTable", Ref(stage)])
 ))
 
 t.add_output(Output(

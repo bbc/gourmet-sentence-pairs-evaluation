@@ -23,6 +23,23 @@
             "MinValue": "5",
             "Type": "Number"
         },
+        "SentenceScoreTableHashKeyElementName": {
+            "AllowedPattern": "[a-zA-Z0-9]*",
+            "ConstraintDescription": "must contain only alphanumberic characters",
+            "Description": "Sentence Score Table HashType PrimaryKey Name",
+            "MaxLength": "2048",
+            "MinLength": "1",
+            "Type": "String"
+        },
+        "SentenceScoreTableHashKeyElementType": {
+            "AllowedPattern": "[S|N]",
+            "ConstraintDescription": "must be either S or N",
+            "Default": "S",
+            "Description": "Sentence Score HashType PrimaryKey Type",
+            "MaxLength": "1",
+            "MinLength": "1",
+            "Type": "String"
+        },
         "SentenceSetTableHashKeyElementName": {
             "AllowedPattern": "[a-zA-Z0-9]*",
             "ConstraintDescription": "must contain only alphanumberic characters",
@@ -105,6 +122,60 @@
                         "-",
                         [
                             "SentencesDynamoDBTable",
+                            {
+                                "Ref": "Stage"
+                            }
+                        ]
+                    ]
+                },
+                "Tags": [
+                    {
+                        "Key": "app",
+                        "Value": "sentence-pairs-evaluation"
+                    },
+                    {
+                        "Key": "stage",
+                        "Value": {
+                            "Ref": "Stage"
+                        }
+                    }
+                ]
+            },
+            "Type": "AWS::DynamoDB::Table"
+        },
+        "sentenceScoreDynamoDBTable": {
+            "Properties": {
+                "AttributeDefinitions": [
+                    {
+                        "AttributeName": {
+                            "Ref": "SentenceScoreTableHashKeyElementName"
+                        },
+                        "AttributeType": {
+                            "Ref": "SentenceScoreTableHashKeyElementType"
+                        }
+                    }
+                ],
+                "KeySchema": [
+                    {
+                        "AttributeName": {
+                            "Ref": "SentenceScoreTableHashKeyElementName"
+                        },
+                        "KeyType": "HASH"
+                    }
+                ],
+                "ProvisionedThroughput": {
+                    "ReadCapacityUnits": {
+                        "Ref": "ReadCapacityUnits"
+                    },
+                    "WriteCapacityUnits": {
+                        "Ref": "WriteCapacityUnits"
+                    }
+                },
+                "TableName": {
+                    "Fn::Join": [
+                        "-",
+                        [
+                            "SentenceScoreDynamoDBTable",
                             {
                                 "Ref": "Stage"
                             }

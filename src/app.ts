@@ -1,33 +1,20 @@
 import * as express from 'express';
 import { Request, Response, Application } from 'express';
-import { resolve } from 'path';
 import {
   getSentenceSet,
-  putSentenceSet,
   getSentencePair,
-  putSentencePair as dynamoPutSentencePair,
+  putSentencePairScore,
 } from './DynamoDB/dynamoDBApi';
 import { loadConfig } from './config';
 import {
-  generateGetSentenceSetCallback,
-  generatePutSentenceSetCallback,
-  generateGetSentencePairCallback,
-  generatePutSentencePairCallback,
-} from './DynamoDB/dynamoDBCallbacks';
-import {
-  SentenceSetRequest,
-  SentenceSetRequestBody,
-  SentencePairRequest,
-  SentencePairRequestBody,
+  SentencePairEvaluationRequest,
+  SentencePairEvaluationRequestBody,
 } from './models';
-
-import * as uuidv1 from 'uuid/v1';
+import { getErrorText } from './copyText';
 
 loadConfig();
 
 const app: Application = express();
-const publicAssetsPath = resolve(__dirname, '../public');
-
 const port = process.env.PORT || 8080;
 
 // support parsing of application/json type post data
@@ -36,66 +23,75 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // Serve static assets in the public folder
 app.use(express.static('public'));
+// Use handlebars to render templates
+app.set('view engine', 'hbs');
 
-app.get('/', (req: Request, res: Response) =>
-  res.sendFile(publicAssetsPath + '/index.html')
-);
+app.get('/', (req: Request, res: Response) => res.render('index'));
 
-app.get('/evaluation', (req: Request, res: Response) =>
-  res.sendFile(publicAssetsPath + '/evaluation.html')
-);
+app.post('/evaluation', (req: SentencePairEvaluationRequest, res: Response) => {
+  const body: SentencePairEvaluationRequestBody = req.body;
+  const id: string = body.id;
+  const score: number = body.score;
 
-app.post('/evaluation', (req: Request, res: Response) => {
-  res.redirect('/evaluation');
+  putSentencePairScore(id, score)
+    .then(x => res.redirect(`/evaluation?idList=${body.idList}`))
+    .catch(error => {
+      console.error(
+        `Unable to put score for id: ${id} and score: ${score}. Error${error}`
+      );
+      res.redirect('/error?errorCode=postEvaluation');
+    });
+});
+
+app.get('/evaluation', (req: Request, res: Response) => {
+  const idList = JSON.parse(req.query.idList || '[]');
+  if (idList.length > 0) {
+    const sentencePairId = idList[0];
+    getSentencePair(sentencePairId)
+      .then(sentencePair => {
+        res.render('evaluation', {
+          sentence1: sentencePair.humanTranslation,
+          sentence2: sentencePair.machineTranslation,
+          idList: JSON.stringify(idList.slice(1)),
+          sentencePairId,
+        });
+      })
+      .catch(error => {
+        console.error(
+          `Unable to get sentence pair with id ${sentencePairId}. Error${error}`
+        );
+        res.redirect('/error?errorCode=getEvaluation');
+      });
+  } else {
+    res.render('end');
+  }
+});
+
+app.post('/start', (req: Request, res: Response) => {
+  const setId = '1232323';
+  getSentenceSet(setId)
+    .then(sentenceSet => {
+      res.redirect(
+        `/evaluation?idList=${JSON.stringify(sentenceSet.sentenceIds) || []}`
+      );
+    })
+    .catch(error => {
+      console.error(
+        `Unable to retrieve sentence set with id: ${setId}. Error: ${error}`
+      );
+      res.redirect('/error?errorCode=postStart');
+    });
+});
+
+app.get('/error', (req: Request, res: Response) => {
+  const errorCode = req.query.errorCode || 'generalError';
+  const errorMessage = getErrorText(errorCode);
+  res.status(404).render('error', { errorMessage });
 });
 
 app.get('/status', (req: Request, res: Response) => {
   res.status(200).send(`OK`);
 });
-
-app.get('/sentenceSet/:setId', (req: Request, res: Response) => {
-  const setId: string = req.params.setId;
-  const callback = generateGetSentenceSetCallback(setId, res);
-  getSentenceSet(setId, callback);
-});
-
-app.put('/sentenceSet/:setId', (req: SentenceSetRequest, res: Response) => {
-  if (req.is('application/json')) {
-    const setId: string = req.params.setId;
-    const body: SentenceSetRequestBody = req.body;
-    putSentenceSet(setId, body, generatePutSentenceSetCallback(res));
-  } else {
-    res
-      .status(400)
-      .send({ error: 'Content-Type header must be application/json' });
-  }
-});
-
-app.get('/sentencePair/:id', (req: Request, res: Response) => {
-  const id: string = req.params.id;
-  const callback = generateGetSentencePairCallback(id, res);
-  getSentencePair(id, callback);
-});
-
-app.put('/sentencePair/:id', (req: SentencePairRequest, res: Response) => {
-  putSentencePair(req, res);
-});
-
-app.post('/sentencePair', (req: SentencePairRequest, res: Response) => {
-  putSentencePair(req, res);
-});
-
-const putSentencePair = (req: SentencePairRequest, res: Response) => {
-  if (req.is('application/json')) {
-    const id: string = req.params.id || uuidv1();
-    const body: SentencePairRequestBody = req.body;
-    dynamoPutSentencePair(id, body, generatePutSentencePairCallback(res));
-  } else {
-    res
-      .status(400)
-      .send({ error: 'Content-Type header must be application/json' });
-  }
-};
 
 app.listen(port, () => {
   // tslint:disable-next-line:no-console

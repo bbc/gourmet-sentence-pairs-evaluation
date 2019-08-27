@@ -9,20 +9,34 @@ interface SentenceSetRequest extends Request {
   body: SentenceSetRequestBody;
 }
 
-interface SentencePairRequestBody {
+interface SentencePairEvaluationRequestBody {
+  id: string;
+  idList: string[];
+  score: number;
+}
+
+interface SentencePairEvaluationRequest extends Request {
+  body: SentencePairEvaluationRequestBody;
+}
+
+interface SentenceSet {
+  setId: string;
+  sentenceIds?: string[];
+  feedback?: string[];
+}
+
+interface SentencePair {
+  sentenceId: string;
   original: string;
   humanTranslation: string;
   machineTranslation: string;
-  scores?: number[];
-}
-
-interface SentencePairRequest extends Request {
-  body: SentencePairRequestBody;
 }
 
 export {
   SentenceSetRequest,
   SentenceSetRequestBody,
-  SentencePairRequest,
-  SentencePairRequestBody,
+  SentencePairEvaluationRequest,
+  SentencePairEvaluationRequestBody,
+  SentenceSet,
+  SentencePair,
 };

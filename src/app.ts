@@ -97,14 +97,18 @@ app.get('/evaluation', (req: Request, res: Response) => {
 app.post('/feedback', (req: FeedbackRequest, res: Response) => {
   const feedback: string = req.body.feedback;
   const setId: string = req.body.setId;
-  putSentenceSetFeedback(setId, feedback)
-    .then(result => res.redirect('/end'))
-    .catch(error => {
-      console.error(
-        `Could not save feedback: ${feedback} for sentence set id: ${setId}`
-      );
-      res.redirect('/error?errorCode=postFeedback');
-    });
+  if (feedback != undefined && feedback.length > 0) {
+    putSentenceSetFeedback(setId, feedback)
+      .then(result => res.redirect('/end'))
+      .catch(error => {
+        console.error(
+          `Could not save feedback: ${feedback} for sentence set id: ${setId}`
+        );
+        res.redirect('/error?errorCode=postFeedback');
+      });
+  } else {
+    res.redirect('/end');
+  }
 });
 
 app.get('/feedback', (req: Request, res: Response) => {

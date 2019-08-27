@@ -97,7 +97,7 @@ app.get('/evaluation', (req: Request, res: Response) => {
 app.post('/feedback', (req: FeedbackRequest, res: Response) => {
   const feedback: string = req.body.feedback;
   const setId: string = req.body.setId;
-  if (feedback != undefined && feedback.length > 0) {
+  if (feedback !== undefined && feedback.length > 0) {
     putSentenceSetFeedback(setId, feedback)
       .then(result => res.redirect('/end'))
       .catch(error => {

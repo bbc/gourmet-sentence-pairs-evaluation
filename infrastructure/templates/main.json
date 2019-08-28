@@ -362,6 +362,15 @@
                             "Resource": [
                                 "*"
                             ]
+                        },
+                        {
+                            "Action": [
+                                "dynamodb:*"
+                            ],
+                            "Effect": "Allow",
+                            "Resource": [
+                                "*"
+                            ]
                         }
                     ]
                 },

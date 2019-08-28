@@ -2,6 +2,7 @@ from troposphere import Output, Parameter, Ref, Template, Tags, Join
 from troposphere.dynamodb import (KeySchema, AttributeDefinition,
                                   ProvisionedThroughput)
 from troposphere.dynamodb import Table
+from troposphere.iam import PolicyType
 
 t = Template()
 
@@ -19,6 +20,7 @@ sentenceTableHashkeyName = t.add_parameter(Parameter(
     "SentenceTableHashKeyElementName",
     Description="Sentence Table HashType PrimaryKey Name",
     Type="String",
+    Default="sentenceId",
     AllowedPattern="[a-zA-Z0-9]*",
     MinLength="1",
     MaxLength="2048",
@@ -40,6 +42,7 @@ sentenceSetTableHashkeyName = t.add_parameter(Parameter(
     "SentenceSetTableHashKeyElementName",
     Description="Sentence Set Table HashType PrimaryKey Name",
     Type="String",
+    Default="setId",
     AllowedPattern="[a-zA-Z0-9]*",
     MinLength="1",
     MaxLength="2048",
@@ -61,6 +64,7 @@ sentenceScoreTableHashkeyName = t.add_parameter(Parameter(
     "SentenceScoreTableHashKeyElementName",
     Description="Sentence Score Table HashType PrimaryKey Name",
     Type="String",
+    Default="scoreId",
     AllowedPattern="[a-zA-Z0-9]*",
     MinLength="1",
     MaxLength="2048",
@@ -82,6 +86,7 @@ sentenceSetFeedbackTableHashkeyName = t.add_parameter(Parameter(
     "SentenceSetFeedbackTableHashKeyElementName",
     Description="Sentence Set Feedback Table HashType PrimaryKey Name",
     Type="String",
+    Default="feedbackId",
     AllowedPattern="[a-zA-Z0-9]*",
     MinLength="1",
     MaxLength="2048",
@@ -118,6 +123,25 @@ writeunits = t.add_parameter(Parameter(
     MaxValue="10000",
     ConstraintDescription="should be between 5 and 10000"
 ))
+
+t.addResource(PolicyType(
+    "DynamoUserPolicies",
+    PolicyName="DynamoDBUsers",
+    PolicyDocument={
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "Allow all DynamoDB actions",
+                "Effect": "Allow",
+                "Action": [
+                    "dynamodb:*",
+                ],
+                "Resource": "*"
+            }
+        ]
+    }
+))
+
 
 sentenceDynamoDBTable = t.add_resource(Table(
     "sentencePairsDynamoDBTable",

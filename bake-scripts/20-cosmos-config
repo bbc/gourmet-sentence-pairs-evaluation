@@ -8,9 +8,11 @@ import grp
 import os
 
 # Project name is too long for the 32 char upper limit on linux usernames
-NAME = "gourmet-sentence-pairs-evaluatio"
-UID = pwd.getpwnam(NAME).pw_uid
-GID = grp.getgrnam(NAME).gr_gid
+USERNAME = "gourmet-sentence-pairs-evaluatio"
+
+PROJECTNAME = "gourmet-sentence-pairs-evaluation"
+UID = pwd.getpwnam(USERNAME).pw_uid
+GID = grp.getgrnam(USERNAME).gr_gid
 
 
 def write_env(content, path):
@@ -27,7 +29,7 @@ def merge_two_dicts(x, y):
 
 
 def main(argv):
-    out_dir = os.path.join("/usr/lib/", NAME)
+    out_dir = os.path.join("/usr/lib/", PROJECTNAME)
     path = os.path.join(out_dir, ".env.override")
 
     raw = json.load(open(argv[1], "r"))

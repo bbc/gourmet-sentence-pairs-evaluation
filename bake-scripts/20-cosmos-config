@@ -7,7 +7,8 @@ import pwd
 import grp
 import os
 
-NAME = "gourmet-sentence-pairs-evaluation"
+# Project name is too long for the 32 char upper limit on linux usernames
+NAME = "gourmet-sentence-pairs-evaluatio"
 UID = pwd.getpwnam(NAME).pw_uid
 GID = grp.getgrnam(NAME).gr_gid
 

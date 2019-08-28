@@ -1,43 +1,43 @@
-# #! /usr/bin/env python
+#! /usr/bin/env python
 
-# import json
-# import pipes
-# import sys
-# import pwd
-# import grp
-# import os
+import json
+import pipes
+import sys
+import pwd
+import grp
+import os
 
-# NAME = "gourmet-sentence-pairs-evaluation"
-# UID = pwd.getpwnam(NAME).pw_uid
-# GID = grp.getgrnam(NAME).gr_gid
-
-
-# def write_env(content, path):
-#     f = open(path, "w")
-#     for key, value in content.items():
-#         f.write("%s=%s\n" % (key, pipes.quote(value)))
-#     f.close()
+NAME = "gourmet-sentence-pairs-evaluation"
+UID = pwd.getpwnam(NAME).pw_uid
+GID = grp.getgrnam(NAME).gr_gid
 
 
-# def merge_two_dicts(x, y):
-#     z = x.copy()
-#     z.update(y)
-#     return z
+def write_env(content, path):
+    f = open(path, "w")
+    for key, value in content.items():
+        f.write("%s=%s\n" % (key, pipes.quote(value)))
+    f.close()
 
 
-# def main(argv):
-#     out_dir = os.path.join("/usr/lib/", NAME)
-#     path = os.path.join(out_dir, ".env.override")
-
-#     raw = json.load(open(argv[1], "r"))
-#     configs = merge_two_dicts(
-#         raw["configuration"],
-#         raw["secure_configuration"]
-#     )
-#     write_env(configs, path)
-#     os.chown(path, UID, GID)
-#     return 0
+def merge_two_dicts(x, y):
+    z = x.copy()
+    z.update(y)
+    return z
 
 
-# if __name__ == "__main__":
-#     sys.exit(main(sys.argv))
+def main(argv):
+    out_dir = os.path.join("/usr/lib/", NAME)
+    path = os.path.join(out_dir, ".env.override")
+
+    raw = json.load(open(argv[1], "r"))
+    configs = merge_two_dicts(
+        raw["configuration"],
+        raw["secure_configuration"]
+    )
+    write_env(configs, path)
+    os.chown(path, UID, GID)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv))

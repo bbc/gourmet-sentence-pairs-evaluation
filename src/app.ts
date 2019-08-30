@@ -12,6 +12,8 @@ import {
   SentencePairEvaluationRequest,
   SentencePairEvaluationRequestBody,
   FeedbackRequest,
+  DatasetRequest,
+  DatasetBody,
 } from './models';
 import { getErrorText } from './uiText';
 
@@ -118,6 +120,14 @@ app.get('/feedback', (req: Request, res: Response) => {
 
 app.get('/end', (req: Request, res: Response) => {
   res.render('end');
+});
+
+app.post('/dataset', (req: DatasetRequest, res: Response) => {
+  res.send('Ok');
+});
+
+app.get('/dataset', (req: Request, res: Response) => {
+  res.render('dataset');
 });
 
 app.get('/error', (req: Request, res: Response) => {

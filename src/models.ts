@@ -29,6 +29,17 @@ interface FeedbackRequestBody {
   feedback: string;
 }
 
+interface DatasetRequest extends Request {
+  body: DatasetBody;
+}
+
+interface DatasetBody {
+  setName: string;
+  englishText: string;
+  humanTranslatedText: string;
+  machineTranslatedText: string;
+}
+
 interface SentenceSet {
   setId: string;
   name: string;
@@ -51,4 +62,6 @@ export {
   SentenceSet,
   SentencePair,
   FeedbackRequest,
+  DatasetRequest,
+  DatasetBody,
 };

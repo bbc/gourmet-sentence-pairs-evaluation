@@ -1,5 +1,5 @@
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
-import { SentenceSetRequestBody, SentencePair, SentenceSet } from '../models';
+import { SentencePair, SentenceSet } from '../models/models';
 import * as uuidv1 from 'uuid/v1';
 
 const client = new DocumentClient({ region: 'eu-west-1' });
@@ -63,15 +63,34 @@ const getSentenceSet = (setId: string): Promise<SentenceSet> => {
 };
 
 const putSentenceSet = (
-  setId: string,
-  setData: SentenceSetRequestBody
+  sentencePairs: SentencePair[],
+  setName: string,
+  setId?: string
 ): Promise<string> => {
+  return Promise.all(
+    sentencePairs.map(pair => {
+      return putSentencePair(pair.sentenceId, pair);
+    })
+  ).then(sentencePairsIds => {
+    const sentenceSet: SentenceSet = new SentenceSet(
+      setName,
+      sentencePairsIds,
+      setId
+    );
+    return _putSentenceSet(sentenceSet.setId, sentenceSet);
+  });
+};
+
+const _putSentenceSet = (
+  setId: string,
+  setData: SentenceSet
+): Promise<string> => {
+  const item =
+    setData.sentenceIds === undefined
+      ? { setId }
+      : { setId, sentenceIds: client.createSet(setData.sentenceIds) };
   const input = {
-    Item: {
-      setId,
-      feedback: client.createSet(setData.feedback),
-      sentenceIds: client.createSet(setData.sentenceIds),
-    },
+    Item: item,
     TableName: getSentenceSetsTableName(),
   };
 
@@ -79,7 +98,7 @@ const putSentenceSet = (
     .put(input)
     .promise()
     .then(result => {
-      return 'Successfully put sentence set.';
+      return setId;
     });
 };
 
@@ -110,6 +129,9 @@ const getSentencePair = (id: string): Promise<SentencePair> => {
     });
 };
 
+/**
+ * Returns the Id of the sentence pair
+ */
 const putSentencePair = (
   id: string,
   sentenceData: SentencePair
@@ -128,7 +150,7 @@ const putSentencePair = (
     .put(input)
     .promise()
     .then(result => {
-      return 'ok';
+      return id;
     });
 };
 

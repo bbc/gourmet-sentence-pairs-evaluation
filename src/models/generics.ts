@@ -5,6 +5,7 @@ class Some<T> implements Option<T> {
 }
 
 class None<T> implements Option<T> {
+  // tslint:disable-next-line:no-empty
   constructor() {}
 }
 

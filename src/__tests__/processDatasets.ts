@@ -34,9 +34,7 @@ describe('cleanData', () => {
       humanTranslatedSentences: ['Sentence 1.', 'Sentence 2.'],
       machineTranslatedSentences: ['Sentence 1.', 'Sentence 2.'],
     };
-    const r = cleanData(input);
-    console.log(r);
-    expect(r).toEqual(expectedOutput);
+    expect(cleanData(input)).toEqual(expectedOutput);
   });
 
   test('should return a None if machine translated text does not have enough sentences', () => {

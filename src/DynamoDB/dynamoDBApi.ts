@@ -81,6 +81,7 @@ const putSentenceSet = (
   });
 };
 
+// tslint:disable-next-line:variable-name
 const _putSentenceSet = (
   setId: string,
   setData: SentenceSet

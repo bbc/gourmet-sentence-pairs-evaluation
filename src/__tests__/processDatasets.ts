@@ -21,18 +21,18 @@ describe('cleanData', () => {
     expect(cleanData(input)).toEqual(expectedOutput);
   });
 
-  test('', () => {
+  test('should return a Some of type Dataset when carriage returns are used to split data', () => {
     const input = {
       setName: 'test',
-      englishText: 'asd\r\nasdasd\r\nasdasdasdasd\r\nasdasd',
-      humanTranslatedText: 'asd\r\nasdasd\r\nasdasdasdasd\r\nasdasd',
-      machineTranslatedText: 'asd\r\nasdasd\r\nasdasdasdasd\r\nasdasd',
+      englishText: 'Sentence 1.\r\nSentence 2.\r\n',
+      humanTranslatedText: 'Sentence 1.\r\nSentence 2.\r\n',
+      machineTranslatedText: 'Sentence 1.\r\nSentence 2.\r\n',
     };
     const expectedOutput = {
       setName: 'test',
-      englishSentences: ['asd', 'asdasd', 'asdasdasdasd', 'asdasd'],
-      humanTranslatedSentences: ['asd', 'asdasd', 'asdasdasdasd', 'asdasd'],
-      machineTranslatedSentences: ['asd', 'asdasd', 'asdasdasdasd', 'asdasd'],
+      englishSentences: ['Sentence 1.', 'Sentence 2.'],
+      humanTranslatedSentences: ['Sentence 1.', 'Sentence 2.'],
+      machineTranslatedSentences: ['Sentence 1.', 'Sentence 2.'],
     };
     const r = cleanData(input);
     console.log(r);

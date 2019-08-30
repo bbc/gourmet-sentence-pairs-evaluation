@@ -13,7 +13,7 @@ import {
   SentencePairEvaluationRequestBody,
   FeedbackRequest,
 } from './models';
-import { getErrorText } from './copyText';
+import { getErrorText } from './uiText';
 
 loadConfig();
 

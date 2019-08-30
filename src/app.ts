@@ -12,8 +12,11 @@ import {
   SentencePairEvaluationRequest,
   SentencePairEvaluationRequestBody,
   FeedbackRequest,
-} from './models';
+  DatasetRequest,
+  DatasetBody,
+} from './models/requests';
 import { getErrorText } from './uiText';
+import { submitDataset } from './processDatasets';
 
 loadConfig();
 
@@ -102,7 +105,7 @@ app.post('/feedback', (req: FeedbackRequest, res: Response) => {
       .then(result => res.redirect('/end'))
       .catch(error => {
         console.error(
-          `Could not save feedback: ${feedback} for sentence set id: ${setId}`
+          `Could not save feedback: ${feedback} for sentence set id: ${setId}. Error:${error}`
         );
         res.redirect('/error?errorCode=postFeedback');
       });
@@ -117,7 +120,37 @@ app.get('/feedback', (req: Request, res: Response) => {
 });
 
 app.get('/end', (req: Request, res: Response) => {
-  res.render('end');
+  res.render('infoGeneric', {
+    title: 'Evaluation Complete',
+    subtitle: 'Thank you for taking part.',
+  });
+});
+
+app.post('/dataset', (req: DatasetRequest, res: Response) => {
+  const dataset: DatasetBody = req.body;
+  submitDataset(dataset)
+    .then(x => {
+      res.redirect('/success');
+    })
+    .catch(error => {
+      console.error(
+        `Could not submit dataset:${JSON.stringify(dataset)}. Error: ${error}`
+      );
+      res.redirect('/error?errorCode=postDataset');
+    });
+});
+
+app.get('/dataset', (req: Request, res: Response) => {
+  res.render('dataset');
+});
+
+app.get('/success', (req: Request, res: Response) => {
+  res.render('infoButtonGeneric', {
+    title: 'Successfully Submitted Dataset',
+    subtitle: '',
+    url: '/dataset',
+    buttonText: 'Submit another data set',
+  });
 });
 
 app.get('/error', (req: Request, res: Response) => {

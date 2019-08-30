@@ -1,14 +1,5 @@
 import { Request } from 'express';
 
-interface SentenceSetRequestBody {
-  sentenceIds: string[];
-  feedback: string[];
-}
-
-interface SentenceSetRequest extends Request {
-  body: SentenceSetRequestBody;
-}
-
 interface SentencePairEvaluationRequestBody {
   id: string;
   setId: string;
@@ -29,26 +20,21 @@ interface FeedbackRequestBody {
   feedback: string;
 }
 
-interface SentenceSet {
-  setId: string;
-  name: string;
-  sentenceIds?: string[];
-  feedback?: string[];
+interface DatasetRequest extends Request {
+  body: DatasetBody;
 }
 
-interface SentencePair {
-  sentenceId: string;
-  original: string;
-  humanTranslation: string;
-  machineTranslation: string;
+interface DatasetBody {
+  setName: string;
+  englishText: string;
+  humanTranslatedText: string;
+  machineTranslatedText: string;
 }
 
 export {
-  SentenceSetRequest,
-  SentenceSetRequestBody,
   SentencePairEvaluationRequest,
   SentencePairEvaluationRequestBody,
-  SentenceSet,
-  SentencePair,
   FeedbackRequest,
+  DatasetRequest,
+  DatasetBody,
 };

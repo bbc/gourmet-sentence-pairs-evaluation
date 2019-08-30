@@ -12,7 +12,13 @@ The app requires local aws credentials for the GoURMET AWS account.
 
 Run `yarn dev`
 
+The App talks directly to DynamoDB tables in AWS
+
 # Developing the App.
+
+## A note on PRs
+
+Currently this is a single dev project so changes are being made and features are added without going through the standard PR review process. PRs are still being opened as they offer a form of documentation but are being merged without review.
 
 ## Infrastructure
 
@@ -23,3 +29,7 @@ To make changes to the stack. Update the [./infrastructure/src/main.py](./infras
 ### Database
 
 The app uses DynamoDB to store data. This is cloudformed. To make changes to the database update the [./infrastructure/src/dynamoDB.py](./infrastructure/src/dynamoDB.py) and run `make templates/dynamoDB.json` from inside the `infrastructure` directory.
+
+### DNS
+
+To make changes to the DNS template. Update the [./infrastructure/src/dns.py](./infrastructure/src/dns.py) and run `make templates/dns.json` from inside the `infrastructure` directory.

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <!-- Adding bootstrap CSS styles -->
+        <link rel="stylesheet"
+              href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+              integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+              crossorigin="anonymous">
+
+        <meta charset="utf-8">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <title>Sentence Pairs</title>
+        <link rel="stylesheet"
+              type="text/css"
+              href="main.css" />
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="row align-items-center height-70percent">
+                <div class="col">
+                    <h1 class="text-center text-primary margin-top-bottom">Text for Evaluation</h1>
+                    <p>This page is for submission of data sets to be evaluated. The user MUST provide English text a
+                        machine translation and a human translation as well as a name for the sentence set. This name
+                        will be given to evaluators to identify the data set they should analyse. Each individual
+                        sentence must be on a new line. The assumption is made that each block of text will have the
+                        same number of sentences and that the sentences in each block match. E.g. Sentence 1 in the
+                        Human Translated Text input and sentence 1 in the machine translated text input will both be
+                        translations of sentence 1 of the English Text input.
+                    </p>
+                    <form action="/dataset"
+                          method="POST">
+                        <div class="form-row">
+                            <div class="form-group col-sm-6">
+
+                                <label for="setName">Name of Sentence Set</label>
+                                <input class="form-control"
+                                       name="setName"
+                                       id="setName"
+                                       required></input>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="englishText">English Text</label>
+                            <textarea class="form-control"
+                                      name="englishText"
+                                      id="englishText"
+                                      rows="10"
+                                      required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="englishText">Human Translated Text</label>
+                            <textarea class="form-control"
+                                      name="humanTranslatedText"
+                                      id="humanTranslatedText"
+                                      rows="10"
+                                      required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="englishText">Machine Translated Text</label>
+                            <textarea class="form-control"
+                                      name="machineTranslatedText"
+                                      id="machineTranslatedText"
+                                      rows="10"
+                                      required></textarea>
+                        </div>
+                        <div class="form-row justify-content-center">
+                            <div class="form-group col-sm-2">
+                                <button type="submit"
+                                        class="btn btn-primary btn-block">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+
+</html>

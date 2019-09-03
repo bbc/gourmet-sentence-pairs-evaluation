@@ -65,6 +65,8 @@ const getSentenceSet = (setId: string): Promise<SentenceSet> => {
 const putSentenceSet = (
   sentencePairs: SentencePair[],
   setName: string,
+  sourceLanguage: string,
+  targetLanguage: string,
   setId?: string
 ): Promise<string> => {
   return Promise.all(
@@ -74,6 +76,8 @@ const putSentenceSet = (
   ).then(sentencePairsIds => {
     const sentenceSet: SentenceSet = new SentenceSet(
       setName,
+      sourceLanguage,
+      targetLanguage,
       sentencePairsIds,
       setId
     );
@@ -88,8 +92,19 @@ const _putSentenceSet = (
 ): Promise<string> => {
   const item =
     setData.sentenceIds === undefined
-      ? { setId }
-      : { setId, sentenceIds: client.createSet(setData.sentenceIds) };
+      ? {
+          setId,
+          name: setData.name,
+          sourceLanguage: setData.sourceLanguage.toUpperCase(),
+          targetLanguage: setData.targetLanguage.toUpperCase(),
+        }
+      : {
+          setId,
+          sentenceIds: client.createSet(setData.sentenceIds),
+          name: setData.name,
+          sourceLanguage: setData.sourceLanguage.toUpperCase(),
+          targetLanguage: setData.targetLanguage.toUpperCase(),
+        };
   const input = {
     Item: item,
     TableName: getSentenceSetsTableName(),
@@ -143,6 +158,8 @@ const putSentencePair = (
       original: sentenceData.original,
       humanTranslation: sentenceData.humanTranslation,
       machineTranslation: sentenceData.machineTranslation,
+      sourceLanguage: sentenceData.sourceLanguage.toUpperCase(),
+      targetLanguage: sentenceData.targetLanguage.toUpperCase(),
     },
     TableName: getSentencesTableName(),
   };

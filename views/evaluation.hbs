@@ -31,7 +31,7 @@
                     <form action="/evaluation"
                           method="POST">
                         <div class="row justify-content-center form-group">
-                            <div class="col-sm-6">
+                            <div class="col-md-6">
                                 <label for="score"
                                        class="float-left">No Match</label>
                                 <label for=""
@@ -49,9 +49,12 @@
                             <input type="hidden"
                                    name="setId"
                                    value={{setId}} />
+                            <input type="hidden"
+                                   name="numOfPracticeSentences"
+                                   value={{numOfPracticeSentences}} />
                         </div>
                         <div class="row justify-content-center form-group">
-                            <div class="col-sm-2">
+                            <div class="col-md-2">
                                 <button type="submit"
                                         class="btn btn-primary btn-block">Submit</button>
                             </div>

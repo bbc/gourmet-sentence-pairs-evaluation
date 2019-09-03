@@ -1,4 +1,4 @@
-import { Dataset, SentencePair } from './models/models';
+import { Dataset, SentencePair, Language } from './models/models';
 import { putSentenceSet } from './DynamoDB/dynamoDBApi';
 import { DatasetBody } from './models/requests';
 import { Some, None, Option } from './models/generics';
@@ -10,16 +10,20 @@ const cleanData = (dataset: DatasetBody): Option<Dataset> => {
   const englishSentences = dataset.englishText.split(regex);
   const humanTranslatedSentences = dataset.humanTranslatedText.split(regex);
   const machineTranslatedSentences = dataset.machineTranslatedText.split(regex);
+  const language: Language = (<any>Language)[dataset.language];
   if (
     englishSentences.length === machineTranslatedSentences.length &&
-    englishSentences.length === humanTranslatedSentences.length
+    englishSentences.length === humanTranslatedSentences.length &&
+    language !== undefined
   ) {
     return new Some(
       new Dataset(
         englishSentences,
         humanTranslatedSentences,
         machineTranslatedSentences,
-        dataset.setName
+        dataset.setName,
+        'english',
+        dataset.language
       )
     );
   } else {
@@ -43,7 +47,9 @@ const generateSentencePairs = (dataset: Dataset): SentencePair[] => {
     return new SentencePair(
       sentence,
       humanTranslatedSentences[i] || 'none',
-      machineTranslatedSentences[i] || 'none'
+      machineTranslatedSentences[i] || 'none',
+      dataset.sourceLanguage,
+      dataset.targetLanguage
     );
   });
   return sentencePairs;
@@ -54,7 +60,12 @@ const submitDataset = (dataset: DatasetBody): Promise<string> => {
   if (cleanedData instanceof Some && cleanedData.value instanceof Dataset) {
     const setName = cleanedData.value.setName;
     const sentencePairs = generateSentencePairs(cleanedData.value);
-    return putSentenceSet(sentencePairs, setName);
+    return putSentenceSet(
+      sentencePairs,
+      setName,
+      cleanedData.value.sourceLanguage,
+      cleanedData.value.targetLanguage
+    );
   } else {
     const errorMessage = `Could not clean data. Dataset:${JSON.stringify(
       dataset

@@ -38,11 +38,13 @@
                     <form action="/start"
                           method="POST">
                         <div class="row justify-content-center form-group">
-                            <div class="col-sm-6">
+                            <div class="col-md-6">
                                 <label for="setId">Pick the set you have been asked to
                                     evaluate:</label>
                                 <select class="form-control"
-                                        name="setId">
+                                        name="setId"
+                                        required>
+                                    <option></option>
                                     {{#each sentenceSets}}
                                     <option value="{{this.setId}}">{{this.name}}</option>
                                     {{/each}}
@@ -50,7 +52,7 @@
                             </div>
                         </div>
                         <div class="row justify-content-center form-group">
-                            <div class="col-sm-2">
+                            <div class="col-md-2">
                                 <button type="submit"
                                         class="btn btn-primary btn-block">Begin</button>
                             </div>

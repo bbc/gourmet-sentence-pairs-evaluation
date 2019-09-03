@@ -17,6 +17,7 @@ import {
 } from './models/requests';
 import { getErrorText } from './uiText';
 import { submitDataset } from './processDatasets';
+import { Language } from './models/models';
 
 loadConfig();
 
@@ -44,7 +45,7 @@ app.post('/start', (req: Request, res: Response) => {
     .then(sentenceSet => {
       res.redirect(
         `/evaluation?idList=${JSON.stringify(sentenceSet.sentenceIds) ||
-          []}&setId=${setId}`
+          []}&setId=${setId}&numOfPracticeSentences=5`
       );
     })
     .catch(error => {
@@ -60,20 +61,32 @@ app.post('/evaluation', (req: SentencePairEvaluationRequest, res: Response) => {
   const id: string = body.id;
   const setId: string = body.setId;
   const score: number = body.score;
+  const numOfPracticeSentences = body.numOfPracticeSentences || 0;
 
-  putSentencePairScore(id, score)
-    .then(x => res.redirect(`/evaluation?idList=${body.idList}&setId=${setId}`))
-    .catch(error => {
-      console.error(
-        `Unable to put score for id: ${id} and score: ${score}. Error${error}`
-      );
-      res.redirect('/error?errorCode=postEvaluation');
-    });
+  if (numOfPracticeSentences > 0) {
+    res.redirect(
+      `/evaluation?idList=${
+        body.idList
+      }&setId=${setId}&numOfPracticeSentences=${numOfPracticeSentences - 1}`
+    );
+  } else {
+    putSentencePairScore(id, score)
+      .then(x =>
+        res.redirect(`/evaluation?idList=${body.idList}&setId=${setId}`)
+      )
+      .catch(error => {
+        console.error(
+          `Unable to put score for id: ${id} and score: ${score}. Error${error}`
+        );
+        res.redirect('/error?errorCode=postEvaluation');
+      });
+  }
 });
 
 app.get('/evaluation', (req: Request, res: Response) => {
   const idList = JSON.parse(req.query.idList || '[]');
   const setId = req.query.setId;
+  const numOfPracticeSentences = req.query.numOfPracticeSentences || 0;
   if (idList.length > 0) {
     const sentencePairId = idList[0];
     getSentencePair(sentencePairId)
@@ -84,6 +97,7 @@ app.get('/evaluation', (req: Request, res: Response) => {
           idList: JSON.stringify(idList.slice(1)),
           setId,
           sentencePairId,
+          numOfPracticeSentences,
         });
       })
       .catch(error => {
@@ -141,7 +155,16 @@ app.post('/dataset', (req: DatasetRequest, res: Response) => {
 });
 
 app.get('/dataset', (req: Request, res: Response) => {
-  res.render('dataset');
+  const languages = Object.keys(Language);
+  const languageOptions = languages.map((languageName, i) => {
+    return {
+      displayName:
+        languageName.charAt(0).toUpperCase() +
+        languageName.slice(1).toLowerCase(),
+      language: languages[i],
+    };
+  });
+  res.render('dataset', { languageOptions });
 });
 
 app.get('/success', (req: Request, res: Response) => {

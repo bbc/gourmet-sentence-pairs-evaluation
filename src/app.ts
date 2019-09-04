@@ -35,7 +35,7 @@ app.set('view engine', 'hbs');
 
 app.get('/', (req: Request, res: Response) => {
   getSentenceSets().then(sentenceSets => {
-    res.render('index', { sentenceSets });
+    res.render('index', { sentenceSets, datasetSubmissionUrl: '/dataset' });
   });
 });
 

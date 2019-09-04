@@ -1,5 +1,5 @@
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
-import { SentencePair, SentenceSet } from '../models/models';
+import { SentencePair, SentenceSet, Language } from '../models/models';
 import * as uuidv1 from 'uuid/v1';
 
 const client = new DocumentClient({ region: 'eu-west-1' });
@@ -65,8 +65,8 @@ const getSentenceSet = (setId: string): Promise<SentenceSet> => {
 const putSentenceSet = (
   sentencePairs: SentencePair[],
   setName: string,
-  sourceLanguage: string,
-  targetLanguage: string,
+  sourceLanguage: Language,
+  targetLanguage: Language,
   setId?: string
 ): Promise<string> => {
   return Promise.all(

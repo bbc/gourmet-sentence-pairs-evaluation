@@ -11,7 +11,8 @@
     "lint": "tslint --project tsconfig.json",
     "dev": "ts-node-dev --respawn --transpileOnly ./src/app.ts",
     "spec": "speculate --release ${BUILD_NUMBER}",
-    "test": "yarn jest"
+    "test": "yarn jest",
+    "valid": "yarn lint && yarn build && yarn test"
   },
   "dependencies": {
     "aws-sdk": "^2.513.0",

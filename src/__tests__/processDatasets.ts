@@ -1,5 +1,5 @@
 import { cleanData } from '../processDatasets';
-import { Dataset } from '../models/models';
+import { Dataset, Language } from '../models/models';
 import { DatasetBody } from '../models/requests';
 import { Some, None } from '../models/generics';
 
@@ -10,30 +10,38 @@ describe('cleanData', () => {
       machineTranslatedText: 'Sentence 1.\nSentence 2.',
       humanTranslatedText: 'Sentence 1.\nSentence 2.',
       setName: '',
+      language: 'BULGARIAN',
     };
-    const expectedDataset: Dataset = {
-      englishSentences: ['Sentence 1.', 'Sentence 2.'],
-      humanTranslatedSentences: ['Sentence 1.', 'Sentence 2.'],
-      machineTranslatedSentences: ['Sentence 1.', 'Sentence 2.'],
-      setName: '',
-    };
+    const expectedDataset: Dataset = new Dataset(
+      ['Sentence 1.', 'Sentence 2.'],
+      ['Sentence 1.', 'Sentence 2.'],
+      ['Sentence 1.', 'Sentence 2.'],
+      '',
+      Language.ENGLISH,
+      Language.BULGARIAN
+    );
     const expectedOutput = new Some(expectedDataset);
     expect(cleanData(input)).toEqual(expectedOutput);
   });
 
   test('should return a Some of type Dataset when carriage returns are used to split data', () => {
-    const input = {
+    const input: DatasetBody = {
       setName: 'test',
       englishText: 'Sentence 1.\r\nSentence 2.\r\n',
       humanTranslatedText: 'Sentence 1.\r\nSentence 2.\r\n',
       machineTranslatedText: 'Sentence 1.\r\nSentence 2.\r\n',
+      language: 'BULGARIAN',
     };
-    const expectedOutput = {
-      setName: 'test',
-      englishSentences: ['Sentence 1.', 'Sentence 2.'],
-      humanTranslatedSentences: ['Sentence 1.', 'Sentence 2.'],
-      machineTranslatedSentences: ['Sentence 1.', 'Sentence 2.'],
-    };
+    const expectedOutput = new Some(
+      new Dataset(
+        ['Sentence 1.', 'Sentence 2.'],
+        ['Sentence 1.', 'Sentence 2.'],
+        ['Sentence 1.', 'Sentence 2.'],
+        'test',
+        Language.ENGLISH,
+        Language.BULGARIAN
+      )
+    );
     expect(cleanData(input)).toEqual(expectedOutput);
   });
 
@@ -43,6 +51,7 @@ describe('cleanData', () => {
       machineTranslatedText: '',
       humanTranslatedText: 'Sentence 1.\nSentence 2.',
       setName: '',
+      language: 'BULGARIAN',
     };
     const expectedOutput = new None();
     expect(cleanData(input)).toEqual(expectedOutput);
@@ -54,6 +63,7 @@ describe('cleanData', () => {
       machineTranslatedText: 'Sentence 1.\nSentence 2.\nSentence 3.',
       humanTranslatedText: 'Sentence 1.\nSentence 2.',
       setName: '',
+      language: 'BULGARIAN',
     };
     const expectedOutput = new None();
     expect(cleanData(input)).toEqual(expectedOutput);
@@ -65,6 +75,7 @@ describe('cleanData', () => {
       machineTranslatedText: 'Sentence 1.\nSentence 2.',
       humanTranslatedText: '',
       setName: '',
+      language: 'BULGARIAN',
     };
     const expectedOutput = new None();
     expect(cleanData(input)).toEqual(expectedOutput);
@@ -76,6 +87,7 @@ describe('cleanData', () => {
       machineTranslatedText: 'Sentence 1.\nSentence 2.',
       humanTranslatedText: 'Sentence 1.\nSentence 2.\nSentence 3.',
       setName: '',
+      language: 'BULGARIAN',
     };
     const expectedOutput = new None();
     expect(cleanData(input)).toEqual(expectedOutput);

@@ -6,15 +6,21 @@ import { Some, None, Option } from './models/generics';
  * Turns body of request into a Dataset. Rejects body if sentence sets are not all of equal length.
  */
 const cleanData = (dataset: DatasetBody): Option<Dataset> => {
-  const regex = /\n?\r/;
-  const englishSentences = dataset.englishText.split(regex);
-  const humanTranslatedSentences = dataset.humanTranslatedText.split(regex);
-  const machineTranslatedSentences = dataset.machineTranslatedText.split(regex);
-  const language: Language = (<any>Language)[dataset.language];
+  const regex = /[\n\r]+/;
+  const englishSentences = dataset.englishText
+    .split(regex)
+    .filter(s => s !== '');
+  const humanTranslatedSentences = dataset.humanTranslatedText
+    .split(regex)
+    .filter(s => s !== '');
+  const machineTranslatedSentences = dataset.machineTranslatedText
+    .split(regex)
+    .filter(s => s !== '');
+  const targetLanguage: Language = (Language as any)[dataset.language];
   if (
     englishSentences.length === machineTranslatedSentences.length &&
     englishSentences.length === humanTranslatedSentences.length &&
-    language !== undefined
+    targetLanguage !== undefined
   ) {
     return new Some(
       new Dataset(
@@ -22,8 +28,8 @@ const cleanData = (dataset: DatasetBody): Option<Dataset> => {
         humanTranslatedSentences,
         machineTranslatedSentences,
         dataset.setName,
-        'english',
-        dataset.language
+        Language.ENGLISH,
+        targetLanguage
       )
     );
   } else {

@@ -6,8 +6,8 @@ class Dataset {
     public humanTranslatedSentences: string[],
     public machineTranslatedSentences: string[],
     public setName: string,
-    public sourceLanguage: string,
-    public targetLanguage: string
+    public sourceLanguage: Language,
+    public targetLanguage: Language
   ) {}
 }
 
@@ -16,8 +16,8 @@ class SentenceSet {
 
   constructor(
     public name: string,
-    public sourceLanguage: string,
-    public targetLanguage: string,
+    public sourceLanguage: Language,
+    public targetLanguage: Language,
     public sentenceIds?: string[],
     setId?: string
   ) {
@@ -32,8 +32,8 @@ class SentencePair {
     public original: string,
     public humanTranslation: string,
     public machineTranslation: string,
-    public sourceLanguage: string,
-    public targetLanguage: string,
+    public sourceLanguage: Language,
+    public targetLanguage: Language,
     sentenceId?: string
   ) {
     this.sentenceId = sentenceId === undefined ? uuidv1() : sentenceId;
@@ -44,6 +44,7 @@ enum Language {
   BULGARIAN = 'bg',
   GUJARATI = 'gu',
   SWAHILI = 'sw',
+  ENGLISH = 'en',
 }
 
 export { SentenceSet, SentencePair, Dataset, Language };

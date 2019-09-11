@@ -6,6 +6,7 @@ import {
   putSentencePairScore,
   putSentenceSetFeedback,
   getSentenceSets,
+  putSentenceSet,
 } from './DynamoDB/dynamoDBApi';
 import { loadConfig } from './config';
 import {
@@ -14,10 +15,11 @@ import {
   FeedbackRequest,
   DatasetRequest,
   DatasetBody,
+  StartRequest,
 } from './models/requests';
 import { getErrorText } from './uiText';
 import { submitDataset } from './processDatasets';
-import { Language } from './models/models';
+import { Language, SentenceSet } from './models/models';
 
 loadConfig();
 
@@ -39,22 +41,52 @@ app.get('/', (req: Request, res: Response) => {
   });
 });
 
-app.post('/start', (req: Request, res: Response) => {
+app.post('/start', (req: StartRequest, res: Response) => {
   const setId = req.body.setId;
+  const evaluatorId = req.body.evaluatorId;
   getSentenceSet(setId)
     .then(sentenceSet => {
-      res.redirect(
-        `/evaluation?idList=${JSON.stringify(sentenceSet.sentenceIds) ||
-          []}&setId=${setId}&numOfPracticeSentences=5`
-      );
+      addEvaluatorIdToSentenceSet(evaluatorId, sentenceSet)
+        .then(x => {
+          res.redirect(
+            `/evaluation?idList=${JSON.stringify(sentenceSet.sentenceIds) ||
+              []}&setId=${setId}&numOfPracticeSentences=5`
+          );
+        })
+        .catch(error => {
+          console.error(
+            `Unable to add evaluatorId:${evaluatorId} to sentence set:${setId}`
+          );
+          res.redirect('/error?errorCode=postStartFailEvaluatorId');
+        });
     })
     .catch(error => {
       console.error(
         `Unable to retrieve sentence set with id: ${setId}. Error: ${error}`
       );
-      res.redirect('/error?errorCode=postStart');
+      res.redirect('/error?errorCode=postStartFailSentenceSet');
     });
 });
+
+const addEvaluatorIdToSentenceSet = (
+  evaluatorId: string,
+  sentenceSet: SentenceSet
+): Promise<string> => {
+  const evaluatorIds: string[] =
+    sentenceSet.evaluatorIds === undefined
+      ? (sentenceSet.evaluatorIds = [evaluatorId])
+      : sentenceSet.evaluatorIds.concat(evaluatorId);
+
+  const updatedSentenceSet = new SentenceSet(
+    sentenceSet.name,
+    sentenceSet.sourceLanguage,
+    sentenceSet.targetLanguage,
+    sentenceSet.sentenceIds,
+    sentenceSet.setId,
+    evaluatorIds
+  );
+  return putSentenceSet(updatedSentenceSet);
+};
 
 app.post('/evaluation', (req: SentencePairEvaluationRequest, res: Response) => {
   const body: SentencePairEvaluationRequestBody = req.body;

@@ -55,14 +55,16 @@ const getSentenceSet = (setId: string): Promise<SentenceSet> => {
       ) {
         throw new Error(`Item with id: ${setId} does not exist.`);
       } else {
-        const sentenceSet: SentenceSet = (output
-          .Items[0] as unknown) as SentenceSet;
-        return sentenceSet;
+        const item = output.Items[0];
+        return convertAttributeMapToSentenceSet(item);
       }
     });
 };
 
-const putSentenceSet = (
+/**
+ * Puts all the sentence pairs into DynamoDB and also creates a sentence set in dynamoDB that contains the sentence pairs
+ */
+const putSentenceSetAndPairs = (
   sentencePairs: SentencePair[],
   setName: string,
   sourceLanguage: Language,
@@ -81,30 +83,13 @@ const putSentenceSet = (
       sentencePairsIds,
       setId
     );
-    return _putSentenceSet(sentenceSet.setId, sentenceSet);
+    return putSentenceSet(sentenceSet);
   });
 };
 
 // tslint:disable-next-line:variable-name
-const _putSentenceSet = (
-  setId: string,
-  setData: SentenceSet
-): Promise<string> => {
-  const item =
-    setData.sentenceIds === undefined
-      ? {
-          setId,
-          name: setData.name,
-          sourceLanguage: setData.sourceLanguage.toUpperCase(),
-          targetLanguage: setData.targetLanguage.toUpperCase(),
-        }
-      : {
-          setId,
-          sentenceIds: client.createSet(setData.sentenceIds),
-          name: setData.name,
-          sourceLanguage: setData.sourceLanguage.toUpperCase(),
-          targetLanguage: setData.targetLanguage.toUpperCase(),
-        };
+const putSentenceSet = (sentenceSet: SentenceSet): Promise<string> => {
+  const item = constructSentenceSetItem(sentenceSet);
   const input = {
     Item: item,
     TableName: getSentenceSetsTableName(),
@@ -114,7 +99,7 @@ const _putSentenceSet = (
     .put(input)
     .promise()
     .then(result => {
-      return setId;
+      return sentenceSet.setId;
     });
 };
 
@@ -210,12 +195,75 @@ const putSentenceSetFeedback = (setId: string, feedback: string) => {
     });
 };
 
+const convertAttributeMapToSentenceSet = (
+  item: DocumentClient.AttributeMap
+): SentenceSet => {
+  const sentenceIdsSet: DocumentClient.StringSet = item['sentenceIds'];
+  const sentenceIds = sentenceIdsSet === undefined ? [] : sentenceIdsSet.values;
+  const evaluatorIdsSet: DocumentClient.StringSet = item['evaluatorIds'];
+  const evaluatorIds =
+    evaluatorIdsSet === undefined ? [] : evaluatorIdsSet.values;
+
+  return new SentenceSet(
+    item['name'],
+    item['sourceLanguage'],
+    item['targetLanguage'],
+    sentenceIds,
+    item['setId'],
+    evaluatorIds
+  );
+};
+
+/** A set of sentenceIds and a set of evaluatorIds can be undefined or empty.
+ * Some fairly horrible logic to ensure that an empty or undefined set is not put into dynamo
+ */
+const constructSentenceSetItem = (sentenceSet: SentenceSet) => {
+  const sentenceIds: string[] = sentenceSet.sentenceIds || [];
+  const evaluatorIds: string[] = sentenceSet.evaluatorIds || [];
+  if (sentenceIds.length < 1 && evaluatorIds.length < 1) {
+    return {
+      setId: sentenceSet.setId,
+      name: sentenceSet.name,
+      sourceLanguage: sentenceSet.sourceLanguage.toUpperCase(),
+      targetLanguage: sentenceSet.targetLanguage.toUpperCase(),
+    };
+  }
+  if (sentenceIds.length < 1) {
+    return {
+      setId: sentenceSet.setId,
+      name: sentenceSet.name,
+      sourceLanguage: sentenceSet.sourceLanguage.toUpperCase(),
+      targetLanguage: sentenceSet.targetLanguage.toUpperCase(),
+      evaluatorIds: client.createSet(Array.from(evaluatorIds)),
+    };
+  }
+  if (evaluatorIds.length < 1) {
+    return {
+      setId: sentenceSet.setId,
+      sentenceIds: client.createSet(Array.from(sentenceIds)),
+      name: sentenceSet.name,
+      sourceLanguage: sentenceSet.sourceLanguage.toUpperCase(),
+      targetLanguage: sentenceSet.targetLanguage.toUpperCase(),
+    };
+  } else {
+    return {
+      setId: sentenceSet.setId,
+      sentenceIds: client.createSet(Array.from(sentenceIds)),
+      name: sentenceSet.name,
+      sourceLanguage: sentenceSet.sourceLanguage.toUpperCase(),
+      targetLanguage: sentenceSet.targetLanguage.toUpperCase(),
+      evaluatorIds: client.createSet(Array.from(evaluatorIds)),
+    };
+  }
+};
+
 export {
   getSentenceSet,
-  putSentenceSet,
+  putSentenceSetAndPairs,
   getSentencePair,
   putSentencePair,
   putSentencePairScore,
   putSentenceSetFeedback,
   getSentenceSets,
+  putSentenceSet,
 };

@@ -33,10 +33,20 @@ interface DatasetBody {
   machineTranslatedText: string;
 }
 
+interface StartRequest extends Request {
+  body: StartBody;
+}
+
+interface StartBody {
+  setId: string;
+  evaluatorId: string;
+}
+
 export {
   SentencePairEvaluationRequest,
   SentencePairEvaluationRequestBody,
   FeedbackRequest,
   DatasetRequest,
   DatasetBody,
+  StartRequest,
 };

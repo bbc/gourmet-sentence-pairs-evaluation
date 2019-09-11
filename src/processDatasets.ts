@@ -1,5 +1,5 @@
 import { Dataset, SentencePair, Language } from './models/models';
-import { putSentenceSet } from './DynamoDB/dynamoDBApi';
+import { putSentenceSetAndPairs } from './DynamoDB/dynamoDBApi';
 import { DatasetBody } from './models/requests';
 import { Some, None, Option } from './models/generics';
 /**
@@ -66,7 +66,7 @@ const submitDataset = (dataset: DatasetBody): Promise<string> => {
   if (cleanedData instanceof Some && cleanedData.value instanceof Dataset) {
     const setName = cleanedData.value.setName;
     const sentencePairs = generateSentencePairs(cleanedData.value);
-    return putSentenceSet(
+    return putSentenceSetAndPairs(
       sentencePairs,
       setName,
       cleanedData.value.sourceLanguage,

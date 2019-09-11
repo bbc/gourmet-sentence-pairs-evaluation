@@ -24,17 +24,17 @@
                 <div class="col">
                     <h1 class="text-center text-primary margin-top-5percent">Text for Evaluation</h1>
                     <p class="margin-top-5percent">This page is for submission of data sets to be evaluated. The user
-                        MUST provide English text a machine translation and a human translation as well as a name for
+                        MUST provide a machine translation and a human translation as well as a name for
                         the sentence set. This name will be given to evaluators to identify the data set they should
                         analyse. Each individual sentence must be on a new line. The assumption is made that each block
                         of text will have the same number of sentences and that the sentences in each block match. E.g.
                         Sentence 1 in the Human Translated Text input and sentence 1 in the machine translated text
-                        input will both be translations of sentence 1 of the English Text input.
+                        input will both be translations of sentence 1 of the Source Text input.
                     </p>
                     <form action="/dataset"
                           method="POST">
                         <div class="form-row">
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
 
                                 <label for="setName">Name of Sentence Set</label>
                                 <input class="form-control"
@@ -42,10 +42,21 @@
                                        id="setName"
                                        required></input>
                             </div>
-                            <div class="form-group col-md-6">
-                                <label for="language">Language:</label>
+                            <div class="form-group col-md-4">
+                                <label for="sourceLanguage">Source Language:</label>
                                 <select class="form-control"
-                                        name="language"
+                                        name="sourceLanguage"
+                                        required>
+                                    <option></option>
+                                    {{#each languageOptions}}
+                                    <option value={{this.language}}>{{this.displayName}}</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="targetLanguage">Target Language:</label>
+                                <select class="form-control"
+                                        name="targetLanguage"
                                         required>
                                     <option></option>
                                     {{#each languageOptions}}
@@ -55,16 +66,16 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="englishText">English Text</label>
+                            <label for="sourceText">Source Text</label>
                             <textarea class="form-control"
-                                      name="englishText"
-                                      id="englishText"
+                                      name="sourceText"
+                                      id="sourceText"
                                       rows="10"
                                       required></textarea>
                         </div>
 
                         <div class="form-group">
-                            <label for="englishText">Human Translated Text</label>
+                            <label for="humanTranslatedText">Human Translated Text</label>
                             <textarea class="form-control"
                                       name="humanTranslatedText"
                                       id="humanTranslatedText"
@@ -72,7 +83,7 @@
                                       required></textarea>
                         </div>
                         <div class="form-group">
-                            <label for="englishText">Machine Translated Text</label>
+                            <label for="machineTranslatedText">Machine Translated Text</label>
                             <textarea class="form-control"
                                       name="machineTranslatedText"
                                       id="machineTranslatedText"

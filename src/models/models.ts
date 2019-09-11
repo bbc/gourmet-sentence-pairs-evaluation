@@ -2,7 +2,7 @@ import * as uuidv1 from 'uuid/v1';
 
 class Dataset {
   constructor(
-    public englishSentences: string[],
+    public sourceSentences: string[],
     public humanTranslatedSentences: string[],
     public machineTranslatedSentences: string[],
     public setName: string,

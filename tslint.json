@@ -10,5 +10,8 @@
     "no-console": [true, "log"],
     "no-empty-interface": false
   },
-  "rulesDirectory": []
+  "rulesDirectory": [],
+  "linterOptions": {
+    "exclude": ["src/DynamoDB/dynamoDBApi.ts"]
+  }
 }

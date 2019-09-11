@@ -7,28 +7,27 @@ import { Some, None, Option } from './models/generics';
  */
 const cleanData = (dataset: DatasetBody): Option<Dataset> => {
   const regex = /[\n\r]+/;
-  const englishSentences = dataset.englishText
-    .split(regex)
-    .filter(s => s !== '');
+  const sourceSentences = dataset.sourceText.split(regex).filter(s => s !== '');
   const humanTranslatedSentences = dataset.humanTranslatedText
     .split(regex)
     .filter(s => s !== '');
   const machineTranslatedSentences = dataset.machineTranslatedText
     .split(regex)
     .filter(s => s !== '');
-  const targetLanguage: Language = (Language as any)[dataset.language];
+  const sourceLanguage: Language = (Language as any)[dataset.sourceLanguage];
+  const targetLanguage: Language = (Language as any)[dataset.targetLanguage];
   if (
-    englishSentences.length === machineTranslatedSentences.length &&
-    englishSentences.length === humanTranslatedSentences.length &&
+    sourceSentences.length === machineTranslatedSentences.length &&
+    sourceSentences.length === humanTranslatedSentences.length &&
     targetLanguage !== undefined
   ) {
     return new Some(
       new Dataset(
-        englishSentences,
+        sourceSentences,
         humanTranslatedSentences,
         machineTranslatedSentences,
         dataset.setName,
-        Language.ENGLISH,
+        sourceLanguage,
         targetLanguage
       )
     );
@@ -45,11 +44,11 @@ const cleanData = (dataset: DatasetBody): Option<Dataset> => {
  * using the  'cleanData' function
  */
 const generateSentencePairs = (dataset: Dataset): SentencePair[] => {
-  const englishSentences = dataset.englishSentences;
+  const sourceSentences = dataset.sourceSentences;
   const humanTranslatedSentences = dataset.humanTranslatedSentences;
   const machineTranslatedSentences = dataset.machineTranslatedSentences;
 
-  const sentencePairs = englishSentences.map((sentence, i) => {
+  const sentencePairs = sourceSentences.map((sentence, i) => {
     return new SentencePair(
       sentence,
       humanTranslatedSentences[i] || 'none',

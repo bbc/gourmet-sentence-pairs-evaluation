@@ -27,8 +27,9 @@ interface DatasetRequest extends Request {
 
 interface DatasetBody {
   setName: string;
-  language: string;
-  englishText: string;
+  sourceLanguage: string;
+  targetLanguage: string;
+  sourceText: string;
   humanTranslatedText: string;
   machineTranslatedText: string;
 }

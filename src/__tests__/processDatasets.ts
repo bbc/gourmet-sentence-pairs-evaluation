@@ -6,11 +6,12 @@ import { Some, None } from '../models/generics';
 describe('cleanData', () => {
   test('should return a Some of type Dataset if dataset body is valid', () => {
     const input: DatasetBody = {
-      englishText: 'Sentence 1.\nSentence 2.',
+      sourceText: 'Sentence 1.\nSentence 2.',
       machineTranslatedText: 'Sentence 1.\nSentence 2.',
       humanTranslatedText: 'Sentence 1.\nSentence 2.',
       setName: '',
-      language: 'BULGARIAN',
+      sourceLanguage: 'ENGLISH',
+      targetLanguage: 'BULGARIAN',
     };
     const expectedDataset: Dataset = new Dataset(
       ['Sentence 1.', 'Sentence 2.'],
@@ -27,10 +28,11 @@ describe('cleanData', () => {
   test('should return a Some of type Dataset when carriage returns are used to split data', () => {
     const input: DatasetBody = {
       setName: 'test',
-      englishText: 'Sentence 1.\r\nSentence 2.\r\n',
+      sourceText: 'Sentence 1.\r\nSentence 2.\r\n',
       humanTranslatedText: 'Sentence 1.\r\nSentence 2.\r\n',
       machineTranslatedText: 'Sentence 1.\r\nSentence 2.\r\n',
-      language: 'BULGARIAN',
+      sourceLanguage: 'ENGLISH',
+      targetLanguage: 'BULGARIAN',
     };
     const expectedOutput = new Some(
       new Dataset(
@@ -47,11 +49,12 @@ describe('cleanData', () => {
 
   test('should return a None if machine translated text does not have enough sentences', () => {
     const input: DatasetBody = {
-      englishText: 'Sentence 1.\nSentence 2.',
+      sourceText: 'Sentence 1.\nSentence 2.',
       machineTranslatedText: '',
       humanTranslatedText: 'Sentence 1.\nSentence 2.',
       setName: '',
-      language: 'BULGARIAN',
+      sourceLanguage: 'ENGLISH',
+      targetLanguage: 'BULGARIAN',
     };
     const expectedOutput = new None();
     expect(cleanData(input)).toEqual(expectedOutput);
@@ -59,11 +62,12 @@ describe('cleanData', () => {
 
   test('should return a None if machine translated text has too many sentences', () => {
     const input: DatasetBody = {
-      englishText: 'Sentence 1.\nSentence 2.',
+      sourceText: 'Sentence 1.\nSentence 2.',
       machineTranslatedText: 'Sentence 1.\nSentence 2.\nSentence 3.',
       humanTranslatedText: 'Sentence 1.\nSentence 2.',
       setName: '',
-      language: 'BULGARIAN',
+      sourceLanguage: 'ENGLISH',
+      targetLanguage: 'BULGARIAN',
     };
     const expectedOutput = new None();
     expect(cleanData(input)).toEqual(expectedOutput);
@@ -71,11 +75,12 @@ describe('cleanData', () => {
 
   test('should return a None if human translated text does not have enough sentences', () => {
     const input: DatasetBody = {
-      englishText: 'Sentence 1.\nSentence 2.',
+      sourceText: 'Sentence 1.\nSentence 2.',
       machineTranslatedText: 'Sentence 1.\nSentence 2.',
       humanTranslatedText: '',
       setName: '',
-      language: 'BULGARIAN',
+      sourceLanguage: 'ENGLISH',
+      targetLanguage: 'BULGARIAN',
     };
     const expectedOutput = new None();
     expect(cleanData(input)).toEqual(expectedOutput);
@@ -83,11 +88,12 @@ describe('cleanData', () => {
 
   test('should return a None if human translated text has too many sentences', () => {
     const input: DatasetBody = {
-      englishText: 'Sentence 1.\nSentence 2.',
+      sourceText: 'Sentence 1.\nSentence 2.',
       machineTranslatedText: 'Sentence 1.\nSentence 2.',
       humanTranslatedText: 'Sentence 1.\nSentence 2.\nSentence 3.',
       setName: '',
-      language: 'BULGARIAN',
+      sourceLanguage: 'ENGLISH',
+      targetLanguage: 'BULGARIAN',
     };
     const expectedOutput = new None();
     expect(cleanData(input)).toEqual(expectedOutput);

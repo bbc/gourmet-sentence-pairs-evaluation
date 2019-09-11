@@ -36,12 +36,16 @@ app.use(express.static('public'));
 app.set('view engine', 'hbs');
 
 app.get('/', (req: Request, res: Response) => {
+  res.render('index');
+});
+
+app.get('/start', (req: Request, res: Response) => {
   getSentenceSets().then(sentenceSets => {
-    res.render('index', { sentenceSets, datasetSubmissionUrl: '/dataset' });
+    res.render('start', { sentenceSets, datasetSubmissionUrl: '/dataset' });
   });
 });
 
-app.post('/start', (req: StartRequest, res: Response) => {
+app.post('/beginEvaluation', (req: StartRequest, res: Response) => {
   const setId = req.body.setId;
   const evaluatorId = req.body.evaluatorId;
   getSentenceSet(setId)

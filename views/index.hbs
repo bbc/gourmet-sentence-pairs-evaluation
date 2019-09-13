@@ -20,31 +20,45 @@
 
     <body>
         <main class="container margin-bottom-7percent">
+            <div class="row">
+                <div class="col-sm-2">
+                    <img class="margin-top-10percent width-10percent"
+                         src="./media/horizontal_light.png" />
+                </div>
+            </div>
             <div class="row align-items-center">
                 <div class="col margin-top-5percent">
-                    <h1 class="text-center text-primary">Sentence Pair Evaluation</h1>
-                    <h3 class="text-center text-secondary margin-top-5percent">The purpose of the evaluation is to
-                        assess how well machine translation performs. You will be presented with a series of pairs of
-                        sentences. Please use the slider to indicate how closely the meaning of the first sentence
-                        matches the meaning of the second. If you are happy to take part in the evaluation click 'OK' to
-                        begin.
-                    </h3>
+                    <h1 class="text-center text-primary-mid-green">Direct Assessment: Sentence evaluation</h1>
+                    <div class="row justify-content-center">
+                        <div class="col-sm-8 margin-top-5percent h4 text-primary-dark-grey">
+                            <p>Thank you for agreeing to act as a direct assessor for the Gourmet neural language
+                                project.</p>
+                            <p>You will be evaluating test sets consisting of 55 pairs of sentences. Each pair is made
+                                up of a model sentence and an alternative sentence.</p>
+                            <p>For each pair you will be asked to rate how strongly you agree or disagree with the
+                                statement ‘the alternative sentence fully and accurately expresses the meaning of the
+                                model sentence’</p>
+                            <p>If you are happy to proceed please click ‘OK’.</p>
+                        </div>
+                    </div>
+
                     <form class="margin-top-5percent"
                           action="/start"
                           method="GET">
                         <div class="row justify-content-center form-group">
                             <div class="col-md-2">
                                 <button type="submit"
-                                        class="btn btn-primary btn-block">Ok</button>
+                                        class="btn btn-block button-primary">Ok</button>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
         </main>
-        <footer class="index-footer">
+        <footer class="index-footer bg-secondary-light-grey">
             <div class="container">
-                <span class="text-muted">Evaluation Coordinator? Submit data sets <a
+                <span class="text-primary-dark-grey">Evaluation Coordinator? Submit data sets <a
+                       class="text-secondary-dark-purple"
                        href="{{datasetSubmissionUrl}}">here</a></span>
             </div>
         </footer>

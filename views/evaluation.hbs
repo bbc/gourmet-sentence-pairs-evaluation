@@ -18,13 +18,22 @@
               href="main.css" />
     </head>
 
-    <body class="bg-light">
+    <body>
         <div class="container">
+            <div class="row">
+                <div class="col-sm-2">
+                    <img class="margin-top-10percent width-10percent"
+                         src="./media/horizontal_light.png" />
+                </div>
+            </div>
             <div class="row align-items-center height-70percent">
                 <div class="col">
-                    <h4 class="text-center">The black text adequately expresses the meaning of the grey text</h4>
-                    <p class="text-secondary">{{sentence1}}</p>
-                    <p>{{sentence2}}</p>
+                    <h4 class="text-center">The alternative sentence fully and accurately expresses the meaning of the
+                        model sentence</h4>
+                    <div class="margin-top-5percent">
+                        <p>{{sentence1}}</p>
+                        <p class="text-secondary">{{sentence2}}</p>
+                    </div>
                     <div class="row margin-top-10percent">
                         <div class="col">
                             <form action="/evaluation"
@@ -36,7 +45,6 @@
                                         <label for=""
                                                class="float-right">Perfect Match</label>
                                         <input type="range"
-                                               class="custom-range"
                                                name="score">
                                     </div>
                                     <input type="hidden"
@@ -55,7 +63,7 @@
                                 <div class="row justify-content-center form-group">
                                     <div class="col-md-2">
                                         <button type="submit"
-                                                class="btn btn-primary btn-block">Submit</button>
+                                                class="btn button-primary btn-block">Submit</button>
                                     </div>
                                 </div>
                             </form>

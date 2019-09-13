@@ -20,13 +20,33 @@
 
     <body>
         <div class="container">
+            <div class="row">
+                <div class="col-sm-2">
+                    <img class="margin-top-10percent width-10percent"
+                         src="./media/horizontal_light.png" />
+                </div>
+            </div>
             <div class="row align-items-center">
                 <div class="col margin-top-5percent">
-                    <h1 class="text-center text-primary">Sentence Pair Evaluation</h1>
-                    <h3 class="text-center text-secondary margin-top-5percent">
+                    <h1 class="text-center text-primary-mid-green">Sentence Pair Evaluation</h1>
+                    <div class="row justify-content-center">
+                        <div class="col-sm-10 margin-top-5percent h4 text-primary-dark-grey">
+                            <p>The evaluation is not timed and there is no time limit. However tests sets should be
+                                completed in an unbroken single sitting.</p>
+                            <p>Please start the test set when you will be able to give it your full attention, without
+                                distraction, to completion.</p>
+                            <p>If you have been asked to complete multiple test sets these don’t need to be done in a
+                                continuous sitting.</p>
+                            <p>If you are ready to complete an evaluation now enter your ID and select the test set you
+                                have been asked to do. Then you’re ready to start.</p>
+                            <p>Thank you again for your time. Your language and linguistic skills are crucial to the
+                                success of this evaluation.</p>
+                        </div>
+                    </div>
+                    {{!-- <h3 class="text-center text-primary-dark-grey margin-top-5percent">
                         Please enter your evaluator ID and select the sentence set you have been asked to evaluate
-                    </h3>
-                    <form class="margin-top-5percent"
+                    </h3> --}}
+                    <form class="margin-top-5percent text-primary-dark-grey"
                           action="/beginEvaluation"
                           method="POST">
                         <div class="row justify-content-center form-group">
@@ -55,7 +75,8 @@
                         <div class="row justify-content-center form-group">
                             <div class="col-md-2">
                                 <button type="submit"
-                                        class="btn btn-primary btn-block">Start Evaluation</button>
+                                        class="btn button-primary btn-block">Start
+                                    Evaluation</button>
                             </div>
                         </div>
                     </form>

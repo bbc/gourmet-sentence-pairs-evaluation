@@ -54,7 +54,7 @@ app.post('/beginEvaluation', (req: StartRequest, res: Response) => {
         .then(x => {
           res.redirect(
             `/evaluation?idList=${JSON.stringify(sentenceSet.sentenceIds) ||
-              []}&setId=${setId}&numOfPracticeSentences=5`
+              []}&setId=${setId}&numOfPracticeSentences=5&evaluatorId=${evaluatorId}`
           );
         })
         .catch(error => {
@@ -97,22 +97,26 @@ app.post('/evaluation', (req: SentencePairEvaluationRequest, res: Response) => {
   const id: string = body.id;
   const setId: string = body.setId;
   const score: number = body.score;
+  const evaluatorId: string = body.evaluatorId;
   const numOfPracticeSentences = body.numOfPracticeSentences || 0;
 
   if (numOfPracticeSentences > 0) {
     res.redirect(
       `/evaluation?idList=${
         body.idList
-      }&setId=${setId}&numOfPracticeSentences=${numOfPracticeSentences - 1}`
+      }&setId=${setId}&evaluatorId=${evaluatorId}&numOfPracticeSentences=${numOfPracticeSentences -
+        1}`
     );
   } else {
-    putSentencePairScore(id, score)
+    putSentencePairScore(id, score, evaluatorId)
       .then(x =>
-        res.redirect(`/evaluation?idList=${body.idList}&setId=${setId}`)
+        res.redirect(
+          `/evaluation?idList=${body.idList}&setId=${setId}&evaluatorId=${evaluatorId}`
+        )
       )
       .catch(error => {
         console.error(
-          `Unable to put score for id: ${id} and score: ${score}. Error${error}`
+          `Unable to put score for id: ${id}, score: ${score} and evaluatorId: ${evaluatorId}. Error${error}`
         );
         res.redirect('/error?errorCode=postEvaluation');
       });
@@ -122,6 +126,7 @@ app.post('/evaluation', (req: SentencePairEvaluationRequest, res: Response) => {
 app.get('/evaluation', (req: Request, res: Response) => {
   const idList = JSON.parse(req.query.idList || '[]');
   const setId = req.query.setId;
+  const evaluatorId = req.query.evaluatorId;
   const numOfPracticeSentences = req.query.numOfPracticeSentences || 0;
   if (idList.length > 0) {
     const sentencePairId = idList[0];
@@ -133,6 +138,7 @@ app.get('/evaluation', (req: Request, res: Response) => {
           idList: JSON.stringify(idList.slice(1)),
           setId,
           sentencePairId,
+          evaluatorId,
           numOfPracticeSentences,
         });
       })
@@ -143,14 +149,15 @@ app.get('/evaluation', (req: Request, res: Response) => {
         res.redirect('/error?errorCode=getEvaluation');
       });
   } else {
-    res.redirect(`/feedback?setId=${setId}`);
+    res.redirect(`/feedback?setId=${setId}&evaluatorId=${evaluatorId}`);
   }
 });
 
 app.post('/feedback', (req: FeedbackRequest, res: Response) => {
   const feedback: string = req.body.feedback;
   const setId: string = req.body.setId;
-  putSentenceSetFeedback(setId, feedback)
+  const evaluatorId: string = req.body.evaluatorId;
+  putSentenceSetFeedback(setId, feedback, evaluatorId)
     .then(result => res.redirect('/end'))
     .catch(error => {
       console.error(
@@ -162,7 +169,8 @@ app.post('/feedback', (req: FeedbackRequest, res: Response) => {
 
 app.get('/feedback', (req: Request, res: Response) => {
   const setId = req.query.setId;
-  res.render('feedback', { setId });
+  const evaluatorId = req.query.evaluatorId;
+  res.render('feedback', { setId, evaluatorId });
 });
 
 app.get('/end', (req: Request, res: Response) => {

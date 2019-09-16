@@ -157,13 +157,18 @@ const putSentencePair = (
     });
 };
 
-const putSentencePairScore = (sentencePairId: string, score: number) => {
+const putSentencePairScore = (
+  sentencePairId: string,
+  score: number,
+  evaluatorId: string
+): Promise<string> => {
   const scoreId = uuidv1();
   const input = {
     Item: {
       scoreId,
       sentencePairId,
       score,
+      evaluatorId,
     },
     TableName: getSentencePairScoresTableName(),
   };
@@ -176,13 +181,18 @@ const putSentencePairScore = (sentencePairId: string, score: number) => {
     });
 };
 
-const putSentenceSetFeedback = (setId: string, feedback: string) => {
+const putSentenceSetFeedback = (
+  setId: string,
+  feedback: string,
+  evaluatorId: string
+) => {
   const feedbackId = uuidv1();
   const input = {
     Item: {
       feedbackId,
       setId,
       feedback,
+      evaluatorId,
     },
     TableName: getSentenceSetFeedbackTableName(),
   };

@@ -5,6 +5,7 @@ interface SentencePairEvaluationRequestBody {
   setId: string;
   idList: string[];
   score: number;
+  evaluatorId: string;
   numOfPracticeSentences: number;
 }
 
@@ -19,6 +20,7 @@ interface FeedbackRequest extends Request {
 interface FeedbackRequestBody {
   setId: string;
   feedback: string;
+  evaluatorId: string;
 }
 
 interface DatasetRequest extends Request {

@@ -30,7 +30,7 @@ const getSentenceSets = (): Promise<SentenceSet[]> => {
     .then(output => {
       const items = output.Items || [];
       return items.map(sentenceSet => {
-        return (sentenceSet as unknown) as SentenceSet;
+        return convertAttributeMapToSentenceSet(sentenceSet);
       });
     });
 };
@@ -80,7 +80,7 @@ const putSentenceSetAndPairs = (
       setName,
       sourceLanguage,
       targetLanguage,
-      sentencePairsIds,
+      new Set(sentencePairsIds),
       setId
     );
     return putSentenceSet(sentenceSet);
@@ -218,9 +218,9 @@ const convertAttributeMapToSentenceSet = (
     item['name'],
     item['sourceLanguage'],
     item['targetLanguage'],
-    sentenceIds,
+    new Set(sentenceIds),
     item['setId'],
-    evaluatorIds
+    new Set(evaluatorIds)
   );
 };
 
@@ -228,9 +228,9 @@ const convertAttributeMapToSentenceSet = (
  * Some fairly horrible logic to ensure that an empty or undefined set is not put into dynamo
  */
 const constructSentenceSetItem = (sentenceSet: SentenceSet) => {
-  const sentenceIds: string[] = sentenceSet.sentenceIds || [];
-  const evaluatorIds: string[] = sentenceSet.evaluatorIds || [];
-  if (sentenceIds.length < 1 && evaluatorIds.length < 1) {
+  const sentenceIds: Set<string> = sentenceSet.sentenceIds || new Set();
+  const evaluatorIds: Set<string> = sentenceSet.evaluatorIds || new Set();
+  if (sentenceIds.size < 1 && evaluatorIds.size < 1) {
     return {
       setId: sentenceSet.setId,
       name: sentenceSet.name,
@@ -238,7 +238,7 @@ const constructSentenceSetItem = (sentenceSet: SentenceSet) => {
       targetLanguage: sentenceSet.targetLanguage.toUpperCase(),
     };
   }
-  if (sentenceIds.length < 1) {
+  if (sentenceIds.size < 1) {
     return {
       setId: sentenceSet.setId,
       name: sentenceSet.name,
@@ -247,7 +247,7 @@ const constructSentenceSetItem = (sentenceSet: SentenceSet) => {
       evaluatorIds: client.createSet(Array.from(evaluatorIds)),
     };
   }
-  if (evaluatorIds.length < 1) {
+  if (evaluatorIds.size < 1) {
     return {
       setId: sentenceSet.setId,
       sentenceIds: client.createSet(Array.from(sentenceIds)),

@@ -51,10 +51,14 @@ app.post('/beginEvaluation', (req: StartRequest, res: Response) => {
   getSentenceSet(setId)
     .then(sentenceSet => {
       addEvaluatorIdToSentenceSet(evaluatorId, sentenceSet)
-        .then(x => {
+        .then(result => {
+          const sentenceIdsList = Array.from(
+            sentenceSet.sentenceIds || new Set()
+          );
           res.redirect(
-            `/evaluation?idList=${JSON.stringify(sentenceSet.sentenceIds) ||
-              []}&setId=${setId}&numOfPracticeSentences=5&evaluatorId=${evaluatorId}`
+            `/evaluation?idList=${JSON.stringify(
+              sentenceIdsList
+            )}&setId=${setId}&numOfPracticeSentences=5&evaluatorId=${evaluatorId}`
           );
         })
         .catch(error => {
@@ -76,10 +80,10 @@ const addEvaluatorIdToSentenceSet = (
   evaluatorId: string,
   sentenceSet: SentenceSet
 ): Promise<string> => {
-  const evaluatorIds: string[] =
+  const evaluatorIds: Set<string> =
     sentenceSet.evaluatorIds === undefined
-      ? (sentenceSet.evaluatorIds = [evaluatorId])
-      : sentenceSet.evaluatorIds.concat(evaluatorId);
+      ? (sentenceSet.evaluatorIds = new Set([evaluatorId]))
+      : sentenceSet.evaluatorIds.add(evaluatorId);
 
   const updatedSentenceSet = new SentenceSet(
     sentenceSet.name,
@@ -109,7 +113,7 @@ app.post('/evaluation', (req: SentencePairEvaluationRequest, res: Response) => {
     );
   } else {
     putSentencePairScore(id, score, evaluatorId)
-      .then(x =>
+      .then(result =>
         res.redirect(
           `/evaluation?idList=${body.idList}&setId=${setId}&evaluatorId=${evaluatorId}`
         )
@@ -183,7 +187,7 @@ app.get('/end', (req: Request, res: Response) => {
 app.post('/dataset', (req: DatasetRequest, res: Response) => {
   const dataset: DatasetBody = req.body;
   submitDataset(dataset)
-    .then(x => {
+    .then(result => {
       res.redirect('/success');
     })
     .catch(error => {

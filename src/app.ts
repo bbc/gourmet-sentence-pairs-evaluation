@@ -59,7 +59,7 @@ app.post('/beginEvaluation', (req: StartRequest, res: Response) => {
         })
         .catch(error => {
           console.error(
-            `Unable to add evaluatorId:${evaluatorId} to sentence set:${setId}`
+            `Unable to add evaluatorId:${evaluatorId} to sentence set:${setId}. Error: ${error}`
           );
           res.redirect('/error?errorCode=postStartFailEvaluatorId');
         });

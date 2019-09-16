@@ -18,9 +18,9 @@ class SentenceSet {
     public name: string,
     public sourceLanguage: Language,
     public targetLanguage: Language,
-    public sentenceIds?: string[],
+    public sentenceIds?: Set<string>,
     setId?: string,
-    public evaluatorIds?: string[]
+    public evaluatorIds?: Set<string>
   ) {
     this.setId = setId === undefined ? uuidv1() : setId;
   }

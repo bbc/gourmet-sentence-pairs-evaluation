@@ -181,13 +181,18 @@ const putSentencePairScore = (
     });
 };
 
-const putSentenceSetFeedback = (setId: string, feedback: string) => {
+const putSentenceSetFeedback = (
+  setId: string,
+  feedback: string,
+  evaluatorId: string
+) => {
   const feedbackId = uuidv1();
   const input = {
     Item: {
       feedbackId,
       setId,
       feedback,
+      evaluatorId,
     },
     TableName: getSentenceSetFeedbackTableName(),
   };

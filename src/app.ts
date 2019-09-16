@@ -149,14 +149,15 @@ app.get('/evaluation', (req: Request, res: Response) => {
         res.redirect('/error?errorCode=getEvaluation');
       });
   } else {
-    res.redirect(`/feedback?setId=${setId}`);
+    res.redirect(`/feedback?setId=${setId}&evaluatorId=${evaluatorId}`);
   }
 });
 
 app.post('/feedback', (req: FeedbackRequest, res: Response) => {
   const feedback: string = req.body.feedback;
   const setId: string = req.body.setId;
-  putSentenceSetFeedback(setId, feedback)
+  const evaluatorId: string = req.body.evaluatorId;
+  putSentenceSetFeedback(setId, feedback, evaluatorId)
     .then(result => res.redirect('/end'))
     .catch(error => {
       console.error(
@@ -168,7 +169,8 @@ app.post('/feedback', (req: FeedbackRequest, res: Response) => {
 
 app.get('/feedback', (req: Request, res: Response) => {
   const setId = req.query.setId;
-  res.render('feedback', { setId });
+  const evaluatorId = req.query.evaluatorId;
+  res.render('feedback', { setId, evaluatorId });
 });
 
 app.get('/end', (req: Request, res: Response) => {

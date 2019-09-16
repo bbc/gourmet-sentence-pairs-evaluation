@@ -157,13 +157,18 @@ const putSentencePair = (
     });
 };
 
-const putSentencePairScore = (sentencePairId: string, score: number) => {
+const putSentencePairScore = (
+  sentencePairId: string,
+  score: number,
+  evaluatorId: string
+): Promise<string> => {
   const scoreId = uuidv1();
   const input = {
     Item: {
       scoreId,
       sentencePairId,
       score,
+      evaluatorId,
     },
     TableName: getSentencePairScoresTableName(),
   };

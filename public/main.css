@@ -56,6 +56,10 @@
   background-color: #fff;
 }
 
+.bg-grey {
+  background-color: #f2f2f2;
+}
+
 .button-primary {
   background-color: #4e2671;
   color: #e2e2e2;
@@ -96,7 +100,7 @@ html {
   margin-top: 2vh;
   padding: 5vh;
   background-color: #fff;
-  border: 0.25vh solid #3c3c3b;
+  border: 0.25vh solid #e2e2e2;
 }
 
 .index-footer {
@@ -107,22 +111,8 @@ html {
   line-height: 7vh; /* Vertically center the text there */
 }
 
-/* All of this is to style the slider */
-input[type='range'] {
-  height: 36px;
-  -webkit-appearance: none;
-  margin: 10px 0;
-  width: 100%;
-}
-input[type='range']:focus {
-  outline: none;
-}
+/* All of this is to add the 'ticks' to the range input */
 input[type='range']::-webkit-slider-runnable-track {
-  width: 100%;
-  height: 10px;
-  cursor: pointer;
-  animate: 0.2s;
-  box-shadow: 0px 0px 1px #000000;
   background: repeating-linear-gradient(
     to right,
     #e2e2e2,
@@ -132,20 +122,8 @@ input[type='range']::-webkit-slider-runnable-track {
     #e2e2e2 25%,
     #e2e2e2 26%
   );
-  border-radius: 5px;
-  border: 0px solid #000000;
 }
-input[type='range']::-webkit-slider-thumb {
-  box-shadow: 0px 0px 0px #000000;
-  border: 0px solid #000000;
-  height: 30px;
-  width: 15px;
-  border-radius: 5px;
-  background: #4e2671;
-  cursor: pointer;
-  -webkit-appearance: none;
-  margin-top: -10px;
-}
+
 input[type='range']:focus::-webkit-slider-runnable-track {
   background: repeating-linear-gradient(
     to right,
@@ -158,11 +136,6 @@ input[type='range']:focus::-webkit-slider-runnable-track {
   );
 }
 input[type='range']::-moz-range-track {
-  width: 100%;
-  height: 10px;
-  cursor: pointer;
-  animate: 0.2s;
-  box-shadow: 0px 0px 1px #000000;
   background: repeating-linear-gradient(
     to right,
     #e2e2e2,
@@ -172,53 +145,4 @@ input[type='range']::-moz-range-track {
     #e2e2e2 25%,
     #e2e2e2 26%
   );
-  border-radius: 5px;
-  border: 0px solid #000000;
 }
-input[type='range']::-moz-range-thumb {
-  box-shadow: 0px 0px 0px #000000;
-  border: 0px solid #000000;
-  height: 30px;
-  width: 15px;
-  border-radius: 5px;
-  background: #4e2671;
-  cursor: pointer;
-}
-input[type='range']::-ms-track {
-  width: 100%;
-  height: 10px;
-  cursor: pointer;
-  animate: 0.2s;
-  background: transparent;
-  border-color: transparent;
-  color: transparent;
-}
-input[type='range']::-ms-fill-lower {
-  background: #e2e2e2;
-  border: 0px solid #000000;
-  border-radius: 10px;
-  box-shadow: 0px 0px 1px #000000;
-}
-input[type='range']::-ms-fill-upper {
-  background: #e2e2e2;
-  border: 0px solid #000000;
-  border-radius: 10px;
-  box-shadow: 0px 0px 1px #000000;
-}
-input[type='range']::-ms-thumb {
-  margin-top: 1px;
-  box-shadow: 0px 0px 0px #000000;
-  border: 0px solid #000000;
-  height: 30px;
-  width: 15px;
-  border-radius: 5px;
-  background: #4e2671;
-  cursor: pointer;
-}
-input[type='range']:focus::-ms-fill-lower {
-  background: #e2e2e2;
-}
-input[type='range']:focus::-ms-fill-upper {
-  background: #e2e2e2;
-}
-/* End of slider style */

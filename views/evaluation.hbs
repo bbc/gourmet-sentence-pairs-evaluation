@@ -18,7 +18,7 @@
               href="main.css" />
     </head>
 
-    <body class="bg-secondary-light-grey">
+    <body class="bg-grey">
         <div>
             <img class="gourmet_logo"
                  src="./media/horizontal_light.png" />
@@ -27,14 +27,14 @@
             <div class="row justify-content-center">
                 <div class="col-sm-10">
                     <div class="row justify-content-center">
-                        <div class="col-sm-10">
+                        <div class="col">
                             <h3 class="text-center">Please read the two sentences in the box below and indicate with the
                                 slider
                                 to what extent you agree or disagree with the following statement:</h3>
                         </div>
                     </div>
                     <div class="row justify-content-center evaluation__subtitle text-primary-dark-grey">
-                        <div class="col-sm-8">
+                        <div class="col-sm-10">
                             <p class="text-center">The sentence in black fully and accurately expresses the meaning of
                                 the
                                 model sentence in purple, and is grammatically and idiomatically correct.</p>
@@ -56,12 +56,12 @@
                                 <p>{{sentence2}}</p>
                             </div>
                         </div>
-                        <div class="row margin-top-10percent">
+                        <div class="row margin-top-5percent">
                             <div class="col">
                                 <form action="/evaluation"
                                       method="POST">
                                     <div class="row justify-content-center">
-                                        <div class="col-sm-9">
+                                        <div class="col-sm-11">
                                             <label for="score"
                                                    class="float-left">strongly disagree</label>
                                             <label for=""
@@ -69,8 +69,9 @@
                                         </div>
                                     </div>
                                     <div class="row justify-content-center form-group">
-                                        <div class="col-sm-8">
+                                        <div class="col-sm-9">
                                             <input type="range"
+                                                   class="custom-range"
                                                    name="score">
                                         </div>
                                         <input type="hidden"

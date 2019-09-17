@@ -24,6 +24,10 @@
   color: #992699;
 }
 
+.text-purple {
+  color: #4e1f78;
+}
+
 .bg-primary-mid-green {
   background-color: #95c11f;
 }
@@ -48,6 +52,10 @@
   background-color: #992699;
 }
 
+.bg-white {
+  background-color: #fff;
+}
+
 .button-primary {
   background-color: #4e2671;
   color: #e2e2e2;
@@ -70,16 +78,25 @@ html {
   margin-top: 5vh;
 }
 
-.margin-top-10percent {
-  margin-top: 10vh;
-}
-
 .margin-bottom-7percent {
   margin-bottom: 7vh;
 }
 
-.width-10percent {
-  width: 10vw;
+.gourmet_logo {
+  margin: 5vh;
+  height: 5vh;
+}
+
+.evaluation__subtitle {
+  margin-top: 2vh;
+  font-size: larger;
+}
+
+.evaluation__form {
+  margin-top: 2vh;
+  padding: 5vh;
+  background-color: #fff;
+  border: 0.25vh solid #3c3c3b;
 }
 
 .index-footer {
@@ -90,6 +107,7 @@ html {
   line-height: 7vh; /* Vertically center the text there */
 }
 
+/* All of this is to style the slider */
 input[type='range'] {
   height: 36px;
   -webkit-appearance: none;
@@ -105,7 +123,15 @@ input[type='range']::-webkit-slider-runnable-track {
   cursor: pointer;
   animate: 0.2s;
   box-shadow: 0px 0px 1px #000000;
-  background: #e2e2e2;
+  background: repeating-linear-gradient(
+    to right,
+    #e2e2e2,
+    #e2e2e2 24%,
+    #000 24%,
+    #000 25%,
+    #e2e2e2 25%,
+    #e2e2e2 26%
+  );
   border-radius: 5px;
   border: 0px solid #000000;
 }
@@ -121,7 +147,15 @@ input[type='range']::-webkit-slider-thumb {
   margin-top: -10px;
 }
 input[type='range']:focus::-webkit-slider-runnable-track {
-  background: #e2e2e2;
+  background: repeating-linear-gradient(
+    to right,
+    #e2e2e2,
+    #e2e2e2 24%,
+    #000 24%,
+    #000 25%,
+    #e2e2e2 25%,
+    #e2e2e2 26%
+  );
 }
 input[type='range']::-moz-range-track {
   width: 100%;
@@ -129,7 +163,15 @@ input[type='range']::-moz-range-track {
   cursor: pointer;
   animate: 0.2s;
   box-shadow: 0px 0px 1px #000000;
-  background: #e2e2e2;
+  background: repeating-linear-gradient(
+    to right,
+    #e2e2e2,
+    #e2e2e2 24%,
+    #000 24%,
+    #000 25%,
+    #e2e2e2 25%,
+    #e2e2e2 26%
+  );
   border-radius: 5px;
   border: 0px solid #000000;
 }
@@ -179,3 +221,4 @@ input[type='range']:focus::-ms-fill-lower {
 input[type='range']:focus::-ms-fill-upper {
   background: #e2e2e2;
 }
+/* End of slider style */

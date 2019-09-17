@@ -7,6 +7,7 @@ interface SentencePairEvaluationRequestBody {
   score: number;
   evaluatorId: string;
   numOfPracticeSentences: number;
+  setSize: number;
 }
 
 interface SentencePairEvaluationRequest extends Request {

@@ -58,7 +58,9 @@ app.post('/beginEvaluation', (req: StartRequest, res: Response) => {
           res.redirect(
             `/evaluation?idList=${JSON.stringify(
               sentenceIdsList
-            )}&setId=${setId}&numOfPracticeSentences=5&evaluatorId=${evaluatorId}`
+            )}&setId=${setId}&numOfPracticeSentences=5&evaluatorId=${evaluatorId}&setSize=${
+              sentenceIdsList.length
+            }`
           );
         })
         .catch(error => {
@@ -103,19 +105,20 @@ app.post('/evaluation', (req: SentencePairEvaluationRequest, res: Response) => {
   const score: number = body.score;
   const evaluatorId: string = body.evaluatorId;
   const numOfPracticeSentences = body.numOfPracticeSentences || 0;
+  const setSize = body.setSize || 0;
 
   if (numOfPracticeSentences > 0) {
     res.redirect(
       `/evaluation?idList=${
         body.idList
       }&setId=${setId}&evaluatorId=${evaluatorId}&numOfPracticeSentences=${numOfPracticeSentences -
-        1}`
+        1}&setSize=${setSize}`
     );
   } else {
     putSentencePairScore(id, score, evaluatorId)
       .then(result =>
         res.redirect(
-          `/evaluation?idList=${body.idList}&setId=${setId}&evaluatorId=${evaluatorId}`
+          `/evaluation?idList=${body.idList}&setId=${setId}&evaluatorId=${evaluatorId}&setSize=${setSize}`
         )
       )
       .catch(error => {
@@ -132,18 +135,22 @@ app.get('/evaluation', (req: Request, res: Response) => {
   const setId = req.query.setId;
   const evaluatorId = req.query.evaluatorId;
   const numOfPracticeSentences = req.query.numOfPracticeSentences || 0;
+  const setSize = req.query.setSize || 0;
   if (idList.length > 0) {
     const sentencePairId = idList[0];
     getSentencePair(sentencePairId)
       .then(sentencePair => {
+        const remainingIds = idList.slice(1);
         res.render('evaluation', {
           sentence1: sentencePair.humanTranslation,
           sentence2: sentencePair.machineTranslation,
-          idList: JSON.stringify(idList.slice(1)),
+          idList: JSON.stringify(remainingIds),
           setId,
           sentencePairId,
           evaluatorId,
           numOfPracticeSentences,
+          setSize,
+          remainingSentences: setSize - remainingIds.length,
         });
       })
       .catch(error => {

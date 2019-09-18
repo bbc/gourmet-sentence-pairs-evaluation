@@ -111,8 +111,20 @@ html {
   line-height: 7vh; /* Vertically center the text there */
 }
 
-/* All of this is to add the 'ticks' to the range input */
+/* All of this is to style to the range input */
+input[type='range'] {
+  -webkit-appearance: none;
+  width: 100%;
+  margin: 4.5px 0;
+}
+input[type='range']:focus {
+  outline: none;
+}
 input[type='range']::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 11px;
+  cursor: pointer;
+  box-shadow: 0px 0px 1px #000000, 0px 0px 0px #0d0d0d;
   background: repeating-linear-gradient(
     to right,
     #e2e2e2,
@@ -122,8 +134,20 @@ input[type='range']::-webkit-slider-runnable-track {
     #e2e2e2 25%,
     #e2e2e2 26%
   );
+  border-radius: 25px;
+  border: 0px solid rgba(1, 1, 1, 0.99);
 }
-
+input[type='range']::-webkit-slider-thumb {
+  box-shadow: 0px 0px 1px #000031, 0px 0px 0px #00004b;
+  border: 1.8px solid rgba(0, 0, 0, 0);
+  height: 20px;
+  width: 20px;
+  border-radius: 15px;
+  background: #95c11f;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -4.5px;
+}
 input[type='range']:focus::-webkit-slider-runnable-track {
   background: repeating-linear-gradient(
     to right,
@@ -136,6 +160,10 @@ input[type='range']:focus::-webkit-slider-runnable-track {
   );
 }
 input[type='range']::-moz-range-track {
+  width: 100%;
+  height: 11px;
+  cursor: pointer;
+  box-shadow: 0px 0px 1px #000000, 0px 0px 0px #0d0d0d;
   background: repeating-linear-gradient(
     to right,
     #e2e2e2,
@@ -145,4 +173,53 @@ input[type='range']::-moz-range-track {
     #e2e2e2 25%,
     #e2e2e2 26%
   );
+  border-radius: 25px;
+  border: 0px solid rgba(1, 1, 1, 0.99);
 }
+input[type='range']::-moz-range-thumb {
+  box-shadow: 0px 0px 1px #000031, 0px 0px 0px #00004b;
+  border: 1.8px solid rgba(0, 0, 0, 0);
+  height: 20px;
+  width: 20px;
+  border-radius: 15px;
+  background: #95c11f;
+  cursor: pointer;
+}
+input[type='range']::-ms-track {
+  width: 100%;
+  height: 11px;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+input[type='range']::-ms-fill-lower {
+  background: rgba(226, 226, 226, 0.78);
+  border: 0px solid rgba(1, 1, 1, 0.99);
+  border-radius: 50px;
+  box-shadow: 0px 0px 1px #000000, 0px 0px 0px #0d0d0d;
+}
+input[type='range']::-ms-fill-upper {
+  background: rgba(226, 226, 226, 0.78);
+  border: 0px solid rgba(1, 1, 1, 0.99);
+  border-radius: 50px;
+  box-shadow: 0px 0px 1px #000000, 0px 0px 0px #0d0d0d;
+}
+input[type='range']::-ms-thumb {
+  box-shadow: 0px 0px 1px #000031, 0px 0px 0px #00004b;
+  border: 1.8px solid rgba(0, 0, 0, 0);
+  height: 20px;
+  width: 20px;
+  border-radius: 15px;
+  background: #95c11f;
+  cursor: pointer;
+  height: 11px;
+}
+input[type='range']:focus::-ms-fill-lower {
+  background: rgba(226, 226, 226, 0.78);
+}
+input[type='range']:focus::-ms-fill-upper {
+  background: rgba(226, 226, 226, 0.78);
+}
+
+/* End of range styling */

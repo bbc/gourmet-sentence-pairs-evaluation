@@ -1,17 +1,22 @@
 import { Dataset, SentencePair, Language } from './models/models';
 import { putSentenceSetAndPairs } from './DynamoDB/dynamoDBApi';
-import { DatasetBody } from './models/requests';
+import { DatasetBody, DatasetFile } from './models/requests';
 import { Some, None, Option } from './models/generics';
 /**
  * Turns body of request into a Dataset. Rejects body if sentence sets are not all of equal length.
  */
-const cleanData = (dataset: DatasetBody): Option<Dataset> => {
+const cleanData = (
+  dataset: DatasetBody,
+  datasetFile: DatasetFile
+): Option<Dataset> => {
   const regex = /[\n\r]+/;
-  const sourceSentences = dataset.sourceText.split(regex).filter(s => s !== '');
-  const humanTranslatedSentences = dataset.humanTranslatedText
+  const sourceSentences = datasetFile.sourceText
     .split(regex)
     .filter(s => s !== '');
-  const machineTranslatedSentences = dataset.machineTranslatedText
+  const humanTranslatedSentences = datasetFile.humanTranslatedText
+    .split(regex)
+    .filter(s => s !== '');
+  const machineTranslatedSentences = datasetFile.machineTranslatedText
     .split(regex)
     .filter(s => s !== '');
   const sourceLanguage: Language = (Language as any)[dataset.sourceLanguage];
@@ -60,8 +65,11 @@ const generateSentencePairs = (dataset: Dataset): SentencePair[] => {
   return sentencePairs;
 };
 
-const submitDataset = (dataset: DatasetBody): Promise<string> => {
-  const cleanedData = cleanData(dataset);
+const submitDataset = (
+  dataset: DatasetBody,
+  datasetFile: DatasetFile
+): Promise<string> => {
+  const cleanedData = cleanData(dataset, datasetFile);
   if (cleanedData instanceof Some && cleanedData.value instanceof Dataset) {
     const setName = cleanedData.value.setName;
     const sentencePairs = generateSentencePairs(cleanedData.value);

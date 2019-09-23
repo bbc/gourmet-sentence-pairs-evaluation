@@ -43,7 +43,7 @@ for file_set in file_sets:
 
     if(len(original) != len(human_translation) or len(human_translation) != len(machine_translation)):
         sys.exit(
-            f'Files do not have the same number of lines in file set: {i}.')
+            f'Files do not have the same number of lines in file set: {file_set}.')
 
     for i in range(len(original)):
         sentences.append({

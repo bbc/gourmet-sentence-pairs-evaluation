@@ -24,19 +24,32 @@
                  src="./media/horizontal_light.png" />
         </div>
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col text-primary-dark-grey">
+            <div class="row justify-content-center">
+                <div class="col-sm-10 text-primary-dark-grey">
                     <h1 class="text-center text-primary-mid-green">Text for Evaluation</h1>
                     <p class="margin-top-5percent">This page is for submission of data sets to be evaluated. The user
-                        MUST provide a machine translation and a human translation as well as a name for
-                        the sentence set. This name will be given to evaluators to identify the data set they should
-                        analyse. Each individual sentence must be on a new line. The assumption is made that each block
+                        MUST a name for the sentence set as well as the source language and target language. This name
+                        will be given to evaluators to identify the data set they should analyse. The file provided MUST
+                        be a json file containing JSON of the following form:
+                    </p>
+                    <code>
+                        {
+                            "sourceText":"Sentence1.\nSentence2.",
+                            "humanTranslatedText": "HTSentence1.\nHTSentence2.",
+                            "machineTranslatedText": "MTSentence1.\nMTSentence2."
+                        }
+                    </code>
+                    <p class="margin-top-5percent">
+
+                        Each individual sentence must be separated by a new line character. The assumption is made that
+                        each block
                         of text will have the same number of sentences and that the sentences in each block match. E.g.
                         Sentence 1 in the Human Translated Text input and sentence 1 in the machine translated text
                         input will both be translations of sentence 1 of the Source Text input.
                     </p>
                     <form action="/dataset"
-                          method="POST">
+                          method="POST"
+                          enctype="multipart/form-data">
                         <div class="form-row">
                             <div class="form-group col-md-4">
 
@@ -70,29 +83,10 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="sourceText">Source Text</label>
-                            <textarea class="form-control"
-                                      name="sourceText"
-                                      id="sourceText"
-                                      rows="10"
-                                      required></textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="humanTranslatedText">Human Translated Text</label>
-                            <textarea class="form-control"
-                                      name="humanTranslatedText"
-                                      id="humanTranslatedText"
-                                      rows="10"
-                                      required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="machineTranslatedText">Machine Translated Text</label>
-                            <textarea class="form-control"
-                                      name="machineTranslatedText"
-                                      id="machineTranslatedText"
-                                      rows="10"
-                                      required></textarea>
+                            <label for="sentences">Choose file</label>
+                            <input type="file"
+                                   class="form-control-file"
+                                   name="sentences">
                         </div>
                         <div class="form-group">
                             <div class="form-check">

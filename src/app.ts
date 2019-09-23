@@ -13,13 +13,16 @@ import {
   SentencePairEvaluationRequest,
   SentencePairEvaluationRequestBody,
   FeedbackRequest,
-  DatasetRequest,
   DatasetBody,
   StartRequest,
+  DatasetFile,
+  DatasetRequest,
 } from './models/requests';
 import { getErrorText } from './uiText';
 import { submitDataset } from './processDatasets';
 import { Language, SentenceSet } from './models/models';
+import * as multer from 'multer';
+import { readFileSync, unlink } from 'fs';
 
 loadConfig();
 
@@ -34,6 +37,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 // Use handlebars to render templates
 app.set('view engine', 'hbs');
+// Instantiate multer for uploads
+const upload = multer({ dest: 'uploads/' });
 
 app.get('/', (req: Request, res: Response) => {
   res.render('index', { datasetSubmissionUrl: '/dataset' });
@@ -51,7 +56,7 @@ app.post('/beginEvaluation', (req: StartRequest, res: Response) => {
   getSentenceSet(setId)
     .then(sentenceSet => {
       addEvaluatorIdToSentenceSet(evaluatorId, sentenceSet)
-        .then(result => {
+        .then(() => {
           const sentenceIdsList = Array.from(
             sentenceSet.sentenceIds || new Set()
           );
@@ -111,7 +116,7 @@ app.post('/evaluation', (req: SentencePairEvaluationRequest, res: Response) => {
     );
   } else {
     putSentencePairScore(id, score, evaluatorId)
-      .then(result =>
+      .then(() =>
         res.redirect(
           `/evaluation?setId=${setId}&evaluatorId=${evaluatorId}&setSize=${setSize}&sentenceNum=${sentenceNum}`
         )
@@ -174,7 +179,7 @@ app.post('/feedback', (req: FeedbackRequest, res: Response) => {
   const setId: string = req.body.setId;
   const evaluatorId: string = req.body.evaluatorId;
   putSentenceSetFeedback(setId, feedback, evaluatorId)
-    .then(result => res.redirect('/end'))
+    .then(() => res.redirect('/end'))
     .catch(error => {
       console.error(
         `Could not save feedback: ${feedback} for sentence set id: ${setId}. Error:${error}`
@@ -196,19 +201,34 @@ app.get('/end', (req: Request, res: Response) => {
   });
 });
 
-app.post('/dataset', (req: DatasetRequest, res: Response) => {
-  const dataset: DatasetBody = req.body;
-  submitDataset(dataset)
-    .then(result => {
-      res.redirect('/success');
-    })
-    .catch(error => {
-      console.error(
-        `Could not submit dataset:${JSON.stringify(dataset)}. Error: ${error}`
-      );
-      res.redirect('/error?errorCode=postDataset');
-    });
-});
+app.post(
+  '/dataset',
+  upload.single('sentences'),
+  (req: DatasetRequest, res: Response) => {
+    const sentences = readFileSync(req.file.path, 'utf-8');
+    const datasetSentences: DatasetFile = JSON.parse(sentences);
+    const datasetMetadata: DatasetBody = req.body;
+    submitDataset(datasetMetadata, datasetSentences)
+      .then(() => {
+        res.redirect('/success');
+      })
+      .catch(error => {
+        console.error(
+          `Could not submit dataset:${JSON.stringify(
+            datasetMetadata
+          )}. Error: ${error}`
+        );
+        res.redirect('/error?errorCode=postDataset');
+      })
+      .finally(() => {
+        unlink(req.file.path, err => {
+          if (err) {
+            console.error(`Failed to delete file ${req.file.path}`);
+          }
+        });
+      });
+  }
+);
 
 app.get('/dataset', (req: Request, res: Response) => {
   const languages = Object.keys(Language);

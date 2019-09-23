@@ -32,6 +32,9 @@ interface DatasetBody {
   setName: string;
   sourceLanguage: string;
   targetLanguage: string;
+}
+
+interface DatasetFile {
   sourceText: string;
   humanTranslatedText: string;
   machineTranslatedText: string;
@@ -52,5 +55,6 @@ export {
   FeedbackRequest,
   DatasetRequest,
   DatasetBody,
+  DatasetFile,
   StartRequest,
 };

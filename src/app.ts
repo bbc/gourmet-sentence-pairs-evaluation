@@ -56,11 +56,7 @@ app.post('/beginEvaluation', (req: StartRequest, res: Response) => {
             sentenceSet.sentenceIds || new Set()
           );
           res.redirect(
-            `/evaluation?idList=${JSON.stringify(
-              sentenceIdsList
-            )}&setId=${setId}&numOfPracticeSentences=5&evaluatorId=${evaluatorId}&setSize=${
-              sentenceIdsList.length
-            }`
+            `/evaluation?setId=${setId}&numOfPracticeSentences=5&evaluatorId=${evaluatorId}&setSize=${sentenceIdsList.length}&currentSentenceNum=0`
           );
         })
         .catch(error => {
@@ -106,19 +102,18 @@ app.post('/evaluation', (req: SentencePairEvaluationRequest, res: Response) => {
   const evaluatorId: string = body.evaluatorId;
   const numOfPracticeSentences = body.numOfPracticeSentences || 0;
   const setSize = body.setSize || 0;
+  const sentenceNum = body.sentenceNum;
 
   if (numOfPracticeSentences > 0) {
     res.redirect(
-      `/evaluation?idList=${
-        body.idList
-      }&setId=${setId}&evaluatorId=${evaluatorId}&numOfPracticeSentences=${numOfPracticeSentences -
-        1}&setSize=${setSize}`
+      `/evaluation?setId=${setId}&evaluatorId=${evaluatorId}&numOfPracticeSentences=${numOfPracticeSentences -
+        1}&setSize=${setSize}&sentenceNum=${sentenceNum}`
     );
   } else {
     putSentencePairScore(id, score, evaluatorId)
       .then(result =>
         res.redirect(
-          `/evaluation?idList=${body.idList}&setId=${setId}&evaluatorId=${evaluatorId}&setSize=${setSize}`
+          `/evaluation?setId=${setId}&evaluatorId=${evaluatorId}&setSize=${setSize}&sentenceNum=${sentenceNum}`
         )
       )
       .catch(error => {
@@ -131,37 +126,47 @@ app.post('/evaluation', (req: SentencePairEvaluationRequest, res: Response) => {
 });
 
 app.get('/evaluation', (req: Request, res: Response) => {
-  const idList = JSON.parse(req.query.idList || '[]');
-  const setId = req.query.setId;
-  const evaluatorId = req.query.evaluatorId;
-  const numOfPracticeSentences = req.query.numOfPracticeSentences || 0;
-  const setSize = req.query.setSize || 0;
-  if (idList.length > 0) {
-    const sentencePairId = idList[0];
-    getSentencePair(sentencePairId)
-      .then(sentencePair => {
-        const remainingIds = idList.slice(1);
-        res.render('evaluation', {
-          sentence1: sentencePair.humanTranslation,
-          sentence2: sentencePair.machineTranslation,
-          idList: JSON.stringify(remainingIds),
-          setId,
-          sentencePairId,
-          evaluatorId,
-          numOfPracticeSentences,
-          setSize,
-          remainingSentences: setSize - remainingIds.length,
-        });
-      })
-      .catch(error => {
-        console.error(
-          `Unable to get sentence pair with id ${sentencePairId}. Error${error}`
-        );
-        res.redirect('/error?errorCode=getEvaluation');
-      });
-  } else {
-    res.redirect(`/feedback?setId=${setId}&evaluatorId=${evaluatorId}`);
-  }
+  const setId: string = req.query.setId;
+  const evaluatorId: string = req.query.evaluatorId;
+  const numOfPracticeSentences: number = Number(
+    req.query.numOfPracticeSentences || 0
+  );
+  const setSize: number = Number(req.query.setSize || 0);
+  const sentenceNum: number = Number(req.query.sentenceNum || 0);
+  getSentenceSet(setId)
+    .then(sentenceSet => {
+      const idList: string[] = Array.from(sentenceSet.sentenceIds || new Set());
+      const sentencePairId: string = idList[sentenceNum];
+      if (sentencePairId !== undefined) {
+        getSentencePair(sentencePairId)
+          .then(sentencePair => {
+            res.render('evaluation', {
+              sentence1: sentencePair.humanTranslation,
+              sentence2: sentencePair.machineTranslation,
+              setId,
+              sentencePairId,
+              evaluatorId,
+              numOfPracticeSentences,
+              setSize,
+              sentenceNum: sentenceNum + 1,
+            });
+          })
+          .catch(error => {
+            console.error(
+              `Unable to get sentence pair with id ${sentencePairId}. Error: ${error}`
+            );
+            res.redirect('/error?errorCode=getEvaluation');
+          });
+      } else {
+        res.redirect(`/feedback?setId=${setId}&evaluatorId=${evaluatorId}`);
+      }
+    })
+    .catch(error => {
+      console.error(
+        `Unable to get sentence set with id ${setId}. Error: ${error}`
+      );
+      res.redirect('/error?errorCode=getEvaluation');
+    });
 });
 
 app.post('/feedback', (req: FeedbackRequest, res: Response) => {

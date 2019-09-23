@@ -75,9 +75,6 @@
                                                    name="score">
                                         </div>
                                         <input type="hidden"
-                                               name="idList"
-                                               value={{idList}} />
-                                        <input type="hidden"
                                                name="id"
                                                value={{sentencePairId}} />
                                         <input type="hidden"
@@ -92,6 +89,9 @@
                                         <input type="hidden"
                                                name="setSize"
                                                value={{setSize}} />
+                                        <input type="hidden"
+                                               name="sentenceNum"
+                                               value={{sentenceNum}} />
                                     </div>
                                     <div class="row justify-content-center form-group">
                                         <div class="col-sm-2">
@@ -105,7 +105,7 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            <p class="float-right">{{remainingSentences}}/{{setSize}}</p>
+                            <p class="float-right">{{sentenceNum}}/{{setSize}}</p>
                         </div>
                     </div>
                 </div>

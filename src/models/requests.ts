@@ -3,11 +3,11 @@ import { Request } from 'express';
 interface SentencePairEvaluationRequestBody {
   id: string;
   setId: string;
-  idList: string[];
   score: number;
   evaluatorId: string;
   numOfPracticeSentences: number;
   setSize: number;
+  sentenceNum: number;
 }
 
 interface SentencePairEvaluationRequest extends Request {

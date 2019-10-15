@@ -2,7 +2,7 @@ import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import { SentencePair, SentenceSet, Language } from '../models/models';
 import * as uuidv1 from 'uuid/v1';
 
-const client = new DocumentClient({ region: 'eu-west-1' });
+const dynamoClient = new DocumentClient({ region: 'eu-west-1' });
 
 const getSentenceSetsTableName = (): string => {
   return process.env.SENTENCE_SETS_TABLE_NAME || 'none';
@@ -21,11 +21,12 @@ const getSentenceSetFeedbackTableName = (): string => {
 };
 
 const getSentenceSets = (): Promise<SentenceSet[]> => {
-  const input = {
+  const query = {
     TableName: getSentenceSetsTableName(),
   };
-  return client
-    .scan(input)
+
+  return dynamoClient
+    .scan(query)
     .promise()
     .then(output => {
       const items = output.Items || [];
@@ -36,7 +37,7 @@ const getSentenceSets = (): Promise<SentenceSet[]> => {
 };
 
 const getSentenceSet = (setId: string): Promise<SentenceSet> => {
-  const input = {
+  const query = {
     TableName: getSentenceSetsTableName(),
     KeyConditionExpression: `setId = :id`,
     ExpressionAttributeValues: {
@@ -44,8 +45,8 @@ const getSentenceSet = (setId: string): Promise<SentenceSet> => {
     },
   };
 
-  return client
-    .query(input)
+  return dynamoClient
+    .query(query)
     .promise()
     .then(output => {
       if (
@@ -62,7 +63,7 @@ const getSentenceSet = (setId: string): Promise<SentenceSet> => {
 };
 
 /**
- * Puts all the sentence pairs into DynamoDB and also creates a sentence set in dynamoDB that contains the sentence pairs
+ * Puts all the sentence pairs into DynamoDB and also creates a sentence set in dynamoDB that contains the sentence pairs Ids
  */
 const putSentenceSetAndPairs = (
   sentencePairs: SentencePair[],
@@ -90,21 +91,21 @@ const putSentenceSetAndPairs = (
 // tslint:disable-next-line:variable-name
 const putSentenceSet = (sentenceSet: SentenceSet): Promise<string> => {
   const item = constructSentenceSetItem(sentenceSet);
-  const input = {
+  const query = {
     Item: item,
     TableName: getSentenceSetsTableName(),
   };
 
-  return client
-    .put(input)
+  return dynamoClient
+    .put(query)
     .promise()
-    .then(result => {
+    .then(() => {
       return sentenceSet.setId;
     });
 };
 
 const getSentencePair = (id: string): Promise<SentencePair> => {
-  const input = {
+  const query = {
     TableName: getSentencesTableName(),
     KeyConditionExpression: `sentenceId = :id`,
     ExpressionAttributeValues: {
@@ -112,8 +113,8 @@ const getSentencePair = (id: string): Promise<SentencePair> => {
     },
   };
 
-  return client
-    .query(input)
+  return dynamoClient
+    .query(query)
     .promise()
     .then(output => {
       if (
@@ -137,7 +138,7 @@ const putSentencePair = (
   id: string,
   sentenceData: SentencePair
 ): Promise<string> => {
-  const input = {
+  const query = {
     Item: {
       sentenceId: id,
       original: sentenceData.original,
@@ -149,10 +150,10 @@ const putSentencePair = (
     TableName: getSentencesTableName(),
   };
 
-  return client
-    .put(input)
+  return dynamoClient
+    .put(query)
     .promise()
-    .then(result => {
+    .then(() => {
       return id;
     });
 };
@@ -163,7 +164,7 @@ const putSentencePairScore = (
   evaluatorId: string
 ): Promise<string> => {
   const scoreId = uuidv1();
-  const input = {
+  const query = {
     Item: {
       scoreId,
       sentencePairId,
@@ -173,11 +174,11 @@ const putSentencePairScore = (
     TableName: getSentencePairScoresTableName(),
   };
 
-  return client
-    .put(input)
+  return dynamoClient
+    .put(query)
     .promise()
-    .then(result => {
-      return 'ok';
+    .then(() => {
+      return scoreId;
     });
 };
 
@@ -187,7 +188,7 @@ const putSentenceSetFeedback = (
   evaluatorId: string
 ) => {
   const feedbackId = uuidv1();
-  const input = {
+  const query = {
     Item: {
       feedbackId,
       setId,
@@ -197,14 +198,19 @@ const putSentenceSetFeedback = (
     TableName: getSentenceSetFeedbackTableName(),
   };
 
-  return client
-    .put(input)
+  return dynamoClient
+    .put(query)
     .promise()
-    .then(result => {
-      return 'ok';
+    .then(() => {
+      return feedbackId;
     });
 };
 
+// Helper Functions
+
+/**
+ * DynamoDB returns an attribute map when queried. This converts a generic attribute map to a SentenceSet object
+ */
 const convertAttributeMapToSentenceSet = (
   item: DocumentClient.AttributeMap
 ): SentenceSet => {
@@ -244,13 +250,13 @@ const constructSentenceSetItem = (sentenceSet: SentenceSet) => {
       name: sentenceSet.name,
       sourceLanguage: sentenceSet.sourceLanguage.toUpperCase(),
       targetLanguage: sentenceSet.targetLanguage.toUpperCase(),
-      evaluatorIds: client.createSet(Array.from(evaluatorIds)),
+      evaluatorIds: dynamoClient.createSet(Array.from(evaluatorIds)),
     };
   }
   if (evaluatorIds.size < 1) {
     return {
       setId: sentenceSet.setId,
-      sentenceIds: client.createSet(Array.from(sentenceIds)),
+      sentenceIds: dynamoClient.createSet(Array.from(sentenceIds)),
       name: sentenceSet.name,
       sourceLanguage: sentenceSet.sourceLanguage.toUpperCase(),
       targetLanguage: sentenceSet.targetLanguage.toUpperCase(),
@@ -258,11 +264,11 @@ const constructSentenceSetItem = (sentenceSet: SentenceSet) => {
   } else {
     return {
       setId: sentenceSet.setId,
-      sentenceIds: client.createSet(Array.from(sentenceIds)),
+      sentenceIds: dynamoClient.createSet(Array.from(sentenceIds)),
       name: sentenceSet.name,
       sourceLanguage: sentenceSet.sourceLanguage.toUpperCase(),
       targetLanguage: sentenceSet.targetLanguage.toUpperCase(),
-      evaluatorIds: client.createSet(Array.from(evaluatorIds)),
+      evaluatorIds: dynamoClient.createSet(Array.from(evaluatorIds)),
     };
   }
 };

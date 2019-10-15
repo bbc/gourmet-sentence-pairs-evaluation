@@ -1,4 +1,4 @@
-import { cleanData } from '../processDatasets';
+import { cleanData } from '../processDataset';
 import { Dataset, Language } from '../models/models';
 import { DatasetBody, DatasetFile } from '../models/requests';
 import { Some, None } from '../models/generics';

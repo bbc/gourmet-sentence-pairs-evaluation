@@ -1,6 +1,9 @@
 # Sentence Pairs Evaluation Tool
 
-GoURMET project tool. Allows users to evaluate the quality of a machine translated sentence in comparison to a human translated sentence.
+GoURMET project evaluation tool. The purpose is to evaluate a set of sentences comparing the quality of a machine translated sentence to a human translated sentence where the human translation is assumed to be the gold standard. For each case there must be a set of three sentences.
+1. A sentence in the source language
+2. The same sentence translated into the target language by a human
+3. The same sentence translated into the target language by a machine
 
 # Set up
 1. Install [node v10](https://nodejs.org/en/)
@@ -29,6 +32,34 @@ To make changes to the stack. Update the [./infrastructure/src/main.py](./infras
 ### Database
 
 The app uses DynamoDB to store data. This is cloudformed. To make changes to the database update the [./infrastructure/src/dynamoDB.py](./infrastructure/src/dynamoDB.py) and run `make templates/dynamoDB.json` from inside the `infrastructure` directory.
+
+#### Database Tables
+
+The names of the database tables are in the [`.env`](./.env) file. There are 4 tables
+
+1. SENTENCE_SETS_TABLE_NAME - Contains the sets of sentences to be evaluated
+
+| setId  | name   | sentenceIds | sourceLanguage | targetLanguage | evaluatorIds |
+|--------|--------|-------------|----------------|----------------|--------------|
+| string | string | string set  | string         | string         | string set   |
+
+2. SENTENCES_TABLE_NAME - Contains the sentences. Each sentence has an original sentence in the source language as well as a translation into the target language done by a human and another done by a machine.
+
+| sentenceId | original | humanTranslation | machineTranslation | sourceLanguage | targetLanguage |
+|------------|----------|------------------|--------------------|----------------|----------------|
+| string     | string   | string           | string             | string         | string         |
+
+3. SENTENCE_SCORES_TABLE_NAME - Contains scores given, which sentence pair the score was for and who gave it.
+
+| scoreId | evaluatorId | score  | sentencePairId |
+|---------|-------------|--------|----------------|
+| string  | string      | string | string         |
+
+4. SENTENCE_SET_FEEDBACK_TABLE_NAME - Contains free text feedback given at the end of evaluating a set of sentences
+
+| feedbackId | feedback | evaluatorId | setId  |
+|------------|----------|-------------|--------|
+| string     | string   | string      | string |
 
 ### DNS
 

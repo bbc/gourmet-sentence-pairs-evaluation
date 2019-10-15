@@ -1,4 +1,4 @@
-import { Response, Application } from 'express';
+import { Request, Response, Application } from 'express';
 import { DatasetBody, DatasetFile, DatasetRequest } from '../models/requests';
 import { submitDataset } from '../processDataset';
 import { Language } from '../models/models';
@@ -35,7 +35,7 @@ const buildDatasetRoutes = (app: Application, upload: Instance) => {
     }
   );
 
-  app.get('/dataset', (res: Response) => {
+  app.get('/dataset', (req: Request, res: Response) => {
     const languages = Object.keys(Language);
     // Get all possible values for Language enum
     const languageOptions = languages.map((languageName, i) => {

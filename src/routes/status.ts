@@ -1,7 +1,7 @@
-import { Response, Application } from 'express';
+import { Request, Response, Application } from 'express';
 
 const buildStatusRoute = (app: Application) => {
-  app.get('/status', (res: Response) => {
+  app.get('/status', (req: Request, res: Response) => {
     res.status(200).send(`OK`);
   });
 };

@@ -1,7 +1,7 @@
-import { Response, Application } from 'express';
+import { Request, Response, Application } from 'express';
 
 const buildIndexRoute = (app: Application) => {
-  app.get('/', (res: Response) => {
+  app.get('/', (req: Request, res: Response) => {
     res.render('index', { datasetSubmissionUrl: '/dataset' });
   });
 };

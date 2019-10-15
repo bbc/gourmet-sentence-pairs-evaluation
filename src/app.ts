@@ -1,28 +1,19 @@
 import * as express from 'express';
-import { Request, Response, Application } from 'express';
-import {
-  getSentenceSet,
-  getSentencePair,
-  putSentencePairScore,
-  putSentenceSetFeedback,
-  getSentenceSets,
-  putSentenceSet,
-} from './DynamoDB/dynamoDBApi';
+import { Application } from 'express';
 import { loadConfig } from './config';
-import {
-  SentencePairEvaluationRequest,
-  SentencePairEvaluationRequestBody,
-  FeedbackRequest,
-  DatasetBody,
-  StartRequest,
-  DatasetFile,
-  DatasetRequest,
-} from './models/requests';
-import { getErrorText } from './uiText';
-import { submitDataset } from './processDatasets';
-import { Language, SentenceSet } from './models/models';
 import * as multer from 'multer';
-import { readFileSync, unlink } from 'fs';
+import { Instance } from 'multer';
+
+import { buildIndexRoute } from './routes/index';
+import { buildBeginEvaluationRoute } from './routes/beginEvaluation';
+import { buildEvaluationRoutes } from './routes/evaluation';
+import { buildFeedbackRoutes } from './routes/feedback';
+import { buildDatasetRoutes } from './routes/dataset';
+import { buildStartRoute } from './routes/start';
+import { buildEndRoute } from './routes/end';
+import { buildSuccessRoute } from './routes/success';
+import { buildErrorRoute } from './routes/error';
+import { buildStatusRoute } from './routes/status';
 
 loadConfig();
 
@@ -38,229 +29,18 @@ app.use(express.static('public'));
 // Use handlebars to render templates
 app.set('view engine', 'hbs');
 // Instantiate multer for uploads
-const upload = multer({ dest: 'uploads/' });
+const upload: Instance = multer({ dest: 'uploads/' });
 
-app.get('/', (req: Request, res: Response) => {
-  res.render('index', { datasetSubmissionUrl: '/dataset' });
-});
-
-app.get('/start', (req: Request, res: Response) => {
-  getSentenceSets().then(sentenceSets => {
-    res.render('start', { sentenceSets });
-  });
-});
-
-app.post('/beginEvaluation', (req: StartRequest, res: Response) => {
-  const setId = req.body.setId;
-  const evaluatorId = req.body.evaluatorId;
-  getSentenceSet(setId)
-    .then(sentenceSet => {
-      addEvaluatorIdToSentenceSet(evaluatorId, sentenceSet)
-        .then(() => {
-          const sentenceIdsList = Array.from(
-            sentenceSet.sentenceIds || new Set()
-          );
-          res.redirect(
-            `/evaluation?setId=${setId}&numOfPracticeSentences=5&evaluatorId=${evaluatorId}&setSize=${sentenceIdsList.length}&currentSentenceNum=0`
-          );
-        })
-        .catch(error => {
-          console.error(
-            `Unable to add evaluatorId:${evaluatorId} to sentence set:${setId}. Error: ${error}`
-          );
-          res.redirect('/error?errorCode=postStartFailEvaluatorId');
-        });
-    })
-    .catch(error => {
-      console.error(
-        `Unable to retrieve sentence set with id: ${setId}. Error: ${error}`
-      );
-      res.redirect('/error?errorCode=postStartFailSentenceSet');
-    });
-});
-
-const addEvaluatorIdToSentenceSet = (
-  evaluatorId: string,
-  sentenceSet: SentenceSet
-): Promise<string> => {
-  const evaluatorIds: Set<string> =
-    sentenceSet.evaluatorIds === undefined
-      ? (sentenceSet.evaluatorIds = new Set([evaluatorId]))
-      : sentenceSet.evaluatorIds.add(evaluatorId);
-
-  const updatedSentenceSet = new SentenceSet(
-    sentenceSet.name,
-    sentenceSet.sourceLanguage,
-    sentenceSet.targetLanguage,
-    sentenceSet.sentenceIds,
-    sentenceSet.setId,
-    evaluatorIds
-  );
-  return putSentenceSet(updatedSentenceSet);
-};
-
-app.post('/evaluation', (req: SentencePairEvaluationRequest, res: Response) => {
-  const body: SentencePairEvaluationRequestBody = req.body;
-  const id: string = body.id;
-  const setId: string = body.setId;
-  const score: number = body.score;
-  const evaluatorId: string = body.evaluatorId;
-  const numOfPracticeSentences = body.numOfPracticeSentences || 0;
-  const setSize = body.setSize || 0;
-  const sentenceNum = body.sentenceNum;
-
-  if (numOfPracticeSentences > 0) {
-    res.redirect(
-      `/evaluation?setId=${setId}&evaluatorId=${evaluatorId}&numOfPracticeSentences=${numOfPracticeSentences -
-        1}&setSize=${setSize}&sentenceNum=${sentenceNum}`
-    );
-  } else {
-    putSentencePairScore(id, score, evaluatorId)
-      .then(() =>
-        res.redirect(
-          `/evaluation?setId=${setId}&evaluatorId=${evaluatorId}&setSize=${setSize}&sentenceNum=${sentenceNum}`
-        )
-      )
-      .catch(error => {
-        console.error(
-          `Unable to put score for id: ${id}, score: ${score} and evaluatorId: ${evaluatorId}. Error${error}`
-        );
-        res.redirect('/error?errorCode=postEvaluation');
-      });
-  }
-});
-
-app.get('/evaluation', (req: Request, res: Response) => {
-  const setId: string = req.query.setId;
-  const evaluatorId: string = req.query.evaluatorId;
-  const numOfPracticeSentences: number = Number(
-    req.query.numOfPracticeSentences || 0
-  );
-  const setSize: number = Number(req.query.setSize || 0);
-  const sentenceNum: number = Number(req.query.sentenceNum || 0);
-  getSentenceSet(setId)
-    .then(sentenceSet => {
-      const idList: string[] = Array.from(sentenceSet.sentenceIds || new Set());
-      const sentencePairId: string = idList[sentenceNum];
-      if (sentencePairId !== undefined) {
-        getSentencePair(sentencePairId)
-          .then(sentencePair => {
-            res.render('evaluation', {
-              sentence1: sentencePair.humanTranslation,
-              sentence2: sentencePair.machineTranslation,
-              setId,
-              sentencePairId,
-              evaluatorId,
-              numOfPracticeSentences,
-              setSize,
-              sentenceNum: sentenceNum + 1,
-            });
-          })
-          .catch(error => {
-            console.error(
-              `Unable to get sentence pair with id ${sentencePairId}. Error: ${error}`
-            );
-            res.redirect('/error?errorCode=getEvaluation');
-          });
-      } else {
-        res.redirect(`/feedback?setId=${setId}&evaluatorId=${evaluatorId}`);
-      }
-    })
-    .catch(error => {
-      console.error(
-        `Unable to get sentence set with id ${setId}. Error: ${error}`
-      );
-      res.redirect('/error?errorCode=getEvaluation');
-    });
-});
-
-app.post('/feedback', (req: FeedbackRequest, res: Response) => {
-  const feedback: string = req.body.feedback;
-  const setId: string = req.body.setId;
-  const evaluatorId: string = req.body.evaluatorId;
-  putSentenceSetFeedback(setId, feedback, evaluatorId)
-    .then(() => res.redirect('/end'))
-    .catch(error => {
-      console.error(
-        `Could not save feedback: ${feedback} for sentence set id: ${setId}. Error:${error}`
-      );
-      res.redirect('/error?errorCode=postFeedback');
-    });
-});
-
-app.get('/feedback', (req: Request, res: Response) => {
-  const setId = req.query.setId;
-  const evaluatorId = req.query.evaluatorId;
-  res.render('feedback', { setId, evaluatorId });
-});
-
-app.get('/end', (req: Request, res: Response) => {
-  res.render('infoGeneric', {
-    title: 'Evaluation Complete',
-    subtitle: 'Thank you for taking part.',
-  });
-});
-
-app.post(
-  '/dataset',
-  upload.single('sentences'),
-  (req: DatasetRequest, res: Response) => {
-    const sentences = readFileSync(req.file.path, 'utf-8');
-    const datasetSentences: DatasetFile = JSON.parse(sentences);
-    const datasetMetadata: DatasetBody = req.body;
-    submitDataset(datasetMetadata, datasetSentences)
-      .then(() => {
-        res.redirect('/success');
-      })
-      .catch(error => {
-        console.error(
-          `Could not submit dataset:${JSON.stringify(
-            datasetMetadata
-          )}. Error: ${error}`
-        );
-        res.redirect('/error?errorCode=postDataset');
-      })
-      .finally(() => {
-        unlink(req.file.path, err => {
-          if (err) {
-            console.error(`Failed to delete file ${req.file.path}`);
-          }
-        });
-      });
-  }
-);
-
-app.get('/dataset', (req: Request, res: Response) => {
-  const languages = Object.keys(Language);
-  const languageOptions = languages.map((languageName, i) => {
-    return {
-      displayName:
-        languageName.charAt(0).toUpperCase() +
-        languageName.slice(1).toLowerCase(),
-      language: languages[i],
-    };
-  });
-  res.render('dataset', { languageOptions });
-});
-
-app.get('/success', (req: Request, res: Response) => {
-  res.render('infoButtonGeneric', {
-    title: 'Successfully Submitted Dataset',
-    subtitle: '',
-    url: '/dataset',
-    buttonText: 'Submit another data set',
-  });
-});
-
-app.get('/error', (req: Request, res: Response) => {
-  const errorCode = req.query.errorCode || 'generalError';
-  const errorMessage = getErrorText(errorCode);
-  res.status(404).render('error', { errorMessage });
-});
-
-app.get('/status', (req: Request, res: Response) => {
-  res.status(200).send(`OK`);
-});
+buildIndexRoute(app);
+buildStartRoute(app);
+buildBeginEvaluationRoute(app);
+buildEvaluationRoutes(app);
+buildFeedbackRoutes(app);
+buildDatasetRoutes(app, upload);
+buildEndRoute(app);
+buildSuccessRoute(app);
+buildErrorRoute(app);
+buildStatusRoute(app);
 
 app.listen(port, () => {
   // tslint:disable-next-line:no-console

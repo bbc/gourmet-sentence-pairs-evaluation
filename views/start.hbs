@@ -47,10 +47,14 @@
                           method="POST">
                         <div class="row justify-content-center form-group">
                             <div class="col-md-6">
-                                <label for="evaluatorId">Enter your evaluator ID:</label>
-                                <input class="form-control"
-                                       name="evaluatorId"
-                                       required>
+                                <label for="evaluatorId">Select your evaluator ID:</label>
+                                <select class="form-control"
+                                        name="evaluatorId"
+                                        required>
+                                    <option></option>
+                                    {{#each evaluatorIds}}
+                                    <option value={{this}}>{{this}}</option>
+                                    {{/each}}
                                 </select>
                             </div>
                         </div>

@@ -1,7 +1,7 @@
 import { Request, Response, Application } from 'express';
 
 const buildSuccessRoute = (app: Application) => {
-  app.get('/end', (req: Request, res: Response) => {
+  app.get('/success', (req: Request, res: Response) => {
     res.render('infoButtonGeneric', {
       title: 'Successfully Submitted Dataset',
       subtitle: '',

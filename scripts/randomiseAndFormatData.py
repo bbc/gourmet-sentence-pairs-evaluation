@@ -1,7 +1,8 @@
 import sys
 import random
 
-# Script for randomising evaluation data sentence order.
+# Script for randomising evaluation data sentence order. The filenames of the data must
+# be specified on lines 17,18,19.
 
 # This script takes a series of articles that have an original article
 # a human translated version of the article and a machine translated article split

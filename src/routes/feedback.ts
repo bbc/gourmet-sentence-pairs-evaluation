@@ -1,6 +1,7 @@
 import { Request, Response, Application } from 'express';
 import { putSentenceSetFeedback } from '../DynamoDB/dynamoDBApi';
 import { FeedbackRequest } from '../models/requests';
+import { logger } from '../utils/logger';
 
 const buildFeedbackRoutes = (app: Application) => {
   app.post('/feedback', (req: FeedbackRequest, res: Response) => {
@@ -10,7 +11,7 @@ const buildFeedbackRoutes = (app: Application) => {
     putSentenceSetFeedback(setId, feedback, evaluatorId)
       .then(() => res.redirect('/end'))
       .catch(error => {
-        console.error(
+        logger.error(
           `Could not save feedback: ${feedback} for sentence set id: ${setId}. Error:${error}`
         );
         res.redirect('/error?errorCode=postFeedback');

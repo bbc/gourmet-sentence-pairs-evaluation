@@ -8,6 +8,7 @@ import {
   SentencePairEvaluationRequest,
   SentencePairEvaluationRequestBody,
 } from '../models/requests';
+import { logger } from '../utils/logger';
 
 const buildEvaluationRoutes = (app: Application) => {
   app.post(
@@ -35,7 +36,7 @@ const buildEvaluationRoutes = (app: Application) => {
             )
           )
           .catch(error => {
-            console.error(
+            logger.error(
               `Unable to put score for id: ${id}, score: ${score} and evaluatorId: ${evaluatorId}. Error${error}`
             );
             res.redirect('/error?errorCode=postEvaluation');
@@ -73,7 +74,7 @@ const buildEvaluationRoutes = (app: Application) => {
               });
             })
             .catch(error => {
-              console.error(
+              logger.error(
                 `Unable to get sentence pair with id ${sentencePairId}. Error: ${error}`
               );
               res.redirect('/error?errorCode=getEvaluation');
@@ -83,7 +84,7 @@ const buildEvaluationRoutes = (app: Application) => {
         }
       })
       .catch(error => {
-        console.error(
+        logger.error(
           `Unable to get sentence set with id ${setId}. Error: ${error}`
         );
         res.redirect('/error?errorCode=getEvaluation');

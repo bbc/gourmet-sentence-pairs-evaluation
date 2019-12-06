@@ -2,6 +2,7 @@ import { Response, Application } from 'express';
 import { getSentenceSet, putSentenceSet } from '../DynamoDB/dynamoDBApi';
 import { StartRequest } from '../models/requests';
 import { SentenceSet } from '../models/models';
+import { logger } from '../utils/logger';
 
 const buildBeginEvaluationRoute = (app: Application) => {
   app.post('/beginEvaluation', (req: StartRequest, res: Response) => {
@@ -19,14 +20,14 @@ const buildBeginEvaluationRoute = (app: Application) => {
             );
           })
           .catch(error => {
-            console.error(
+            logger.error(
               `Unable to add evaluatorId:${evaluatorId} to sentence set:${setId}. Error: ${error}`
             );
             res.redirect('/error?errorCode=postStartFailEvaluatorId');
           });
       })
       .catch(error => {
-        console.error(
+        logger.error(
           `Unable to retrieve sentence set with id: ${setId}. Error: ${error}`
         );
         res.redirect('/error?errorCode=postStartFailSentenceSet');

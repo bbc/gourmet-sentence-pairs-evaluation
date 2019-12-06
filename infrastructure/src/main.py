@@ -13,6 +13,16 @@ t.resources[IAM.COMPONENT_POLICY].PolicyDocument.Statement.extend([
         Resource=["*"],
         Effect=Allow
     ),
+    Statement(
+        Action=[
+            Action('logs', 'CreateLogGroup'),
+            Action('logs', 'CreateLogStream'),
+            Action('logs', 'PutLogEvents'),
+            Action('logs', 'DescribeLogStreams'),
+        ],
+        Resource=["arn:aws:logs:*:*:*"],
+        Effect=Allow
+    ),
 ])
 
 print(t.to_json())

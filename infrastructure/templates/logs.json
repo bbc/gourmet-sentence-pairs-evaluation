@@ -1,0 +1,28 @@
+{
+    "Description": "Log group for GoURMET sentence pair evaluation tool",
+    "Parameters": {
+        "Environment": {
+            "Description": "The name of the environment.",
+            "Type": "String"
+        }
+    },
+    "Resources": {
+        "logGroup": {
+            "Properties": {
+                "LogGroupName": {
+                    "Fn::Join": [
+                        "-",
+                        [
+                            "gourmet-sentence-pairs-evaluation",
+                            {
+                                "Ref": "Environment"
+                            }
+                        ]
+                    ]
+                },
+                "RetentionInDays": 14
+            },
+            "Type": "AWS::Logs::LogGroup"
+        }
+    }
+}

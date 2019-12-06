@@ -4,6 +4,7 @@ import { submitDataset } from '../processDataset';
 import { Language } from '../models/models';
 import { readFileSync, unlink } from 'fs';
 import { Instance } from 'multer';
+import { logger } from '../utils/logger';
 
 const buildDatasetRoutes = (app: Application, upload: Instance) => {
   app.post(
@@ -18,7 +19,7 @@ const buildDatasetRoutes = (app: Application, upload: Instance) => {
           res.redirect('/success');
         })
         .catch(error => {
-          console.error(
+          logger.error(
             `Could not submit dataset:${JSON.stringify(
               datasetMetadata
             )}. Error: ${error}`
@@ -28,7 +29,7 @@ const buildDatasetRoutes = (app: Application, upload: Instance) => {
         .finally(() => {
           unlink(req.file.path, err => {
             if (err) {
-              console.error(`Failed to delete file ${req.file.path}`);
+              logger.error(`Failed to delete file ${req.file.path}`);
             }
           });
         });

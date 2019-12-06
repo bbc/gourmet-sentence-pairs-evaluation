@@ -2,6 +2,7 @@ import { Dataset, SentencePair, Language } from './models/models';
 import { putSentenceSetAndPairs } from './DynamoDB/dynamoDBApi';
 import { DatasetBody, DatasetFile } from './models/requests';
 import { Some, None, Option } from './models/generics';
+import { logger } from './utils/logger';
 /**
  * Turns body of request into a Dataset. Rejects body if sentence sets are not all of equal length.
  */
@@ -83,7 +84,7 @@ const submitDataset = (
     const errorMessage = `Could not clean data. Dataset:${JSON.stringify(
       dataset
     )}`;
-    console.error(errorMessage);
+    logger.error(errorMessage);
     return Promise.reject(errorMessage);
   }
 };

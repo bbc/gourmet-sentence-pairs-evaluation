@@ -4,3 +4,4 @@ dist
 venv
 .vscode
 scripts/*.txt
+logs

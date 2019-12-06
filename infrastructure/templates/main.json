@@ -347,7 +347,10 @@
                         },
                         {
                             "Action": [
-                                "cloudwatch:*"
+                                "cloudwatch:Describe*",
+                                "cloudwatch:Get*",
+                                "cloudwatch:List*",
+                                "cloudwatch:PutMetricData"
                             ],
                             "Effect": "Allow",
                             "Resource": [
@@ -370,6 +373,18 @@
                             "Effect": "Allow",
                             "Resource": [
                                 "*"
+                            ]
+                        },
+                        {
+                            "Action": [
+                                "logs:CreateLogGroup",
+                                "logs:CreateLogStream",
+                                "logs:PutLogEvents",
+                                "logs:DescribeLogStreams"
+                            ],
+                            "Effect": "Allow",
+                            "Resource": [
+                                "arn:aws:logs:*:*:*"
                             ]
                         }
                     ]

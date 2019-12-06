@@ -1,6 +1,5 @@
 import * as express from 'express';
 import { Application } from 'express';
-import { loadConfig } from './config';
 import * as multer from 'multer';
 import { Instance } from 'multer';
 
@@ -15,7 +14,8 @@ import { buildSuccessRoute } from './routes/success';
 import { buildErrorRoute } from './routes/error';
 import { buildStatusRoute } from './routes/status';
 
-loadConfig();
+import './config';
+import { logger } from './utils/logger';
 
 const app: Application = express();
 const port = process.env.PORT || 8080;
@@ -43,6 +43,5 @@ buildErrorRoute(app);
 buildStatusRoute(app);
 
 app.listen(port, () => {
-  // tslint:disable-next-line:no-console
-  console.log(`App running on port ${port}`);
+  logger.info(`App running on port ${port}`);
 });

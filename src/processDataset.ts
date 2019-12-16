@@ -74,9 +74,13 @@ const generateSentencePairs = (dataset: Dataset): SentencePair[] => {
 
 const submitDataset = (
   dataset: DatasetBody,
-  datasetFile: DatasetFile
+  datasetFile: DatasetFile,
+  cleaningFunction: (
+    body: DatasetBody,
+    file: DatasetFile
+  ) => Option<Dataset> = cleanData
 ): Promise<string> => {
-  const cleanedData = cleanData(dataset, datasetFile);
+  const cleanedData = cleaningFunction(dataset, datasetFile);
   if (cleanedData instanceof Some && cleanedData.value instanceof Dataset) {
     const setName = cleanedData.value.setName;
     const sentencePairs = generateSentencePairs(cleanedData.value);

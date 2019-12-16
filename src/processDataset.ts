@@ -20,11 +20,17 @@ const cleanData = (
   const machineTranslatedSentences = datasetFile.machineTranslatedText
     .split(regex)
     .filter(s => s !== '');
-  const sourceLanguage: Language = (Language as any)[dataset.sourceLanguage];
-  const targetLanguage: Language = (Language as any)[dataset.targetLanguage];
+  const sourceLanguage: Language = (Language as any)[
+    dataset.sourceLanguage.toUpperCase()
+  ];
+  const targetLanguage: Language = (Language as any)[
+    dataset.targetLanguage.toUpperCase()
+  ];
   if (
     sourceSentences.length === machineTranslatedSentences.length &&
     sourceSentences.length === humanTranslatedSentences.length &&
+    targetLanguage !== undefined &&
+    sourceLanguage !== undefined &&
     targetLanguage !== undefined
   ) {
     return new Some(

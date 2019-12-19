@@ -1,5 +1,10 @@
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
-import { SentencePair, SentenceSet, Language } from '../models/models';
+import {
+  SentencePair,
+  SentenceSet,
+  SentencePairScore,
+  Language,
+} from '../models/models';
 import * as uuidv1 from 'uuid/v1';
 
 const dynamoClient = new DocumentClient({ region: 'eu-west-1' });
@@ -158,10 +163,23 @@ const putSentencePair = (
     });
 };
 
+const getSentencePairScores = (
+  client: DocumentClient = dynamoClient
+): Promise<SentencePairScore[]> => {
+  return client
+    .scan({ TableName: getSentencePairScoresTableName() })
+    .promise()
+    .then(output => {
+      const items = output.Items || [];
+      return items.map(item => convertAttributeMapToSentencePairScore(item));
+    });
+};
+
 const putSentencePairScore = (
   sentencePairId: string,
   score: number,
-  evaluatorId: string
+  evaluatorId: string,
+  client: DocumentClient = dynamoClient
 ): Promise<string> => {
   const scoreId = uuidv1();
   const query = {
@@ -174,7 +192,7 @@ const putSentencePairScore = (
     TableName: getSentencePairScoresTableName(),
   };
 
-  return dynamoClient
+  return client
     .put(query)
     .promise()
     .then(() => {
@@ -207,6 +225,20 @@ const putSentenceSetFeedback = (
 };
 
 // Helper Functions
+
+/**
+ * DynamoDB returns an attribute map when queried. This converts a generic attribute map to a SentenceSet object
+ */
+const convertAttributeMapToSentencePairScore = (
+  item: DocumentClient.AttributeMap
+): SentencePairScore => {
+  return new SentencePairScore(
+    item['scoreId'] || 'undefined',
+    item['sentencePairId'] || 'undefined',
+    item['evaluatorId'] || 'undefined',
+    Number(item['score'] || 0)
+  );
+};
 
 /**
  * DynamoDB returns an attribute map when queried. This converts a generic attribute map to a SentenceSet object
@@ -278,6 +310,7 @@ export {
   putSentenceSetAndPairs,
   getSentencePair,
   putSentencePair,
+  getSentencePairScores,
   putSentencePairScore,
   putSentenceSetFeedback,
   getSentenceSets,

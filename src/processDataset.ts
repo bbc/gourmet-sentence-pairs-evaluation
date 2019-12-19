@@ -30,8 +30,7 @@ const cleanData = (
     sourceSentences.length === machineTranslatedSentences.length &&
     sourceSentences.length === humanTranslatedSentences.length &&
     targetLanguage !== undefined &&
-    sourceLanguage !== undefined &&
-    targetLanguage !== undefined
+    sourceLanguage !== undefined
   ) {
     return new Some(
       new Dataset(
@@ -75,12 +74,12 @@ const generateSentencePairs = (dataset: Dataset): SentencePair[] => {
 const submitDataset = (
   dataset: DatasetBody,
   datasetFile: DatasetFile,
-  cleaningFunction: (
+  dataCleaningFunction: (
     body: DatasetBody,
     file: DatasetFile
   ) => Option<Dataset> = cleanData
 ): Promise<string> => {
-  const cleanedData = cleaningFunction(dataset, datasetFile);
+  const cleanedData = dataCleaningFunction(dataset, datasetFile);
   if (cleanedData instanceof Some && cleanedData.value instanceof Dataset) {
     const setName = cleanedData.value.setName;
     const sentencePairs = generateSentencePairs(cleanedData.value);

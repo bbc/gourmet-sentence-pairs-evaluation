@@ -41,6 +41,15 @@ class SentencePair {
   }
 }
 
+class SentencePairScore {
+  constructor(
+    public scoreId: string,
+    public sentencePairId: string,
+    public evaluatorId: string,
+    public score: number
+  ) {}
+}
+
 enum Language {
   BULGARIAN = 'bg',
   GUJARATI = 'gu',
@@ -48,4 +57,4 @@ enum Language {
   ENGLISH = 'en',
 }
 
-export { SentenceSet, SentencePair, Dataset, Language };
+export { SentenceSet, SentencePair, SentencePairScore, Dataset, Language };

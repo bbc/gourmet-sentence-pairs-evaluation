@@ -48,6 +48,10 @@ class SentencePairScore {
     public evaluatorId: string,
     public score: number
   ) {}
+
+  convertToCSV(): string {
+    return `${this.scoreId}, ${this.sentencePairId}, ${this.evaluatorId}, ${this.score}`;
+  }
 }
 
 enum Language {

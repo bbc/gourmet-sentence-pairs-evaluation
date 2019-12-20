@@ -6,7 +6,6 @@ module.exports = {
       AttributeDefinitions: [{ AttributeName: 'scoreId', AttributeType: 'S' }],
       ProvisionedThroughput: { ReadCapacityUnits: 1, WriteCapacityUnits: 1 },
     },
-    // etc
   ],
   port: 8000,
 };

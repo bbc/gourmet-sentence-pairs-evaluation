@@ -13,6 +13,8 @@ import { buildEndRoute } from './routes/end';
 import { buildSuccessRoute } from './routes/success';
 import { buildErrorRoute } from './routes/error';
 import { buildStatusRoute } from './routes/status';
+import { buildExportDataRoute } from './routes/exportData';
+
 import './config';
 
 const app: Application = express();
@@ -38,5 +40,6 @@ buildEndRoute(app);
 buildSuccessRoute(app);
 buildErrorRoute(app);
 buildStatusRoute(app);
+buildExportDataRoute(app);
 
 export default app;

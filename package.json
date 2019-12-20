@@ -4,12 +4,12 @@
   "description": "Description",
   "author": "susiecoleman",
   "license": "UNLICENSED",
-  "main": "./dist/app.js",
+  "main": "./dist/server.js",
   "scripts": {
     "start": "node .",
     "build": "tsc",
     "lint": "tslint --project tsconfig.json",
-    "dev": "ts-node-dev --respawn --transpileOnly ./src/app.ts",
+    "dev": "ts-node-dev --respawn --transpileOnly ./src/server.ts",
     "spec": "speculate --release ${BUILD_NUMBER}",
     "test": "yarn jest",
     "valid": "yarn lint && yarn build && yarn test"

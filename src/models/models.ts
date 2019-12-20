@@ -49,7 +49,7 @@ class SentencePairScore {
     public score: number
   ) {}
 
-  convertToCSV(): string {
+  public convertToCSV(): string {
     return `${this.scoreId}, ${this.sentencePairId}, ${this.evaluatorId}, ${this.score}`;
   }
 }

@@ -12,6 +12,8 @@ const getErrorText = (errorCode: string): string => {
       return 'Could not save your feedback, please contact us directly to give us feedback. Your scores for the sentence pairs evaluation have been saved you do not need to complete the test again.';
     case 'postDataset':
       return 'Could not save data set.';
+    case 'getScoresCSV':
+      return 'Could not retrieve score data set. Please try again.';
     default:
       return 'It is not possible to complete that action right now.';
   }

@@ -13,12 +13,9 @@ import { buildEndRoute } from './routes/end';
 import { buildSuccessRoute } from './routes/success';
 import { buildErrorRoute } from './routes/error';
 import { buildStatusRoute } from './routes/status';
-
 import './config';
-import { logger } from './utils/logger';
 
 const app: Application = express();
-const port = process.env.PORT || 8080;
 
 // support parsing of application/json type post data
 app.use(express.json());
@@ -42,6 +39,4 @@ buildSuccessRoute(app);
 buildErrorRoute(app);
 buildStatusRoute(app);
 
-app.listen(port, () => {
-  logger.info(`App running on port ${port}`);
-});
+export default app;

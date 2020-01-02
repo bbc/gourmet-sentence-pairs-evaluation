@@ -2,6 +2,7 @@ import { getSentencePairScores, putSentencePairScore } from '../dynamoDBApi';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 
 import '../../config';
+import { SentencePairScore } from '../../models/models';
 
 describe('getSentencePairScores', () => {
   const config = {
@@ -14,14 +15,29 @@ describe('getSentencePairScores', () => {
   const mockDynamoClient = new DocumentClient(config);
 
   test('should retrieve scores put into the DB', () => {
-    return putSentencePairScore('1', 5, '2', mockDynamoClient).then(_ => {
+    const sentencePairScore = new SentencePairScore(
+      '1',
+      '2',
+      5,
+      'bg',
+      'human',
+      'machine',
+      'original',
+      '10'
+    );
+    return putSentencePairScore(sentencePairScore, mockDynamoClient).then(_ => {
       return getSentencePairScores(mockDynamoClient).then(scores => {
         expect(
           scores.filter(
             score =>
               score.sentencePairId === '1' &&
               score.evaluatorId === '2' &&
-              score.q1Score === 5
+              score.q1Score === 5 &&
+              score.targetLanguage === 'bg' &&
+              score.humanTranslation === 'human' &&
+              score.machineTranslation === 'machine' &&
+              score.original === 'original' &&
+              score.scoreId === '10'
           ).length
         ).toEqual(1);
       });
@@ -42,7 +58,11 @@ describe('getSentencePairScores', () => {
             score.scoreId === '123' &&
             score.sentencePairId === 'undefined' &&
             score.evaluatorId === 'undefined' &&
-            score.q1Score === 0
+            score.q1Score === 0 &&
+            score.targetLanguage === 'undefined' &&
+            score.humanTranslation === 'undefined' &&
+            score.machineTranslation === 'undefined' &&
+            score.original === 'undefined'
         ).length
       ).toEqual(1);
     });

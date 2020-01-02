@@ -176,18 +176,20 @@ const getSentencePairScores = (
 };
 
 const putSentencePairScore = (
-  sentencePairId: string,
-  q1Score: number,
-  evaluatorId: string,
+  sentencePairScore: SentencePairScore,
   client: DocumentClient = dynamoClient
 ): Promise<string> => {
-  const scoreId = uuidv1();
+  const scoreId: string = sentencePairScore.scoreId || uuidv1();
   const query = {
     Item: {
       scoreId,
-      sentencePairId,
-      q1Score,
-      evaluatorId,
+      sentencePairId: sentencePairScore.sentencePairId,
+      q1Score: sentencePairScore.q1Score,
+      evaluatorId: sentencePairScore.evaluatorId,
+      humanTranslation: sentencePairScore.humanTranslation,
+      machineTranslation: sentencePairScore.machineTranslation,
+      original: sentencePairScore.original,
+      targetLanguage: sentencePairScore.targetLanguage,
     },
     TableName: getSentencePairScoresTableName(),
   };
@@ -233,10 +235,14 @@ const convertAttributeMapToSentencePairScore = (
   item: DocumentClient.AttributeMap
 ): SentencePairScore => {
   return new SentencePairScore(
-    item['scoreId'] || 'undefined',
     item['sentencePairId'] || 'undefined',
     item['evaluatorId'] || 'undefined',
-    Number(item['score'] || 0)
+    Number(item['q1Score'] || 0),
+    item['targetLanguage'] || 'undefined',
+    item['humanTranslation'] || 'undefined',
+    item['machineTranslation'] || 'undefined',
+    item['original'] || 'undefined',
+    item['scoreId'] || 'undefined'
   );
 };
 

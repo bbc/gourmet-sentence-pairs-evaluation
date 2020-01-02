@@ -8,6 +8,10 @@ interface SentencePairEvaluationRequestBody {
   numOfPracticeSentences: number;
   setSize: number;
   sentenceNum: number;
+  humanTranslation: string;
+  machineTranslation: string;
+  original: string;
+  targetLanguage: string;
 }
 
 interface SentencePairEvaluationRequest extends Request {

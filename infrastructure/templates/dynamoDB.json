@@ -142,6 +142,9 @@
                         "KeyType": "HASH"
                     }
                 ],
+                "PointInTimeRecoverySpecification": {
+                    "PointInTimeRecoveryEnabled": "true"
+                },
                 "ProvisionedThroughput": {
                     "ReadCapacityUnits": {
                         "Ref": "ReadCapacityUnits"
@@ -196,6 +199,9 @@
                         "KeyType": "HASH"
                     }
                 ],
+                "PointInTimeRecoverySpecification": {
+                    "PointInTimeRecoveryEnabled": "true"
+                },
                 "ProvisionedThroughput": {
                     "ReadCapacityUnits": {
                         "Ref": "ReadCapacityUnits"
@@ -250,6 +256,9 @@
                         "KeyType": "HASH"
                     }
                 ],
+                "PointInTimeRecoverySpecification": {
+                    "PointInTimeRecoveryEnabled": "true"
+                },
                 "ProvisionedThroughput": {
                     "ReadCapacityUnits": {
                         "Ref": "ReadCapacityUnits"
@@ -304,6 +313,9 @@
                         "KeyType": "HASH"
                     }
                 ],
+                "PointInTimeRecoverySpecification": {
+                    "PointInTimeRecoveryEnabled": "true"
+                },
                 "ProvisionedThroughput": {
                     "ReadCapacityUnits": {
                         "Ref": "ReadCapacityUnits"

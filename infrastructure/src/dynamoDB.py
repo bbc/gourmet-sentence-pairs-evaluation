@@ -1,6 +1,6 @@
 from troposphere import Output, Parameter, Ref, Template, Tags, Join
 from troposphere.dynamodb import (KeySchema, AttributeDefinition,
-                                  ProvisionedThroughput)
+                                  ProvisionedThroughput, PointInTimeRecoverySpecification)
 from troposphere.dynamodb import Table
 from troposphere.iam import PolicyType
 
@@ -124,25 +124,6 @@ writeunits = t.add_parameter(Parameter(
     ConstraintDescription="should be between 5 and 10000"
 ))
 
-t.addResource(PolicyType(
-    "DynamoUserPolicies",
-    PolicyName="DynamoDBUsers",
-    PolicyDocument={
-        "Version": "2012-10-17",
-        "Statement": [
-            {
-                "Sid": "Allow all DynamoDB actions",
-                "Effect": "Allow",
-                "Action": [
-                    "dynamodb:*",
-                ],
-                "Resource": "*"
-            }
-        ]
-    }
-))
-
-
 sentenceDynamoDBTable = t.add_resource(Table(
     "sentencePairsDynamoDBTable",
     AttributeDefinitions=[
@@ -161,6 +142,7 @@ sentenceDynamoDBTable = t.add_resource(Table(
         ReadCapacityUnits=Ref(readunits),
         WriteCapacityUnits=Ref(writeunits)
     ),
+    PointInTimeRecoverySpecification=PointInTimeRecoverySpecification(PointInTimeRecoveryEnabled=True),
     Tags=Tags(app="sentence-pairs-evaluation", stage=Ref(stage)),
     TableName=Join("-", ["SentencesDynamoDBTable", Ref(stage)])
 ))
@@ -183,6 +165,7 @@ sentenceSetDynamoDBTable = t.add_resource(Table(
         ReadCapacityUnits=Ref(readunits),
         WriteCapacityUnits=Ref(writeunits)
     ),
+    PointInTimeRecoverySpecification=PointInTimeRecoverySpecification(PointInTimeRecoveryEnabled=True),
     Tags=Tags(app="sentence-pairs-evaluation", stage=Ref(stage)),
     TableName=Join("-", ["SentenceSetsDynamoDBTable", Ref(stage)])
 ))
@@ -205,6 +188,7 @@ sentenceScoreDynamoDBTable = t.add_resource(Table(
         ReadCapacityUnits=Ref(readunits),
         WriteCapacityUnits=Ref(writeunits)
     ),
+    PointInTimeRecoverySpecification=PointInTimeRecoverySpecification(PointInTimeRecoveryEnabled=True),
     Tags=Tags(app="sentence-pairs-evaluation", stage=Ref(stage)),
     TableName=Join("-", ["SentenceScoreDynamoDBTable", Ref(stage)])
 ))
@@ -227,6 +211,7 @@ sentenceSetFeedbackDynamoDBTable = t.add_resource(Table(
         ReadCapacityUnits=Ref(readunits),
         WriteCapacityUnits=Ref(writeunits)
     ),
+    PointInTimeRecoverySpecification=PointInTimeRecoverySpecification(PointInTimeRecoveryEnabled=True),
     Tags=Tags(app="sentence-pairs-evaluation", stage=Ref(stage)),
     TableName=Join("-", ["SentenceSetFeedbackDynamoDBTable", Ref(stage)])
 ))

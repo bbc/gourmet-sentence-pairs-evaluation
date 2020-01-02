@@ -3,7 +3,7 @@ import { Request } from 'express';
 interface SentencePairEvaluationRequestBody {
   id: string;
   setId: string;
-  score: number;
+  q1Score: number;
   evaluatorId: string;
   numOfPracticeSentences: number;
   setSize: number;

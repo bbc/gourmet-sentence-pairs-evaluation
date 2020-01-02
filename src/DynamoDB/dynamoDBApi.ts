@@ -177,7 +177,7 @@ const getSentencePairScores = (
 
 const putSentencePairScore = (
   sentencePairId: string,
-  score: number,
+  q1Score: number,
   evaluatorId: string,
   client: DocumentClient = dynamoClient
 ): Promise<string> => {
@@ -186,7 +186,7 @@ const putSentencePairScore = (
     Item: {
       scoreId,
       sentencePairId,
-      score,
+      q1Score,
       evaluatorId,
     },
     TableName: getSentencePairScoresTableName(),

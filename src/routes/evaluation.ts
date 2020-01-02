@@ -9,6 +9,7 @@ import {
   SentencePairEvaluationRequestBody,
 } from '../models/requests';
 import { logger } from '../utils/logger';
+import { SentencePairScore } from '../models/models';
 
 const buildEvaluationRoutes = (app: Application) => {
   app.post(
@@ -22,6 +23,20 @@ const buildEvaluationRoutes = (app: Application) => {
       const numOfPracticeSentences = body.numOfPracticeSentences || 0;
       const setSize = body.setSize || 0;
       const sentenceNum = body.sentenceNum;
+      const machineTranslation = body.machineTranslation;
+      const humanTranslation = body.humanTranslation;
+      const original = body.original;
+      const targetLanguage = body.targetLanguage;
+
+      const sentencePairScore = new SentencePairScore(
+        id,
+        evaluatorId,
+        q1Score,
+        targetLanguage,
+        humanTranslation,
+        machineTranslation,
+        original
+      );
 
       if (numOfPracticeSentences > 0) {
         res.redirect(
@@ -29,7 +44,7 @@ const buildEvaluationRoutes = (app: Application) => {
             1}&setSize=${setSize}&sentenceNum=${sentenceNum}`
         );
       } else {
-        putSentencePairScore(id, q1Score, evaluatorId)
+        putSentencePairScore(sentencePairScore)
           .then(() =>
             res.redirect(
               `/evaluation?setId=${setId}&evaluatorId=${evaluatorId}&setSize=${setSize}&sentenceNum=${sentenceNum}`
@@ -65,6 +80,8 @@ const buildEvaluationRoutes = (app: Application) => {
               res.render('evaluation', {
                 sentence1: sentencePair.humanTranslation,
                 sentence2: sentencePair.machineTranslation,
+                original: sentencePair.original,
+                targetLanguage: sentencePair.targetLanguage,
                 setId,
                 sentencePairId,
                 evaluatorId,

@@ -43,14 +43,20 @@ class SentencePair {
 
 class SentencePairScore {
   constructor(
-    public scoreId: string,
     public sentencePairId: string,
     public evaluatorId: string,
-    public q1Score: number
-  ) {}
+    public q1Score: number,
+    public targetLanguage: string,
+    public humanTranslation: string,
+    public machineTranslation: string,
+    public original: string,
+    public scoreId?: string
+  ) {
+    this.scoreId = scoreId === undefined ? uuidv1() : scoreId;
+  }
 
   public convertToCSV(): string {
-    return `${this.scoreId}, ${this.sentencePairId}, ${this.evaluatorId}, ${this.q1Score}`;
+    return `${this.scoreId}, ${this.sentencePairId}, ${this.targetLanguage}, ${this.humanTranslation}, ${this.machineTranslation}, ${this.original}, ${this.evaluatorId}, ${this.q1Score}`;
   }
 }
 

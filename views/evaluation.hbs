@@ -65,6 +65,7 @@
                         <div class="row margin-top-5percent">
                             <div class="col">
                                 <form action="/evaluation"
+                                      enctype="application/x-www-form-urlencoded"
                                       method="POST">
                                     <div class="row justify-content-center">
                                         <div class="col-sm-11">
@@ -98,6 +99,18 @@
                                         <input type="hidden"
                                                name="sentenceNum"
                                                value={{sentenceNum}} />
+                                        <input type="hidden"
+                                               name="humanTranslation"
+                                               value='{{sentence1}}' />
+                                        <input type="hidden"
+                                               name="machineTranslation"
+                                               value='{{sentence2}}' />
+                                        <input type="hidden"
+                                               name="original"
+                                               value='{{original}}' />
+                                        <input type="hidden"
+                                               name="targetLanguage"
+                                               value='{{targetLanguage}}' />
                                     </div>
                                     <div class="row justify-content-center form-group">
                                         <div class="col-sm-2">

@@ -16,7 +16,16 @@ describe('/exportData/:language.csv', () => {
   test('should return 200 if scores were successfully retrieved and saved to file', async () => {
     dynamoDBApi.getSentencePairScores.mockImplementation(() => {
       return Promise.resolve([
-        new SentencePairScore('id', 'sentencePairId', 'evaluatorId', 1),
+        new SentencePairScore(
+          'sentencePairId',
+          'evaluatorId',
+          1,
+          'bg',
+          'human',
+          'machine',
+          'original',
+          'id'
+        ),
       ]);
     });
 

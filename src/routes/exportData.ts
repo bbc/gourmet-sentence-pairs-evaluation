@@ -1,8 +1,8 @@
 import { Request, Response, Application } from 'express';
 import { getSentencePairScores } from '../DynamoDB/dynamoDBApi';
-import { createWriteStream } from 'fs';
 import { logger } from '../utils/logger';
 import { SentencePairScore } from '../models/models';
+import { createObjectCsvWriter } from 'csv-writer';
 
 const buildExportDataRoute = (app: Application) => {
   getExportData(app);
@@ -34,21 +34,23 @@ const getExportDataCSV = (app: Application) => {
 const createScoresCSVFile = (
   scores: SentencePairScore[],
   fileName: string
-): Promise<string> => {
-  return new Promise<string>((resolve, reject) => {
-    const writeStream = createWriteStream(fileName);
-
-    scores.map(score => {
-      writeStream.write(`${score.convertToCSV()}\n`);
-    });
-    writeStream.end();
-
-    writeStream.on('error', error => reject(error.toString()));
-    writeStream.on('finish', () => {
-      logger.info(`Successfully created Score Data Set CSV file`);
-      resolve(fileName);
-    });
+): Promise<void> => {
+  const csvWriter = createObjectCsvWriter({
+    path: fileName,
+    header: [
+      { id: 'scoreId', title: 'id' },
+      { id: 'sentencePairId', title: 'sentence pair id' },
+      { id: 'evaluatorId', title: 'evaluator id' },
+      { id: 'q1Score', title: 'q1 score' },
+      { id: 'targetLanguage', title: 'target language' },
+      { id: 'humanTranslation', title: 'human translation' },
+      { id: 'machineTranslation', title: 'machine translation' },
+      { id: 'original', title: 'original' },
+    ],
+    encoding: 'utf8',
   });
+
+  return csvWriter.writeRecords(scores);
 };
 
 export { buildExportDataRoute };

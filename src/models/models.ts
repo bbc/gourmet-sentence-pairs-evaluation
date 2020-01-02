@@ -54,10 +54,6 @@ class SentencePairScore {
   ) {
     this.scoreId = scoreId === undefined ? uuidv1() : scoreId;
   }
-
-  public convertToCSV(): string {
-    return `${this.scoreId}, ${this.sentencePairId}, ${this.targetLanguage}, ${this.humanTranslation}, ${this.machineTranslation}, ${this.original}, ${this.evaluatorId}, ${this.q1Score}`;
-  }
 }
 
 enum Language {

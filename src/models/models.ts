@@ -46,11 +46,11 @@ class SentencePairScore {
     public scoreId: string,
     public sentencePairId: string,
     public evaluatorId: string,
-    public score: number
+    public q1Score: number
   ) {}
 
   public convertToCSV(): string {
-    return `${this.scoreId}, ${this.sentencePairId}, ${this.evaluatorId}, ${this.score}`;
+    return `${this.scoreId}, ${this.sentencePairId}, ${this.evaluatorId}, ${this.q1Score}`;
   }
 }
 

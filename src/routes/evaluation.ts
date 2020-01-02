@@ -17,7 +17,7 @@ const buildEvaluationRoutes = (app: Application) => {
       const body: SentencePairEvaluationRequestBody = req.body;
       const id: string = body.id;
       const setId: string = body.setId;
-      const score: number = body.score;
+      const q1Score: number = body.q1Score;
       const evaluatorId: string = body.evaluatorId;
       const numOfPracticeSentences = body.numOfPracticeSentences || 0;
       const setSize = body.setSize || 0;
@@ -29,7 +29,7 @@ const buildEvaluationRoutes = (app: Application) => {
             1}&setSize=${setSize}&sentenceNum=${sentenceNum}`
         );
       } else {
-        putSentencePairScore(id, score, evaluatorId)
+        putSentencePairScore(id, q1Score, evaluatorId)
           .then(() =>
             res.redirect(
               `/evaluation?setId=${setId}&evaluatorId=${evaluatorId}&setSize=${setSize}&sentenceNum=${sentenceNum}`
@@ -37,7 +37,7 @@ const buildEvaluationRoutes = (app: Application) => {
           )
           .catch(error => {
             logger.error(
-              `Unable to put score for id: ${id}, score: ${score} and evaluatorId: ${evaluatorId}. Error${error}`
+              `Unable to put score for id: ${id}, score: ${q1Score} and evaluatorId: ${evaluatorId}. Error${error}`
             );
             res.redirect('/error?errorCode=postEvaluation');
           });

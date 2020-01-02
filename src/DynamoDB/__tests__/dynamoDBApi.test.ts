@@ -21,7 +21,7 @@ describe('getSentencePairScores', () => {
             score =>
               score.sentencePairId === '1' &&
               score.evaluatorId === '2' &&
-              score.score === 5
+              score.q1Score === 5
           ).length
         ).toEqual(1);
       });
@@ -42,7 +42,7 @@ describe('getSentencePairScores', () => {
             score.scoreId === '123' &&
             score.sentencePairId === 'undefined' &&
             score.evaluatorId === 'undefined' &&
-            score.score === 0
+            score.q1Score === 0
         ).length
       ).toEqual(1);
     });

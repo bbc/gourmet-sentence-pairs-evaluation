@@ -45,9 +45,24 @@ describe('getSentencePairScores', () => {
       'original',
       '12'
     );
+
+    const sentencePairScoreTester = new SentencePairScore(
+      '1',
+      'tester',
+      5,
+      'GU',
+      'human',
+      'machine',
+      'original',
+      '12'
+    );
+
     return putSentencePairScore(sentencePairScoreBG1, mockDynamoClient)
       .then(_ => putSentencePairScore(sentencePairScoreBG2, mockDynamoClient))
-      .then(_ => putSentencePairScore(sentencePairScoreGU1, mockDynamoClient));
+      .then(_ => putSentencePairScore(sentencePairScoreGU1, mockDynamoClient))
+      .then(_ =>
+        putSentencePairScore(sentencePairScoreTester, mockDynamoClient)
+      );
   });
 
   test('should only retrieve scores put into the DB with the requested language', () => {
@@ -74,6 +89,16 @@ describe('getSentencePairScores', () => {
               score.scoreId === '10'
           ).length
         ).toEqual(1);
+      }
+    );
+  });
+
+  test('should not retrieve scores where the evaluatorId is tester', () => {
+    return getSentencePairScores(Language.GUJARATI, mockDynamoClient).then(
+      scores => {
+        expect(
+          scores.filter(score => score.evaluatorId === 'tester').length
+        ).toEqual(0);
       }
     );
   });

@@ -14,7 +14,7 @@ const buildFeedbackRoutes = (app: Application) => {
         logger.error(
           `Could not save feedback: ${feedback} for sentence set id: ${setId}. Error:${error}`
         );
-        res.redirect('/error?errorCode=postFeedback');
+        res.redirect(404, '/error?errorCode=postFeedback');
       });
   });
 

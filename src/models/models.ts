@@ -46,6 +46,7 @@ class SentencePairScore {
     public sentencePairId: string,
     public evaluatorId: string,
     public q1Score: number,
+    public q2Score: number,
     public targetLanguage: string,
     public humanTranslation: string,
     public machineTranslation: string,

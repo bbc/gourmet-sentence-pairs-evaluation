@@ -19,6 +19,7 @@ describe('getSentencePairScores', () => {
       '1',
       '2',
       5,
+      5,
       'BG',
       'human',
       'machine',
@@ -28,6 +29,7 @@ describe('getSentencePairScores', () => {
     const sentencePairScoreBG2 = new SentencePairScore(
       '1',
       '2',
+      5,
       5,
       'BG',
       'human',
@@ -39,6 +41,7 @@ describe('getSentencePairScores', () => {
       '1',
       '2',
       5,
+      5,
       'GU',
       'human',
       'machine',
@@ -49,6 +52,7 @@ describe('getSentencePairScores', () => {
     const sentencePairScoreTester = new SentencePairScore(
       '1',
       'tester',
+      5,
       5,
       'GU',
       'human',

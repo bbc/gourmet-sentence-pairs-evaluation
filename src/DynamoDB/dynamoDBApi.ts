@@ -169,9 +169,10 @@ const getSentencePairScores = (
 ): Promise<SentencePairScore[]> => {
   return client
     .scan({
-      FilterExpression: `targetLanguage = :a`,
+      FilterExpression: `targetLanguage = :a and not (evaluatorId = :b)`,
       ExpressionAttributeValues: {
         ':a': targetLanguage.toUpperCase(),
+        ':b': 'tester',
       },
       TableName: getSentencePairScoresTableName(),
     })

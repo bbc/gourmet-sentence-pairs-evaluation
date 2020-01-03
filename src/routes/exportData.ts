@@ -62,6 +62,7 @@ const createScoresCSVFile = (
       { id: 'sentencePairId', title: 'sentence pair id' },
       { id: 'evaluatorId', title: 'evaluator id' },
       { id: 'q1Score', title: 'q1 score' },
+      { id: 'q2Score', title: 'q2 score' },
       { id: 'targetLanguage', title: 'target language' },
       { id: 'humanTranslation', title: 'human translation' },
       { id: 'machineTranslation', title: 'machine translation' },

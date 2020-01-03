@@ -19,6 +19,7 @@ const buildEvaluationRoutes = (app: Application) => {
       const id: string = body.id;
       const setId: string = body.setId;
       const q1Score: number = body.q1Score;
+      const q2Score: number = body.q2Score;
       const evaluatorId: string = body.evaluatorId;
       const numOfPracticeSentences = body.numOfPracticeSentences || 0;
       const setSize = body.setSize || 0;
@@ -32,6 +33,7 @@ const buildEvaluationRoutes = (app: Application) => {
         id,
         evaluatorId,
         q1Score,
+        q2Score,
         targetLanguage,
         humanTranslation,
         machineTranslation,

@@ -24,7 +24,7 @@ const buildDatasetRoutes = (app: Application, upload: Instance) => {
               datasetMetadata
             )}. Error: ${error}`
           );
-          res.redirect('/error?errorCode=postDataset');
+          res.redirect(500, '/error?errorCode=postDataset');
         })
         .finally(() => {
           unlink(req.file.path, err => {

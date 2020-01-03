@@ -23,14 +23,14 @@ const buildBeginEvaluationRoute = (app: Application) => {
             logger.error(
               `Unable to add evaluatorId:${evaluatorId} to sentence set:${setId}. Error: ${error}`
             );
-            res.redirect('/error?errorCode=postStartFailEvaluatorId');
+            res.redirect(500, '/error?errorCode=postStartFailEvaluatorId');
           });
       })
       .catch(error => {
         logger.error(
           `Unable to retrieve sentence set with id: ${setId}. Error: ${error}`
         );
-        res.redirect('/error?errorCode=postStartFailSentenceSet');
+        res.redirect(404, '/error?errorCode=postStartFailSentenceSet');
       });
   });
 

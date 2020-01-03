@@ -54,7 +54,7 @@ const buildEvaluationRoutes = (app: Application) => {
             logger.error(
               `Unable to put score for id: ${id}, score: ${q1Score} and evaluatorId: ${evaluatorId}. Error${error}`
             );
-            res.redirect('/error?errorCode=postEvaluation');
+            res.redirect(500, '/error?errorCode=postEvaluation');
           });
       }
     }
@@ -94,7 +94,7 @@ const buildEvaluationRoutes = (app: Application) => {
               logger.error(
                 `Unable to get sentence pair with id ${sentencePairId}. Error: ${error}`
               );
-              res.redirect('/error?errorCode=getEvaluation');
+              res.redirect(404, '/error?errorCode=getEvaluation');
             });
         } else {
           res.redirect(`/feedback?setId=${setId}&evaluatorId=${evaluatorId}`);
@@ -104,7 +104,7 @@ const buildEvaluationRoutes = (app: Application) => {
         logger.error(
           `Unable to get sentence set with id ${setId}. Error: ${error}`
         );
-        res.redirect('/error?errorCode=getEvaluation');
+        res.redirect(404, '/error?errorCode=getEvaluation');
       });
   });
 };

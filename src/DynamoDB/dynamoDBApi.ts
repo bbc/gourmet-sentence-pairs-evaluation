@@ -164,10 +164,17 @@ const putSentencePair = (
 };
 
 const getSentencePairScores = (
+  targetLanguage: Language,
   client: DocumentClient = dynamoClient
 ): Promise<SentencePairScore[]> => {
   return client
-    .scan({ TableName: getSentencePairScoresTableName() })
+    .scan({
+      FilterExpression: `targetLanguage = :a`,
+      ExpressionAttributeValues: {
+        ':a': targetLanguage.toUpperCase(),
+      },
+      TableName: getSentencePairScoresTableName(),
+    })
     .promise()
     .then(output => {
       const items = output.Items || [];

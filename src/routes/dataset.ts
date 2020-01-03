@@ -39,12 +39,12 @@ const buildDatasetRoutes = (app: Application, upload: Instance) => {
   app.get('/dataset', (req: Request, res: Response) => {
     const languages = Object.keys(Language);
     // Get all possible values for Language enum
-    const languageOptions = languages.map((languageName, i) => {
+    const languageOptions = languages.map(languageName => {
       return {
         displayName:
           languageName.charAt(0).toUpperCase() +
           languageName.slice(1).toLowerCase(),
-        language: languages[i],
+        language: languageName,
       };
     });
     res.render('dataset', { languageOptions });

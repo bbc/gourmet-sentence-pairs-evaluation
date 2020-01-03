@@ -18,6 +18,14 @@ interface SentencePairEvaluationRequest extends Request {
   body: SentencePairEvaluationRequestBody;
 }
 
+interface ExportRequest extends Request {
+  body: ExportRequestBody;
+}
+
+interface ExportRequestBody {
+  language: string;
+}
+
 interface FeedbackRequest extends Request {
   body: FeedbackRequestBody;
 }
@@ -61,4 +69,5 @@ export {
   DatasetBody,
   DatasetFile,
   StartRequest,
+  ExportRequest,
 };

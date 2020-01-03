@@ -2,11 +2,24 @@ import * as supertest from 'supertest';
 import app from '../../app';
 import { SuperTest, Test } from 'supertest';
 import { SentencePairScore } from '../../models/models';
+import { generateLanguageOptions } from '../exportData';
 
 jest.mock('../../DynamoDB/dynamoDBApi');
 const dynamoDBApi = require('../../DynamoDB/dynamoDBApi');
 
-describe('/exportData/:language.csv', () => {
+describe('GET /exportData', () => {
+  let mockApp: SuperTest<Test>;
+  beforeAll(() => {
+    mockApp = supertest(app);
+  });
+
+  test('should return 200', async () => {
+    const response = await mockApp.get('/exportData');
+    expect(response.status).toBe(200);
+  });
+});
+
+describe('POST /exportData', () => {
   let mockApp: SuperTest<Test>;
 
   beforeAll(() => {
@@ -29,28 +42,50 @@ describe('/exportData/:language.csv', () => {
       ]);
     });
 
-    const response = await mockApp.get('/exportData/bulgarian.csv');
+    const response = await mockApp
+      .post('/exportData')
+      .send({ language: 'SWAHILI' });
     expect(response.status).toBe(200);
+    expect(response.header['content-disposition']).toEqual(
+      'attachment; filename="sw.csv"'
+    );
+    expect(response.header['content-type']).toEqual('text/csv; charset=UTF-8');
   });
 
-  test('should redirect and never call createScoresCSVFile if data cannot be got from dynamoDB', async () => {
+  test('should redirect to the error page with a 500 if data cannot be retrieved from dynamoDB', async () => {
     dynamoDBApi.getSentencePairScores.mockImplementation(() => {
       return Promise.reject('error');
     });
 
-    const response = await mockApp.get('/exportData/bulgarian.csv');
-    expect(response.redirect).toBeTruthy();
+    const response = await mockApp
+      .post('/exportData')
+      .send({ language: 'SWAHILI' });
+    expect(response.status).toBe(500);
+    expect(response.header['location']).toEqual(
+      '/error?errorCode=postExportDataFailCSVCreate'
+    );
+  });
+
+  test('should redirect to the error page with a 404 if the language value sent is not valid', async () => {
+    const response = await mockApp
+      .post('/exportData')
+      .send({ language: 'FAKE' });
+    expect(response.status).toBe(404);
+    expect(response.header['location']).toEqual(
+      '/error?errorCode=postExportFailLanguage'
+    );
   });
 });
 
-describe('GET /exportData', () => {
-  let mockApp: SuperTest<Test>;
-  beforeAll(() => {
-    mockApp = supertest(app);
-  });
+describe('generateLanguageOptions', () => {
+  test('should return a list with an object for all language options available according to the Language enum', () => {
+    const expectedResponse = [
+      { displayName: 'Bulgarian', language: 'BULGARIAN' },
+      { displayName: 'Gujarati', language: 'GUJARATI' },
+      { displayName: 'Swahili', language: 'SWAHILI' },
+      { displayName: 'English', language: 'ENGLISH' },
+    ];
 
-  test('should return 200', async () => {
-    const response = await mockApp.get('/exportData');
-    expect(response.status).toBe(200);
+    expect(generateLanguageOptions()).toEqual(expectedResponse);
   });
 });

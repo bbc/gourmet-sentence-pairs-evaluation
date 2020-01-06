@@ -5,3 +5,4 @@ venv
 .vscode
 scripts/*.txt
 logs
+uploads/*

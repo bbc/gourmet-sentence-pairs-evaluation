@@ -6,7 +6,6 @@ interface SentencePairEvaluationRequestBody {
   q1Score: number;
   q2Score: number;
   evaluatorId: string;
-  numOfPracticeSentences: number;
   setSize: number;
   sentenceNum: number;
   humanTranslation: string;

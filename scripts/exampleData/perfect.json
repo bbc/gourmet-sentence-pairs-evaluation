@@ -1,0 +1,29 @@
+{
+  "sentences": [
+    {
+      "original": "Test1",
+      "humanTranslation": "Human1",
+      "machineTranslation": "Machine1"
+    },
+    {
+      "original": "Test2",
+      "humanTranslation": "Human2",
+      "machineTranslation": "Machine2"
+    },
+    {
+      "original": "Test3",
+      "humanTranslation": "Human3",
+      "machineTranslation": "Machine3"
+    },
+    {
+      "original": "Test4",
+      "humanTranslation": "Human4",
+      "machineTranslation": "Machine4"
+    },
+    {
+      "original": "Test5",
+      "humanTranslation": "Human5",
+      "machineTranslation": "Machine5"
+    }
+  ]
+}

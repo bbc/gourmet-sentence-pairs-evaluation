@@ -28,6 +28,7 @@ const buildEvaluationRoutes = (app: Application) => {
       const humanTranslation = body.humanTranslation;
       const original = body.original;
       const targetLanguage = body.targetLanguage;
+      const sentencePairType = body.sentencePairType;
 
       const sentencePairScore = new SentencePairScore(
         id,
@@ -37,7 +38,8 @@ const buildEvaluationRoutes = (app: Application) => {
         targetLanguage,
         humanTranslation,
         machineTranslation,
-        original
+        original,
+        sentencePairType
       );
 
       if (numOfPracticeSentences > 0) {
@@ -85,6 +87,7 @@ const buildEvaluationRoutes = (app: Application) => {
                 original: sentencePair.original,
                 targetLanguage: sentencePair.targetLanguage,
                 setId,
+                sentencePairType: sentencePair.sentencePairType,
                 sentencePairId,
                 evaluatorId,
                 numOfPracticeSentences,

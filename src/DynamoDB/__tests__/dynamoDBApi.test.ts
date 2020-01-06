@@ -24,6 +24,7 @@ describe('getSentencePairScores', () => {
       'human',
       'machine',
       'original',
+      'A',
       '10'
     );
     const sentencePairScoreBG2 = new SentencePairScore(
@@ -35,6 +36,7 @@ describe('getSentencePairScores', () => {
       'human',
       'machine',
       'original',
+      'A',
       '11'
     );
     const sentencePairScoreGU1 = new SentencePairScore(
@@ -46,6 +48,7 @@ describe('getSentencePairScores', () => {
       'human',
       'machine',
       'original',
+      'A',
       '12'
     );
 
@@ -58,6 +61,7 @@ describe('getSentencePairScores', () => {
       'human',
       'machine',
       'original',
+      'A',
       '12'
     );
 
@@ -90,6 +94,7 @@ describe('getSentencePairScores', () => {
               score.humanTranslation === 'human' &&
               score.machineTranslation === 'machine' &&
               score.original === 'original' &&
+              score.sentencePairType === 'A' &&
               score.scoreId === '10'
           ).length
         ).toEqual(1);
@@ -134,7 +139,8 @@ describe('getSentencePairScores', () => {
               score.q1Score === 0 &&
               score.humanTranslation === 'undefined' &&
               score.machineTranslation === 'undefined' &&
-              score.original === 'undefined'
+              score.original === 'undefined' &&
+              score.sentencePairType === 'A'
           ).length
         ).toEqual(1);
       }

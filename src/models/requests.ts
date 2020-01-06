@@ -13,6 +13,7 @@ interface SentencePairEvaluationRequestBody {
   machineTranslation: string;
   original: string;
   targetLanguage: string;
+  sentencePairType: string;
 }
 
 interface SentencePairEvaluationRequest extends Request {
@@ -48,9 +49,14 @@ interface DatasetBody {
 }
 
 interface DatasetFile {
-  sourceText: string;
-  humanTranslatedText: string;
-  machineTranslatedText: string;
+  sentences: DatasetSentence[];
+}
+
+interface DatasetSentence {
+  original: string;
+  humanTranslation: string;
+  machineTranslation: string;
+  sentencePairType: string;
 }
 
 interface StartRequest extends Request {
@@ -69,6 +75,7 @@ export {
   DatasetRequest,
   DatasetBody,
   DatasetFile,
+  DatasetSentence,
   StartRequest,
   ExportRequest,
 };

@@ -10,33 +10,16 @@ const cleanData = (
   dataset: DatasetBody,
   datasetFile: DatasetFile
 ): Option<Dataset> => {
-  const regex = /[\n\r]+/;
-  const sourceSentences = datasetFile.sourceText
-    .split(regex)
-    .filter(s => s !== '');
-  const humanTranslatedSentences = datasetFile.humanTranslatedText
-    .split(regex)
-    .filter(s => s !== '');
-  const machineTranslatedSentences = datasetFile.machineTranslatedText
-    .split(regex)
-    .filter(s => s !== '');
   const sourceLanguage: Language = (Language as any)[
     dataset.sourceLanguage.toUpperCase()
   ];
   const targetLanguage: Language = (Language as any)[
     dataset.targetLanguage.toUpperCase()
   ];
-  if (
-    sourceSentences.length === machineTranslatedSentences.length &&
-    sourceSentences.length === humanTranslatedSentences.length &&
-    targetLanguage !== undefined &&
-    sourceLanguage !== undefined
-  ) {
+  if (targetLanguage !== undefined && sourceLanguage !== undefined) {
     return new Some(
       new Dataset(
-        sourceSentences,
-        humanTranslatedSentences,
-        machineTranslatedSentences,
+        datasetFile.sentences,
         dataset.setName,
         sourceLanguage,
         targetLanguage
@@ -55,17 +38,14 @@ const cleanData = (
  * using the  'cleanData' function
  */
 const generateSentencePairs = (dataset: Dataset): SentencePair[] => {
-  const sourceSentences = dataset.sourceSentences;
-  const humanTranslatedSentences = dataset.humanTranslatedSentences;
-  const machineTranslatedSentences = dataset.machineTranslatedSentences;
-
-  const sentencePairs = sourceSentences.map((sentence, i) => {
+  const sentencePairs = dataset.sentences.map(sentence => {
     return new SentencePair(
-      sentence,
-      humanTranslatedSentences[i] || 'none',
-      machineTranslatedSentences[i] || 'none',
+      sentence.original,
+      sentence.humanTranslation,
+      sentence.machineTranslation,
       dataset.sourceLanguage,
-      dataset.targetLanguage
+      dataset.targetLanguage,
+      sentence.sentencePairType
     );
   });
   return sentencePairs;

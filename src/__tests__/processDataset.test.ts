@@ -1,6 +1,6 @@
 import { cleanData, submitDataset } from '../processDataset';
 import { Dataset, Language } from '../models/models';
-import { DatasetBody, DatasetFile } from '../models/requests';
+import { DatasetBody, DatasetFile, DatasetSentence } from '../models/requests';
 import { Some, None } from '../models/generics';
 
 jest.mock('../DynamoDB/dynamoDBApi');
@@ -13,152 +13,24 @@ describe('cleanData', () => {
       sourceLanguage: 'ENGLISH',
       targetLanguage: 'BULGARIAN',
     };
+
+    const sentence: DatasetSentence = {
+      original: 'Sentence1',
+      humanTranslation: 'human',
+      machineTranslation: 'machine',
+      sentencePairType: 'A',
+    };
+
     const file: DatasetFile = {
-      sourceText: 'Sentence 1.\nSentence 2.',
-      machineTranslatedText: 'Sentence 1.\nSentence 2.',
-      humanTranslatedText: 'Sentence 1.\nSentence 2.',
+      sentences: [sentence],
     };
     const expectedDataset: Dataset = new Dataset(
-      ['Sentence 1.', 'Sentence 2.'],
-      ['Sentence 1.', 'Sentence 2.'],
-      ['Sentence 1.', 'Sentence 2.'],
+      [sentence],
       '',
       Language.ENGLISH,
       Language.BULGARIAN
     );
     const expectedOutput = new Some(expectedDataset);
-    expect(cleanData(input, file)).toEqual(expectedOutput);
-  });
-
-  test('should return a Some of type Dataset when carriage returns are used to split data', () => {
-    const input: DatasetBody = {
-      setName: 'test',
-      sourceLanguage: 'ENGLISH',
-      targetLanguage: 'BULGARIAN',
-    };
-    const file: DatasetFile = {
-      sourceText: 'Sentence 1.\r\nSentence 2.\r\n',
-      humanTranslatedText: 'Sentence 1.\r\nSentence 2.\r\n',
-      machineTranslatedText: 'Sentence 1.\r\nSentence 2.\r\n',
-    };
-    const expectedOutput = new Some(
-      new Dataset(
-        ['Sentence 1.', 'Sentence 2.'],
-        ['Sentence 1.', 'Sentence 2.'],
-        ['Sentence 1.', 'Sentence 2.'],
-        'test',
-        Language.ENGLISH,
-        Language.BULGARIAN
-      )
-    );
-    expect(cleanData(input, file)).toEqual(expectedOutput);
-  });
-
-  test('should not create sentences that are empty strings when multiple carriage returns are used to split data', () => {
-    const input: DatasetBody = {
-      setName: 'test',
-      sourceLanguage: 'ENGLISH',
-      targetLanguage: 'BULGARIAN',
-    };
-    const file: DatasetFile = {
-      sourceText: 'Sentence 1.\r\r\r\nSentence 2.\r\n',
-      humanTranslatedText: 'Sentence 1.\r\nSentence 2.\r\n',
-      machineTranslatedText: 'Sentence 1.\r\nSentence 2.\r\n',
-    };
-    const expectedOutput = new Some(
-      new Dataset(
-        ['Sentence 1.', 'Sentence 2.'],
-        ['Sentence 1.', 'Sentence 2.'],
-        ['Sentence 1.', 'Sentence 2.'],
-        'test',
-        Language.ENGLISH,
-        Language.BULGARIAN
-      )
-    );
-    expect(cleanData(input, file)).toEqual(expectedOutput);
-  });
-
-  test('should not create sentences that are empty strings when multiple new lines are used to split data', () => {
-    const input: DatasetBody = {
-      setName: 'test',
-      sourceLanguage: 'ENGLISH',
-      targetLanguage: 'BULGARIAN',
-    };
-    const file: DatasetFile = {
-      sourceText: 'Sentence 1.\n\n\n\nSentence 2.\r\n',
-      humanTranslatedText: 'Sentence 1.\r\nSentence 2.\r\n',
-      machineTranslatedText: 'Sentence 1.\r\nSentence 2.\r\n',
-    };
-    const expectedOutput = new Some(
-      new Dataset(
-        ['Sentence 1.', 'Sentence 2.'],
-        ['Sentence 1.', 'Sentence 2.'],
-        ['Sentence 1.', 'Sentence 2.'],
-        'test',
-        Language.ENGLISH,
-        Language.BULGARIAN
-      )
-    );
-    expect(cleanData(input, file)).toEqual(expectedOutput);
-  });
-
-  test('should return a None if machine translated text does not have enough sentences', () => {
-    const input: DatasetBody = {
-      setName: '',
-      sourceLanguage: 'ENGLISH',
-      targetLanguage: 'BULGARIAN',
-    };
-    const file: DatasetFile = {
-      sourceText: 'Sentence 1.\nSentence 2.',
-      machineTranslatedText: '',
-      humanTranslatedText: 'Sentence 1.\nSentence 2.',
-    };
-    const expectedOutput = new None();
-    expect(cleanData(input, file)).toEqual(expectedOutput);
-  });
-
-  test('should return a None if machine translated text has too many sentences', () => {
-    const input: DatasetBody = {
-      setName: '',
-      sourceLanguage: 'ENGLISH',
-      targetLanguage: 'BULGARIAN',
-    };
-    const file: DatasetFile = {
-      sourceText: 'Sentence 1.\nSentence 2.',
-      machineTranslatedText: 'Sentence 1.\nSentence 2.\nSentence 3.',
-      humanTranslatedText: 'Sentence 1.\nSentence 2.',
-    };
-    const expectedOutput = new None();
-    expect(cleanData(input, file)).toEqual(expectedOutput);
-  });
-
-  test('should return a None if human translated text does not have enough sentences', () => {
-    const input: DatasetBody = {
-      setName: '',
-      sourceLanguage: 'ENGLISH',
-      targetLanguage: 'BULGARIAN',
-    };
-    const file: DatasetFile = {
-      sourceText: 'Sentence 1.\nSentence 2.',
-      machineTranslatedText: 'Sentence 1.\nSentence 2.',
-      humanTranslatedText: '',
-    };
-    const expectedOutput = new None();
-    expect(cleanData(input, file)).toEqual(expectedOutput);
-  });
-
-  test('should return a None if human translated text has too many sentences', () => {
-    const input: DatasetBody = {
-      setName: '',
-      sourceLanguage: 'ENGLISH',
-      targetLanguage: 'BULGARIAN',
-    };
-    const file: DatasetFile = {
-      sourceText: 'Sentence 1.\nSentence 2.',
-      machineTranslatedText: 'Sentence 1.\nSentence 2.',
-      humanTranslatedText: 'Sentence 1.\nSentence 2.\nSentence 3.',
-    };
-    const expectedOutput = new None();
     expect(cleanData(input, file)).toEqual(expectedOutput);
   });
 
@@ -168,10 +40,15 @@ describe('cleanData', () => {
       sourceLanguage: 'GREEK',
       targetLanguage: 'BULGARIAN',
     };
+    const sentence: DatasetSentence = {
+      original: 'Sentence1',
+      humanTranslation: 'human',
+      machineTranslation: 'machine',
+      sentencePairType: 'A',
+    };
+
     const file: DatasetFile = {
-      sourceText: 'Sentence 1.\nSentence 2.',
-      machineTranslatedText: 'Sentence 1.\nSentence 2.',
-      humanTranslatedText: 'Sentence 1.\nSentence 2.',
+      sentences: [sentence],
     };
     const expectedOutput = new None();
     expect(cleanData(input, file)).toEqual(expectedOutput);
@@ -183,10 +60,15 @@ describe('cleanData', () => {
       sourceLanguage: 'ENGLISH',
       targetLanguage: 'GREEK',
     };
+    const sentence: DatasetSentence = {
+      original: 'Sentence1',
+      humanTranslation: 'human',
+      machineTranslation: 'machine',
+      sentencePairType: 'A',
+    };
+
     const file: DatasetFile = {
-      sourceText: 'Sentence 1.\nSentence 2.',
-      machineTranslatedText: 'Sentence 1.\nSentence 2.',
-      humanTranslatedText: 'Sentence 1.\nSentence 2.',
+      sentences: [sentence],
     };
     const expectedOutput = new None();
     expect(cleanData(input, file)).toEqual(expectedOutput);
@@ -198,15 +80,18 @@ describe('cleanData', () => {
       sourceLanguage: 'english',
       targetLanguage: 'BULGARIAN',
     };
+    const sentence: DatasetSentence = {
+      original: 'Sentence1',
+      humanTranslation: 'human',
+      machineTranslation: 'machine',
+      sentencePairType: 'A',
+    };
+
     const file: DatasetFile = {
-      sourceText: 'Sentence 1.\nSentence 2.',
-      machineTranslatedText: 'Sentence 1.\nSentence 2.',
-      humanTranslatedText: 'Sentence 1.\nSentence 2.',
+      sentences: [sentence],
     };
     const expectedDataset: Dataset = new Dataset(
-      ['Sentence 1.', 'Sentence 2.'],
-      ['Sentence 1.', 'Sentence 2.'],
-      ['Sentence 1.', 'Sentence 2.'],
+      [sentence],
       '',
       Language.ENGLISH,
       Language.BULGARIAN
@@ -221,15 +106,18 @@ describe('cleanData', () => {
       sourceLanguage: 'ENGLISH',
       targetLanguage: 'bulgarian',
     };
+    const sentence: DatasetSentence = {
+      original: 'Sentence1',
+      humanTranslation: 'human',
+      machineTranslation: 'machine',
+      sentencePairType: 'A',
+    };
+
     const file: DatasetFile = {
-      sourceText: 'Sentence 1.\nSentence 2.',
-      machineTranslatedText: 'Sentence 1.\nSentence 2.',
-      humanTranslatedText: 'Sentence 1.\nSentence 2.',
+      sentences: [sentence],
     };
     const expectedDataset: Dataset = new Dataset(
-      ['Sentence 1.', 'Sentence 2.'],
-      ['Sentence 1.', 'Sentence 2.'],
-      ['Sentence 1.', 'Sentence 2.'],
+      [sentence],
       '',
       Language.ENGLISH,
       Language.BULGARIAN
@@ -252,15 +140,20 @@ describe('submitDataset', () => {
       sourceLanguage: 'ENGLISH',
       targetLanguage: 'BULGARIAN',
     };
+    const sentence: DatasetSentence = {
+      original: 'Sentence1',
+      humanTranslation: 'human',
+      machineTranslation: 'machine',
+      sentencePairType: 'A',
+    };
+
     const file: DatasetFile = {
-      sourceText: 'Sentence 1.\nSentence 2.',
-      machineTranslatedText: 'Sentence 1.\nSentence 2.',
-      humanTranslatedText: 'Sentence 1.\nSentence 2.',
+      sentences: [sentence],
     };
 
     const mockCleaningFunction = (body: DatasetBody, file: DatasetFile) =>
       new Some(
-        new Dataset([], [], [], '', Language.BULGARIAN, Language.BULGARIAN)
+        new Dataset([sentence], '', Language.BULGARIAN, Language.BULGARIAN)
       );
 
     return submitDataset(input, file, mockCleaningFunction).then(id => {
@@ -275,17 +168,21 @@ describe('submitDataset', () => {
       return Promise.resolve(datasetIDInDB);
     });
 
+    // Cleaned data will be 'None'. as source language is invalid
     const input: DatasetBody = {
       setName: '',
-      sourceLanguage: 'ENGLISH',
+      sourceLanguage: 'GREEK',
       targetLanguage: 'BULGARIAN',
     };
+    const sentence: DatasetSentence = {
+      original: 'Sentence1',
+      humanTranslation: 'human',
+      machineTranslation: 'machine',
+      sentencePairType: 'A',
+    };
 
-    // Cleaned data will be none no source text
     const file: DatasetFile = {
-      sourceText: '',
-      machineTranslatedText: 'Sentence 1.\nSentence 2.',
-      humanTranslatedText: 'Sentence 1.\nSentence 2.',
+      sentences: [sentence],
     };
 
     const mockCleaningFunction = (body: DatasetBody, file: DatasetFile) =>
@@ -294,7 +191,7 @@ describe('submitDataset', () => {
     return expect(
       submitDataset(input, file, mockCleaningFunction)
     ).rejects.toMatch(
-      'Could not clean data. Dataset:{"setName":"","sourceLanguage":"ENGLISH","targetLanguage":"BULGARIAN"}'
+      'Could not clean data. Dataset:{"setName":"","sourceLanguage":"GREEK","targetLanguage":"BULGARIAN"}'
     );
   });
 
@@ -311,17 +208,21 @@ describe('submitDataset', () => {
       return new Some('123');
     });
 
+    // Cleaned data will be 'None'. as source language is invalid
     const input: DatasetBody = {
       setName: '',
-      sourceLanguage: 'ENGLISH',
+      sourceLanguage: 'GREEK',
       targetLanguage: 'BULGARIAN',
     };
+    const sentence: DatasetSentence = {
+      original: 'Sentence1',
+      humanTranslation: 'human',
+      machineTranslation: 'machine',
+      sentencePairType: 'A',
+    };
 
-    // Cleaned data will be none no source text
     const file: DatasetFile = {
-      sourceText: '',
-      machineTranslatedText: 'Sentence 1.\nSentence 2.',
-      humanTranslatedText: 'Sentence 1.\nSentence 2.',
+      sentences: [sentence],
     };
 
     const mockCleaningFunction = (body: DatasetBody, file: DatasetFile) =>
@@ -330,7 +231,7 @@ describe('submitDataset', () => {
     return expect(
       submitDataset(input, file, mockCleaningFunction)
     ).rejects.toMatch(
-      'Could not clean data. Dataset:{"setName":"","sourceLanguage":"ENGLISH","targetLanguage":"BULGARIAN"}'
+      'Could not clean data. Dataset:{"setName":"","sourceLanguage":"GREEK","targetLanguage":"BULGARIAN"}'
     );
   });
 });

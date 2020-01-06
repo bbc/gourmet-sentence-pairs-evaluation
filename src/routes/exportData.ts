@@ -60,6 +60,7 @@ const createScoresCSVFile = (
     header: [
       { id: 'scoreId', title: 'id' },
       { id: 'sentencePairId', title: 'sentence pair id' },
+      { id: 'sentencePairType', title: 'sentence pair type' },
       { id: 'evaluatorId', title: 'evaluator id' },
       { id: 'q1Score', title: 'q1 score' },
       { id: 'q2Score', title: 'q2 score' },

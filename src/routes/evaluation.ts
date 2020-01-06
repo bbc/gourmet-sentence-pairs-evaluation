@@ -21,7 +21,6 @@ const buildEvaluationRoutes = (app: Application) => {
       const q1Score: number = body.q1Score;
       const q2Score: number = body.q2Score;
       const evaluatorId: string = body.evaluatorId;
-      const numOfPracticeSentences = body.numOfPracticeSentences || 0;
       const setSize = body.setSize || 0;
       const sentenceNum = body.sentenceNum;
       const machineTranslation = body.machineTranslation;
@@ -42,34 +41,24 @@ const buildEvaluationRoutes = (app: Application) => {
         sentencePairType
       );
 
-      if (numOfPracticeSentences > 0) {
-        res.redirect(
-          `/evaluation?setId=${setId}&evaluatorId=${evaluatorId}&numOfPracticeSentences=${numOfPracticeSentences -
-            1}&setSize=${setSize}&sentenceNum=${sentenceNum}`
-        );
-      } else {
-        putSentencePairScore(sentencePairScore)
-          .then(() =>
-            res.redirect(
-              `/evaluation?setId=${setId}&evaluatorId=${evaluatorId}&setSize=${setSize}&sentenceNum=${sentenceNum}`
-            )
+      putSentencePairScore(sentencePairScore)
+        .then(() =>
+          res.redirect(
+            `/evaluation?setId=${setId}&evaluatorId=${evaluatorId}&setSize=${setSize}&sentenceNum=${sentenceNum}`
           )
-          .catch(error => {
-            logger.error(
-              `Unable to put score for id: ${id}, score: ${q1Score} and evaluatorId: ${evaluatorId}. Error${error}`
-            );
-            res.redirect(500, '/error?errorCode=postEvaluation');
-          });
-      }
+        )
+        .catch(error => {
+          logger.error(
+            `Unable to put score for id: ${id}, score: ${q1Score} and evaluatorId: ${evaluatorId}. Error${error}`
+          );
+          res.redirect(500, '/error?errorCode=postEvaluation');
+        });
     }
   );
 
   app.get('/evaluation', (req: Request, res: Response) => {
     const setId: string = req.query.setId;
     const evaluatorId: string = req.query.evaluatorId;
-    const numOfPracticeSentences: number = Number(
-      req.query.numOfPracticeSentences || 0
-    );
     const setSize: number = Number(req.query.setSize || 0);
     const sentenceNum: number = Number(req.query.sentenceNum || 0);
     getSentenceSet(setId)
@@ -90,7 +79,6 @@ const buildEvaluationRoutes = (app: Application) => {
                 sentencePairType: sentencePair.sentencePairType,
                 sentencePairId,
                 evaluatorId,
-                numOfPracticeSentences,
                 setSize,
                 sentenceNum: sentenceNum + 1,
               });

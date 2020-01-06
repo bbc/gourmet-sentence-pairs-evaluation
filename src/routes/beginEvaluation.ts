@@ -16,7 +16,7 @@ const buildBeginEvaluationRoute = (app: Application) => {
               sentenceSet.sentenceIds || new Set()
             );
             res.redirect(
-              `/evaluation?setId=${setId}&numOfPracticeSentences=5&evaluatorId=${evaluatorId}&setSize=${sentenceIdsList.length}&currentSentenceNum=0`
+              `/evaluation?setId=${setId}&evaluatorId=${evaluatorId}&setSize=${sentenceIdsList.length}&currentSentenceNum=0`
             );
           })
           .catch(error => {

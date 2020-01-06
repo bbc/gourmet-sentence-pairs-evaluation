@@ -45,9 +45,9 @@ The names of the database tables are in the [`.env`](./.env) file. There are 4 t
 
 2. SENTENCES_TABLE_NAME - Contains the sentences. Each sentence has an original sentence in the source language as well as a translation into the target language done by a human and another done by a machine.
 
-| sentenceId | original | humanTranslation | machineTranslation | sourceLanguage | targetLanguage |
-|------------|----------|------------------|--------------------|----------------|----------------|
-| string     | string   | string           | string             | string         | string         |
+| sentenceId | original | humanTranslation | machineTranslation | sourceLanguage | targetLanguage | sentencePairType |
+|------------|----------|------------------|--------------------|----------------|----------------|------------------|
+| string     | string   | string           | string             | string         | string         |string            |
 
 3. SENTENCE_SCORES_TABLE_NAME - Contains scores given, which sentence pair the score was for and who gave it.
 

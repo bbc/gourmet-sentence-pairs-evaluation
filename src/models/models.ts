@@ -1,10 +1,9 @@
 import * as uuidv1 from 'uuid/v1';
+import { DatasetSentence } from './requests';
 
 class Dataset {
   constructor(
-    public sourceSentences: string[],
-    public humanTranslatedSentences: string[],
-    public machineTranslatedSentences: string[],
+    public sentences: DatasetSentence[],
     public setName: string,
     public sourceLanguage: Language,
     public targetLanguage: Language
@@ -35,6 +34,7 @@ class SentencePair {
     public machineTranslation: string,
     public sourceLanguage: Language,
     public targetLanguage: Language,
+    public sentencePairType: string,
     sentenceId?: string
   ) {
     this.sentenceId = sentenceId === undefined ? uuidv1() : sentenceId;
@@ -51,6 +51,7 @@ class SentencePairScore {
     public humanTranslation: string,
     public machineTranslation: string,
     public original: string,
+    public sentencePairType: string,
     public scoreId?: string
   ) {
     this.scoreId = scoreId === undefined ? uuidv1() : scoreId;

@@ -131,7 +131,7 @@ const getSentencePair = (id: string): Promise<SentencePair> => {
       } else {
         const sentencePair: SentencePair = (output
           .Items[0] as unknown) as SentencePair;
-        return sentencePair;
+        return convertAttributeMapToSentencePair(sentencePair);
       }
     });
 };
@@ -151,6 +151,7 @@ const putSentencePair = (
       machineTranslation: sentenceData.machineTranslation,
       sourceLanguage: sentenceData.sourceLanguage.toUpperCase(),
       targetLanguage: sentenceData.targetLanguage.toUpperCase(),
+      sentencePairType: sentenceData.sentencePairType.toUpperCase(),
     },
     TableName: getSentencesTableName(),
   };
@@ -199,6 +200,7 @@ const putSentencePairScore = (
       machineTranslation: sentencePairScore.machineTranslation,
       original: sentencePairScore.original,
       targetLanguage: sentencePairScore.targetLanguage,
+      sentencePairType: sentencePairScore.sentencePairType,
     },
     TableName: getSentencePairScoresTableName(),
   };
@@ -238,7 +240,7 @@ const putSentenceSetFeedback = (
 // Helper Functions
 
 /**
- * DynamoDB returns an attribute map when queried. This converts a generic attribute map to a SentenceSet object
+ * DynamoDB returns an attribute map when queried. This converts a generic attribute map to a SentencePairScore object
  */
 const convertAttributeMapToSentencePairScore = (
   item: DocumentClient.AttributeMap
@@ -252,7 +254,25 @@ const convertAttributeMapToSentencePairScore = (
     item['humanTranslation'] || 'undefined',
     item['machineTranslation'] || 'undefined',
     item['original'] || 'undefined',
+    item['sentencePairType'] || 'A',
     item['scoreId'] || 'undefined'
+  );
+};
+
+/**
+ * DynamoDB returns an attribute map when queried. This converts a generic attribute map to a SentencePair object
+ */
+const convertAttributeMapToSentencePair = (
+  item: DocumentClient.AttributeMap
+): SentencePair => {
+  return new SentencePair(
+    item['original'] || 'undefined',
+    item['humanTranslation'] || 'undefined',
+    item['machineTranslation'] || 'undefined',
+    item['sourceLanguage'] || 'undefined',
+    item['targetLanguage'] || 'undefined',
+    item['sentencePairType'] || 'A',
+    item['sentenceId'] || 'undefined'
   );
 };
 

@@ -54,7 +54,16 @@
                                 <form action="/evaluation"
                                       enctype="application/x-www-form-urlencoded"
                                       method="POST">
+
                                     <div class="row justify-content-center">
+                                        <div class="col-sm-9">
+                                            <p>The black text adequately expresses the meaning of the grey text.</p>
+                                        </div>
+                                        <div class="col-sm-9">
+                                            <input type="range"
+                                                   class="evaluation__form__slider"
+                                                   name="q1Score">
+                                        </div>
                                         <div class="col-sm-11">
                                             <label for="q1Score"
                                                    class="float-left">0%</label>
@@ -62,51 +71,55 @@
                                                    class="float-right">100%</label>
                                         </div>
                                     </div>
-                                    <div class="row justify-content-center form-group">
-                                        <div class="col-sm-9">
-                                            <p>The black text adequately expresses the meaning of the grey text.</p>
-                                            <input type="range"
-                                                   class="evaluation__form__slider"
-                                                   name="q1Score">
-                                        </div>
+                                    <div class="row justify-content-center form-group margin-top-5percent">
                                         <div class="col-sm-9">
                                             <p>The black text is a well-written phrase or sentence that is
                                                 grammatically and idiomatically correct</p>
+                                        </div>
+
+                                        <div class="col-sm-9">
                                             <input type="range"
                                                    class="evaluation__form__slider"
                                                    name="q2Score">
                                         </div>
-                                        <input type="hidden"
-                                               name="id"
-                                               value={{sentencePairId}} />
-                                        <input type="hidden"
-                                               name="setId"
-                                               value={{setId}} />
-                                        <input type="hidden"
-                                               name="sentencePairType"
-                                               value={{sentencePairType}} />
-                                        <input type="hidden"
-                                               name="evaluatorId"
-                                               value={{evaluatorId}} />
-                                        <input type="hidden"
-                                               name="setSize"
-                                               value={{setSize}} />
-                                        <input type="hidden"
-                                               name="sentenceNum"
-                                               value={{sentenceNum}} />
-                                        <input type="hidden"
-                                               name="humanTranslation"
-                                               value='{{sentence1}}' />
-                                        <input type="hidden"
-                                               name="machineTranslation"
-                                               value='{{sentence2}}' />
-                                        <input type="hidden"
-                                               name="original"
-                                               value='{{original}}' />
-                                        <input type="hidden"
-                                               name="targetLanguage"
-                                               value='{{targetLanguage}}' />
+                                        <div class="col-sm-11">
+                                            <label for="q1Score"
+                                                   class="float-left">0%</label>
+                                            <label for=""
+                                                   class="float-right">100%</label>
+                                        </div>
                                     </div>
+                                    <input type="hidden"
+                                           name="id"
+                                           value={{sentencePairId}} />
+                                    <input type="hidden"
+                                           name="setId"
+                                           value={{setId}} />
+                                    <input type="hidden"
+                                           name="sentencePairType"
+                                           value={{sentencePairType}} />
+                                    <input type="hidden"
+                                           name="evaluatorId"
+                                           value={{evaluatorId}} />
+                                    <input type="hidden"
+                                           name="setSize"
+                                           value={{setSize}} />
+                                    <input type="hidden"
+                                           name="sentenceNum"
+                                           value={{sentenceNum}} />
+                                    <input type="hidden"
+                                           name="humanTranslation"
+                                           value='{{sentence1}}' />
+                                    <input type="hidden"
+                                           name="machineTranslation"
+                                           value='{{sentence2}}' />
+                                    <input type="hidden"
+                                           name="original"
+                                           value='{{original}}' />
+                                    <input type="hidden"
+                                           name="targetLanguage"
+                                           value='{{targetLanguage}}' />
+
                                     <div class="row justify-content-center form-group">
                                         <div class="col-sm-2">
                                             <button type="submit"
@@ -117,13 +130,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col">
-                            <p class="float-right">{{sentenceNum}}/{{setSize}}</p>
-                        </div>
-                    </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col">
+                    <p class="float-right">{{sentenceNum}}/{{setSize}}</p>
+                </div>
+            </div>
+        </div>
         </div>
     </body>
 

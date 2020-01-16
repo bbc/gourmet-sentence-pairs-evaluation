@@ -65,7 +65,6 @@ const createScoresCSVFile = (
   const csvWriter = createObjectCsvWriter({
     path: fileName,
     header: [
-      { id: 'scoreId', title: 'id' },
       { id: 'sentencePairId', title: 'sentence pair id' },
       { id: 'sentencePairType', title: 'sentence pair type' },
       { id: 'evaluatorId', title: 'evaluator id' },
@@ -94,26 +93,29 @@ const makeSentenceIdsHumanReadable = (
     scores,
     'sentencePairId'
   );
-  const sentenceIds = Object.keys(scoresGroupedBySentencePairId);
+  const sentenceGroups: SentencePairScore[][] = Object.values(
+    scoresGroupedBySentencePairId
+  );
 
-  const scoresWithHumanReadableSentenceId = sentenceIds.map((sentenceId, i) => {
-    const scoresForSentenceId = scoresGroupedBySentencePairId[sentenceId];
-    return scoresForSentenceId.map(
-      score =>
-        new SentencePairScore(
-          `${language.toUpperCase()}_SE_${i}`,
-          score.evaluatorId,
-          score.q1Score,
-          score.q2Score,
-          score.targetLanguage,
-          score.humanTranslation,
-          score.machineTranslation,
-          score.original,
-          score.sentencePairType,
-          score.scoreId
-        )
-    );
-  });
+  const scoresWithHumanReadableSentenceId = sentenceGroups.map(
+    (sentenceScores, i) => {
+      return sentenceScores.map(
+        score =>
+          new SentencePairScore(
+            `${language.toUpperCase()}_SE_${i + 1}`,
+            score.evaluatorId,
+            score.q1Score,
+            score.q2Score,
+            score.targetLanguage,
+            score.humanTranslation,
+            score.machineTranslation,
+            score.original,
+            score.sentencePairType,
+            score.scoreId
+          )
+      );
+    }
+  );
   return flatten(scoresWithHumanReadableSentenceId);
 };
 

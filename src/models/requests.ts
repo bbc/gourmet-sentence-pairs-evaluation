@@ -34,6 +34,7 @@ interface FeedbackRequest extends Request {
 interface FeedbackRequestBody {
   setId: string;
   feedback: string;
+  targetLanguage: string;
   evaluatorId: string;
 }
 

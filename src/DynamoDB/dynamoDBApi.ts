@@ -216,7 +216,8 @@ const putSentencePairScore = (
 const putSentenceSetFeedback = (
   setId: string,
   feedback: string,
-  evaluatorId: string
+  evaluatorId: string,
+  targetLanguage: string
 ) => {
   const feedbackId = uuidv1();
   const query = {
@@ -225,6 +226,7 @@ const putSentenceSetFeedback = (
       setId,
       feedback,
       evaluatorId,
+      targetLanguage: targetLanguage.toUpperCase(),
     },
     TableName: getSentenceSetFeedbackTableName(),
   };

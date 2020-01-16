@@ -90,7 +90,9 @@ const buildEvaluationRoutes = (app: Application) => {
               res.redirect(404, '/error?errorCode=getEvaluation');
             });
         } else {
-          res.redirect(`/feedback?setId=${setId}&evaluatorId=${evaluatorId}`);
+          res.redirect(
+            `/feedback?setId=${setId}&evaluatorId=${evaluatorId}&targetLanguage=${sentenceSet.targetLanguage}`
+          );
         }
       })
       .catch(error => {

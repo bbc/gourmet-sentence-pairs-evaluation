@@ -8,7 +8,8 @@ const buildFeedbackRoutes = (app: Application) => {
     const feedback: string = req.body.feedback;
     const setId: string = req.body.setId;
     const evaluatorId: string = req.body.evaluatorId;
-    putSentenceSetFeedback(setId, feedback, evaluatorId)
+    const language: string = req.body.targetLanguage;
+    putSentenceSetFeedback(setId, feedback, evaluatorId, language)
       .then(() => res.redirect('/end'))
       .catch(error => {
         logger.error(
@@ -21,7 +22,8 @@ const buildFeedbackRoutes = (app: Application) => {
   app.get('/feedback', (req: Request, res: Response) => {
     const setId = req.query.setId;
     const evaluatorId = req.query.evaluatorId;
-    res.render('feedback', { setId, evaluatorId });
+    const targetLanguage = req.query.targetLanguage;
+    res.render('feedback', { setId, evaluatorId, targetLanguage });
   });
 };
 

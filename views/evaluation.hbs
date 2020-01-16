@@ -56,35 +56,39 @@
                                       method="POST">
 
                                     <div class="row justify-content-center">
-                                        <div class="col-sm-9">
-                                            <p>The black text adequately expresses the meaning of the grey text.</p>
+                                        <p>The black text adequately expresses the meaning of the grey text.</p>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-1">
+                                            <label for="q1Score"
+                                                   class="float-left">0%</label>
                                         </div>
-                                        <div class="col-sm-9">
+                                        <div class="col-sm-10">
                                             <input type="range"
                                                    class="evaluation__form__slider"
                                                    name="q1Score">
                                         </div>
-                                        <div class="col-sm-11">
-                                            <label for="q1Score"
-                                                   class="float-left">0%</label>
+                                        <div class="col-sm-1">
                                             <label for=""
                                                    class="float-right">100%</label>
                                         </div>
                                     </div>
-                                    <div class="row justify-content-center form-group margin-top-5percent">
-                                        <div class="col-sm-9">
-                                            <p>The black text is a well-written phrase or sentence that is
-                                                grammatically and idiomatically correct</p>
-                                        </div>
 
-                                        <div class="col-sm-9">
+                                    <div class="row justify-content-center margin-top-5percent">
+                                        <p>The black text is a well-written phrase or sentence that is
+                                            grammatically and idiomatically correct</p>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-1">
+                                            <label for="q1Score"
+                                                   class="float-left">0%</label>
+                                        </div>
+                                        <div class="col-sm-10">
                                             <input type="range"
                                                    class="evaluation__form__slider"
                                                    name="q2Score">
                                         </div>
-                                        <div class="col-sm-11">
-                                            <label for="q1Score"
-                                                   class="float-left">0%</label>
+                                        <div class="col-sm-1">
                                             <label for=""
                                                    class="float-right">100%</label>
                                         </div>
@@ -130,14 +134,13 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col">
+                            <p class="float-right">{{sentenceNum}}/{{setSize}}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col">
-                    <p class="float-right">{{sentenceNum}}/{{setSize}}</p>
-                </div>
-            </div>
-        </div>
         </div>
     </body>
 

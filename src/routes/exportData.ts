@@ -5,6 +5,7 @@ import { SentencePairScore } from '../models/models';
 import { createObjectCsvWriter } from 'csv-writer';
 import { Language } from '../models/models';
 import { ExportRequest } from '../models/requests';
+import { groupBy, flatten } from 'underscore';
 
 const buildExportDataRoute = (app: Application) => {
   getExportData(app);
@@ -38,7 +39,7 @@ const sendScoresCSVFile = (language: Language, res: Response) => {
   getSentencePairScores(language)
     .then(scores => {
       const fileName = '/tmp/sentence-pair-scores.csv';
-      return createScoresCSVFile(scores, fileName).then(() => {
+      return createScoresCSVFile(scores, fileName, language).then(() => {
         res.set({
           'Content-Disposition': `attachment; filename="${language}.csv"`,
         });
@@ -53,8 +54,14 @@ const sendScoresCSVFile = (language: Language, res: Response) => {
 
 const createScoresCSVFile = (
   scores: SentencePairScore[],
-  fileName: string
+  fileName: string,
+  language: Language
 ): Promise<void> => {
+  const scoresWithHumanReadableSentenceId = makeSentenceIdsHumanReadable(
+    scores,
+    language
+  );
+
   const csvWriter = createObjectCsvWriter({
     path: fileName,
     header: [
@@ -72,7 +79,42 @@ const createScoresCSVFile = (
     encoding: 'utf8',
   });
 
-  return csvWriter.writeRecords(scores);
+  return csvWriter.writeRecords(scoresWithHumanReadableSentenceId);
+};
+
+/**
+ * When data is exported the sentenceIds need to be human readable
+ * This groups the sentences by ID and reassigns sentences a human readable ID
+ */
+const makeSentenceIdsHumanReadable = (
+  scores: SentencePairScore[],
+  language: Language
+): SentencePairScore[] => {
+  const scoresGroupedBySentencePairId = groupBy<SentencePairScore>(
+    scores,
+    'sentencePairId'
+  );
+  const sentenceIds = Object.keys(scoresGroupedBySentencePairId);
+
+  const scoresWithHumanReadableSentenceId = sentenceIds.map((sentenceId, i) => {
+    const scoresForSentenceId = scoresGroupedBySentencePairId[sentenceId];
+    return scoresForSentenceId.map(
+      score =>
+        new SentencePairScore(
+          `${language.toUpperCase()}_SE_${i}`,
+          score.evaluatorId,
+          score.q1Score,
+          score.q2Score,
+          score.targetLanguage,
+          score.humanTranslation,
+          score.machineTranslation,
+          score.original,
+          score.sentencePairType,
+          score.scoreId
+        )
+    );
+  });
+  return flatten(scoresWithHumanReadableSentenceId);
 };
 
 const generateLanguageOptions = () => {

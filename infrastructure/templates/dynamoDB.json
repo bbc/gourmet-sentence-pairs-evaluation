@@ -114,7 +114,7 @@
         },
         "WriteCapacityUnits": {
             "ConstraintDescription": "should be between 5 and 10000",
-            "Default": "10",
+            "Default": "5",
             "Description": "Provisioned write throughput",
             "MaxValue": "10000",
             "MinValue": "5",

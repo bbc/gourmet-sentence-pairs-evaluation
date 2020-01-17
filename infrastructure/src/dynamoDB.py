@@ -118,7 +118,7 @@ writeunits = t.add_parameter(Parameter(
     "WriteCapacityUnits",
     Description="Provisioned write throughput",
     Type="Number",
-    Default="10",
+    Default="5",
     MinValue="5",
     MaxValue="10000",
     ConstraintDescription="should be between 5 and 10000"

@@ -1,19 +1,104 @@
-import { getSentencePairScores, putSentencePairScore } from '../dynamoDBApi';
+import {
+  getSentencePairScores,
+  putSentencePairScore,
+  putSentenceSetFeedback,
+  getSentenceSetFeedback,
+} from '../dynamoDBApi';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 
 import '../../config';
 import { SentencePairScore, Language } from '../../models/models';
 
+const config = {
+  convertEmptyValues: true,
+  endpoint: 'localhost:8000',
+  sslEnabled: false,
+  region: 'local-env',
+};
+
+const mockDynamoClient = new DocumentClient(config);
+
+describe('getSentenceSetFeedback', () => {
+  beforeAll(() => {
+    return putSentenceSetFeedback(
+      '1',
+      'good',
+      '1',
+      Language.BULGARIAN,
+      mockDynamoClient
+    )
+      .then(_ =>
+        putSentenceSetFeedback(
+          '2',
+          'good',
+          '1',
+          Language.BULGARIAN,
+          mockDynamoClient
+        )
+      )
+      .then(_ => {
+        putSentenceSetFeedback(
+          '2',
+          'good',
+          'tester',
+          Language.GUJARATI,
+          mockDynamoClient
+        );
+      });
+  });
+
+  test('should only retrieve feedback with the requested target language', () => {
+    return getSentenceSetFeedback(Language.BULGARIAN, mockDynamoClient).then(
+      scores => {
+        expect(scores.length).toEqual(2);
+        expect(scores.filter(score => score.setId === '1').length).toEqual(1);
+      }
+    );
+  });
+
+  test('should not retrieve feedback where the evaluatorId is tester', () => {
+    return getSentenceSetFeedback(Language.GUJARATI, mockDynamoClient).then(
+      scores => {
+        expect(
+          scores.filter(score => score.evaluatorId === 'tester').length
+        ).toEqual(0);
+      }
+    );
+  });
+
+  test('should return an empty list if there is no feedback for a specified language', () => {
+    return getSentenceSetFeedback(Language.SWAHILI, mockDynamoClient).then(
+      scores => {
+        expect(scores.length).toEqual(0);
+      }
+    );
+  });
+
+  test('should handle items with missing parameters', async () => {
+    await mockDynamoClient
+      .put({
+        Item: { feedbackId: '123', targetLanguage: 'BG' },
+        TableName: 'SentenceSetFeedbackDynamoDBTable-dev',
+      })
+      .promise();
+    return getSentenceSetFeedback(Language.BULGARIAN, mockDynamoClient).then(
+      scores => {
+        expect(
+          scores.filter(
+            score =>
+              score.feedbackId === '123' &&
+              score.targetLanguage === 'BG' &&
+              score.feedback === 'undefined' &&
+              score.evaluatorId === 'undefined' &&
+              score.setId === 'undefined'
+          ).length
+        ).toEqual(1);
+      }
+    );
+  });
+});
+
 describe('getSentencePairScores', () => {
-  const config = {
-    convertEmptyValues: true,
-    endpoint: 'localhost:8000',
-    sslEnabled: false,
-    region: 'local-env',
-  };
-
-  const mockDynamoClient = new DocumentClient(config);
-
   beforeAll(() => {
     const sentencePairScoreBG1 = new SentencePairScore(
       '1',

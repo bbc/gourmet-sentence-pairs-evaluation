@@ -1,7 +1,7 @@
 import * as supertest from 'supertest';
 import app from '../../app';
 import { SuperTest, Test } from 'supertest';
-import { SentencePairScore } from '../../models/models';
+import { SentencePairScore, SentenceSetFeedback } from '../../models/models';
 import { generateLanguageOptions } from '../exportData';
 
 jest.mock('../../DynamoDB/dynamoDBApi');
@@ -43,18 +43,72 @@ describe('POST /exportData', () => {
       ]);
     });
 
+    dynamoDBApi.getSentenceSetFeedback.mockImplementation(() => {
+      return Promise.resolve([
+        new SentenceSetFeedback(
+          'feedbackId',
+          'evaluatorId',
+          'feedback',
+          'setId',
+          'targetLanguage'
+        ),
+      ]);
+    });
+
     const response = await mockApp
       .post('/exportData')
       .send({ language: 'SWAHILI' });
     expect(response.status).toBe(200);
     expect(response.header['content-disposition']).toEqual(
-      'attachment; filename="sw.csv"'
+      'attachment; filename="sw.zip"'
     );
-    expect(response.header['content-type']).toEqual('text/csv; charset=UTF-8');
+    expect(response.header['content-type']).toEqual('application/zip');
   });
 
-  test('should redirect to the error page with a 500 if data cannot be retrieved from dynamoDB', async () => {
+  test('should redirect to the error page with a 500 if scores cannot be retrieved from dynamoDB', async () => {
     dynamoDBApi.getSentencePairScores.mockImplementation(() => {
+      return Promise.reject('error');
+    });
+
+    dynamoDBApi.getSentenceSetFeedback.mockImplementation(() => {
+      return Promise.resolve([
+        new SentenceSetFeedback(
+          'feedbackId',
+          'evaluatorId',
+          'feedback',
+          'setId',
+          'targetLanguage'
+        ),
+      ]);
+    });
+
+    const response = await mockApp
+      .post('/exportData')
+      .send({ language: 'SWAHILI' });
+    expect(response.status).toBe(500);
+    expect(response.header['location']).toEqual(
+      '/error?errorCode=postExportDataFailCSVCreate'
+    );
+  });
+
+  test('should redirect to the error page with a 500 if feedback cannot be retrieved from dynamoDB', async () => {
+    dynamoDBApi.getSentencePairScores.mockImplementation(() => {
+      return Promise.resolve([
+        new SentencePairScore(
+          'sentencePairId',
+          'evaluatorId',
+          1,
+          2,
+          'bg',
+          'human',
+          'machine',
+          'original',
+          'id'
+        ),
+      ]);
+    });
+
+    dynamoDBApi.getSentenceSetFeedback.mockImplementation(() => {
       return Promise.reject('error');
     });
 

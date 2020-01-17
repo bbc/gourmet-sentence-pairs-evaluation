@@ -58,6 +58,16 @@ class SentencePairScore {
   }
 }
 
+class SentenceSetFeedback {
+  constructor(
+    public feedbackId: string,
+    public evaluatorId: string,
+    public feedback: string,
+    public setId: string,
+    public targetLanguage: string
+  ) {}
+}
+
 enum Language {
   BULGARIAN = 'bg',
   GUJARATI = 'gu',
@@ -65,4 +75,11 @@ enum Language {
   ENGLISH = 'en',
 }
 
-export { SentenceSet, SentencePair, SentencePairScore, Dataset, Language };
+export {
+  SentenceSet,
+  SentencePair,
+  SentencePairScore,
+  Dataset,
+  Language,
+  SentenceSetFeedback,
+};

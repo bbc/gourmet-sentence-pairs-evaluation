@@ -4,6 +4,7 @@ import {
   SentenceSet,
   SentencePairScore,
   Language,
+  SentenceSetFeedback,
 } from '../models/models';
 import * as uuidv1 from 'uuid/v1';
 
@@ -213,12 +214,33 @@ const putSentencePairScore = (
     });
 };
 
+const getSentenceSetFeedback = (
+  targetLanguage: Language,
+  client: DocumentClient = dynamoClient
+): Promise<SentenceSetFeedback[]> => {
+  return client
+    .scan({
+      FilterExpression: `targetLanguage = :a and not (evaluatorId = :b)`,
+      ExpressionAttributeValues: {
+        ':a': targetLanguage.toUpperCase(),
+        ':b': 'tester',
+      },
+      TableName: getSentenceSetFeedbackTableName(),
+    })
+    .promise()
+    .then(output => {
+      const items = output.Items || [];
+      return items.map(item => convertAttributeMapToSentenceSetFeedback(item));
+    });
+};
+
 const putSentenceSetFeedback = (
   setId: string,
   feedback: string,
   evaluatorId: string,
-  targetLanguage: string
-) => {
+  targetLanguage: string,
+  client: DocumentClient = dynamoClient
+): Promise<string> => {
   const feedbackId = uuidv1();
   const query = {
     Item: {
@@ -231,7 +253,7 @@ const putSentenceSetFeedback = (
     TableName: getSentenceSetFeedbackTableName(),
   };
 
-  return dynamoClient
+  return client
     .put(query)
     .promise()
     .then(() => {
@@ -240,6 +262,21 @@ const putSentenceSetFeedback = (
 };
 
 // Helper Functions
+
+/**
+ * DynamoDB returns an attribute map when queried. This converts a generic attribute map to a SentenceSetFeedback object
+ */
+const convertAttributeMapToSentenceSetFeedback = (
+  item: DocumentClient.AttributeMap
+): SentenceSetFeedback => {
+  return new SentenceSetFeedback(
+    item['feedbackId'] || 'undefined',
+    item['evaluatorId'] || 'undefined',
+    item['feedback'] || 'undefined',
+    item['setId'] || 'undefined',
+    item['targetLanguage'] || 'undefined'
+  );
+};
 
 /**
  * DynamoDB returns an attribute map when queried. This converts a generic attribute map to a SentencePairScore object
@@ -351,6 +388,7 @@ export {
   getSentencePairScores,
   putSentencePairScore,
   putSentenceSetFeedback,
+  getSentenceSetFeedback,
   getSentenceSets,
   putSentenceSet,
 };

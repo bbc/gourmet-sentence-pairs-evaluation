@@ -33,6 +33,7 @@ describe('POST /exportData', () => {
           'sentencePairId',
           'evaluatorId',
           1,
+          2,
           'bg',
           'human',
           'machine',

@@ -15,6 +15,9 @@
     "test:watch": "yarn jest --watch",
     "valid": "yarn lint && yarn build && yarn test"
   },
+  "engines": {
+    "node": ">=0.10"
+  },
   "dependencies": {
     "archiver": "^3.1.1",
     "aws-sdk": "^2.513.0",

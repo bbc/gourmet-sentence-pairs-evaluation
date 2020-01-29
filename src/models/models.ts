@@ -72,6 +72,7 @@ enum Language {
   BULGARIAN = 'bg',
   GUJARATI = 'gu',
   SWAHILI = 'sw',
+  TURKISH = 'tr',
   ENGLISH = 'en',
 }
 

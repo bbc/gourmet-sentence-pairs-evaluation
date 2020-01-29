@@ -10,7 +10,6 @@ const buildStartRoute = (app: Application) => {
 };
 
 const evaluatorIds = [
-  'tester',
   'BBC_Bulgarian_01',
   'BBC_Bulgarian_02',
   'BBC_Bulgarian_03',
@@ -23,6 +22,10 @@ const evaluatorIds = [
   'BBC_Gujarati_02',
   'BBC_Gujarati_03',
   'BBC_Gujarati_04',
+  'BBC_Turkish_01',
+  'BBC_Turkish_02',
+  'BBC_Turkish_03',
+  'BBC_Turkish_04',
   'DW_Bulgarian_01',
   'DW_Bulgarian_02',
   'DW_Bulgarian_03',
@@ -35,6 +38,11 @@ const evaluatorIds = [
   'DW_Gujarati_02',
   'DW_Gujarati_03',
   'DW_Gujarati_04',
+  'DW_Turkish_01',
+  'DW_Turkish_02',
+  'DW_Turkish_03',
+  'DW_Turkish_04',
+  'tester',
 ];
 
 export { buildStartRoute };

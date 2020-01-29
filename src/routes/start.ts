@@ -4,7 +4,10 @@ import { getSentenceSets } from '../DynamoDB/dynamoDBApi';
 const buildStartRoute = (app: Application) => {
   app.get('/start', (req: Request, res: Response) => {
     getSentenceSets().then(sentenceSets => {
-      res.render('start', { sentenceSets, evaluatorIds });
+      const setsOrderedByName = sentenceSets.sort((a, b) =>
+        a.name.localeCompare(b.name)
+      );
+      res.render('start', { sentenceSets: setsOrderedByName, evaluatorIds });
     });
   });
 };

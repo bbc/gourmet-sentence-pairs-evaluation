@@ -6,6 +6,9 @@ import json
 Script for randomising evaluation data sentence order, formatting it as JSON and
 tagging the sentences so the data can be imported into the Sentence Pairs Evaluation Tool.
 
+This script assumes that there are at least 205 sentences available for evaluation. 5 will be
+used as internal calibration and the others will be valid sentences (full explanation below)
+
 Input:
 Text files containing an original sentence, the human translation and a machine translation.
 There can be multiple sentences per file. The names of the files must be specified on lines 51,52 
@@ -44,6 +47,13 @@ The first 5 sentences will be marked as internal callibration ('C'). These are t
 evaluators familiar with the task. The remaining sentences will be a mix of valid sentences ('A')
 i.e. sentences where the translation has been performed by a machine and external callibration
 sentences ('B') i.e. contrived examples.
+
+Output:
+2 JSON files. evaluationData1.json and evaluationData2.json
+These each contain 110 sentences for evaluation. 5 internal callibration sentences. These will be the
+same 5 sentences in both files and will always be the first 5. 100 valid sentences and 5 external calibration
+sentences shuffled together and in a random order. The external calibration sentences will be the same in
+both files.
 """
 
 
@@ -52,7 +62,7 @@ original_filenames = ["bulgarian1EN.txt"]
 human_translation_filenames = ["bulgarian1HT.txt"]
 machine_translation_filenames = ["bulgarian1MT.txt"]
 
-external_callibration_json_file = "perfect.json"
+external_callibration_json_file = "externalCalibration.json"
 
 if(len(original_filenames) != len(human_translation_filenames) or len(human_translation_filenames) != len(machine_translation_filenames)):
     sys.exit("Files do not exist for every variation of the articles.")
@@ -112,12 +122,20 @@ with open(external_callibration_json_file) as f:
 for s in external_callibration_sentences:
     s['sentencePairType'] = 'B'
 
-# Combine the valid sentences and external callibration sentences and shuffle
-valid_and_external_callibration_sentences = valid_sentences + external_callibration_sentences
-random.shuffle(valid_and_external_callibration_sentences)
+# Combine 100 valid sentences and external callibration sentences and shuffle
+valid_and_external_callibration_sentences_set_1 = valid_sentences[:100] + external_callibration_sentences
+random.shuffle(valid_and_external_callibration_sentences_set_1)
 
-evaluationData = open('evaluationData.json', 'w')
+# Combine 100 valid sentences and external callibration sentences and shuffle
+valid_and_external_callibration_sentences_set_2 = valid_sentences[100:200] + external_callibration_sentences
+random.shuffle(valid_and_external_callibration_sentences_set_2)
 
-evaluationData.write(json.dumps({"sentences": internal_callibration_sentences + valid_and_external_callibration_sentences}))
+# Create first data set
+evaluationData1 = open('evaluationData1.json', 'w')
+evaluationData1.write(json.dumps({"sentences": internal_callibration_sentences + valid_and_external_callibration_sentences_set_1}))
+evaluationData1.close()
 
-evaluationData.close()
+# Create second data set
+evaluationData2 = open('evaluationData2.json', 'w')
+evaluationData2.write(json.dumps({"sentences": internal_callibration_sentences + valid_and_external_callibration_sentences_set_2}))
+evaluationData2.close()

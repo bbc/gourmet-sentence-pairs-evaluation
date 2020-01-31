@@ -138,6 +138,7 @@ describe('generateLanguageOptions', () => {
       { displayName: 'Bulgarian', language: 'BULGARIAN' },
       { displayName: 'Gujarati', language: 'GUJARATI' },
       { displayName: 'Swahili', language: 'SWAHILI' },
+      { displayName: 'Turkish', language: 'TURKISH' },
       { displayName: 'English', language: 'ENGLISH' },
     ];
 

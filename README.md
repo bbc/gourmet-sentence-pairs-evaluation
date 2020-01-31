@@ -8,6 +8,13 @@ GoURMET project evaluation tool. The purpose is to evaluate a set of sentences c
 # Set up
 1. Install [node v10](https://nodejs.org/en/)
 2. Run `yarn install`
+3. Set up pre-commit hook `./githooks/setupHooks.sh`
+
+## Pre-commit Hook
+
+[What are git hooks](https://githooks.com/)
+
+This project has a pre commit hook which if set up (run the setup hooks script `./githooks/setupHooks.sh`) will run the linter, TypeScript compiler and tests that will be effected by the changes made. If you need to ignore the hook at any point use the `--no-verify` flag e.g. `git commit --no-verify`
 
 # Running the App
 

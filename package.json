@@ -13,6 +13,7 @@
     "spec": "speculate --release ${BUILD_NUMBER}",
     "test": "yarn jest",
     "test:watch": "yarn jest --watch",
+    "pre-commit-tests": "yarn jest --bail --changedSince=master",
     "valid": "yarn lint && yarn build && yarn test"
   },
   "engines": {

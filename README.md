@@ -72,6 +72,12 @@ The names of the database tables are in the [`.env`](./.env) file. There are 4 t
 
 To make changes to the DNS template. Update the [./infrastructure/src/dns.py](./infrastructure/src/dns.py) and run `make templates/dns.json` from inside the `infrastructure` directory.
 
+# Testing the App
+
+## DynamoDB Tests
+
+The DynamoDB API is tested using [jest-dynamodb](https://github.com/shelfio/jest-dynamodb). This is specified as a preset in [`package.json`](./package.json). This allows an instance of DynamoDB to be run locally. The schema for this database is defined in [`jest-dynamodb-config.js`](./jest-dynamodb-config.js) 
+
 # Using the App
 
 The script [`randomiseAndFormatData.py`](./scripts/randomiseAndFormatData.py) can be used to turn text files into a JSON file to submit to the `/dataset` endpoint. It also randomises the order of the sentences. The script needs to be amended to specify the files that should be read in.

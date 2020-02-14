@@ -170,18 +170,20 @@ const getSentencePairScores = (
   client: DocumentClient = dynamoClient
 ): Promise<SentencePairScore[]> => {
   return client
-    .scan({
-      FilterExpression: `targetLanguage = :a and not (evaluatorId = :b)`,
+    .query({
+      IndexName: 'targetLanguage',
       ExpressionAttributeValues: {
         ':a': targetLanguage.toUpperCase(),
-        ':b': 'tester',
       },
+      KeyConditionExpression: 'targetLanguage = :a',
       TableName: getSentencePairScoresTableName(),
     })
     .promise()
     .then(output => {
       const items = output.Items || [];
-      return items.map(item => convertAttributeMapToSentencePairScore(item));
+      return items
+        .map(item => convertAttributeMapToSentencePairScore(item))
+        .filter(item => item.evaluatorId !== 'tester');
     });
 };
 

@@ -3,7 +3,28 @@ module.exports = {
     {
       TableName: 'SentenceScoreDynamoDBTable-dev',
       KeySchema: [{ AttributeName: 'scoreId', KeyType: 'HASH' }],
-      AttributeDefinitions: [{ AttributeName: 'scoreId', AttributeType: 'S' }],
+      AttributeDefinitions: [
+        { AttributeName: 'scoreId', AttributeType: 'S' },
+        { AttributeName: 'targetLanguage', AttributeType: 'S' },
+      ],
+      GlobalSecondaryIndexes: [
+        {
+          IndexName: 'targetLanguage',
+          KeySchema: [
+            {
+              AttributeName: 'targetLanguage',
+              KeyType: 'HASH',
+            },
+          ],
+          Projection: {
+            ProjectionType: 'ALL',
+          },
+          ProvisionedThroughput: {
+            ReadCapacityUnits: 1,
+            WriteCapacityUnits: 1,
+          },
+        },
+      ],
       ProvisionedThroughput: { ReadCapacityUnits: 1, WriteCapacityUnits: 1 },
     },
     {

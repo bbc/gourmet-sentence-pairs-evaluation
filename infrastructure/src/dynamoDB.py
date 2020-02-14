@@ -1,7 +1,6 @@
 from troposphere import Output, Parameter, Ref, Template, Tags, Join
 from troposphere.dynamodb import (KeySchema, AttributeDefinition,
-                                  ProvisionedThroughput, PointInTimeRecoverySpecification)
-from troposphere.dynamodb import Table
+                                  ProvisionedThroughput, PointInTimeRecoverySpecification, Table, GlobalSecondaryIndex, Projection)
 from troposphere.iam import PolicyType
 
 t = Template()
@@ -177,6 +176,10 @@ sentenceScoreDynamoDBTable = t.add_resource(Table(
             AttributeName=Ref(sentenceScoreTableHashkeyName),
             AttributeType=Ref(sentenceScoreTableHashkeyType)
         ),
+        AttributeDefinition(
+            AttributeName="targetLanguage",
+            AttributeType="S"
+        )
     ],
     KeySchema=[
         KeySchema(
@@ -189,6 +192,22 @@ sentenceScoreDynamoDBTable = t.add_resource(Table(
         WriteCapacityUnits=Ref(writeunits)
     ),
     PointInTimeRecoverySpecification=PointInTimeRecoverySpecification(PointInTimeRecoveryEnabled=True),
+    GlobalSecondaryIndexes=[
+        GlobalSecondaryIndex(
+            IndexName="targetLanguage",
+            KeySchema=[
+                KeySchema(
+                    AttributeName="targetLanguage",
+                    KeyType="HASH"
+                )
+            ],
+            ProvisionedThroughput=ProvisionedThroughput(
+                ReadCapacityUnits=Ref(readunits),
+                WriteCapacityUnits=Ref(writeunits)
+            ),
+            Projection=Projection(ProjectionType="ALL")
+        )
+    ],
     Tags=Tags(app="sentence-pairs-evaluation", stage=Ref(stage)),
     TableName=Join("-", ["SentenceScoreDynamoDBTable", Ref(stage)])
 ))

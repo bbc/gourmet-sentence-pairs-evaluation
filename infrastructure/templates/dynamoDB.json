@@ -189,6 +189,32 @@
                         "AttributeType": {
                             "Ref": "SentenceScoreTableHashKeyElementType"
                         }
+                    },
+                    {
+                        "AttributeName": "targetLanguage",
+                        "AttributeType": "S"
+                    }
+                ],
+                "GlobalSecondaryIndexes": [
+                    {
+                        "IndexName": "targetLanguage",
+                        "KeySchema": [
+                            {
+                                "AttributeName": "targetLanguage",
+                                "KeyType": "HASH"
+                            }
+                        ],
+                        "Projection": {
+                            "ProjectionType": "ALL"
+                        },
+                        "ProvisionedThroughput": {
+                            "ReadCapacityUnits": {
+                                "Ref": "ReadCapacityUnits"
+                            },
+                            "WriteCapacityUnits": {
+                                "Ref": "WriteCapacityUnits"
+                            }
+                        }
                     }
                 ],
                 "KeySchema": [

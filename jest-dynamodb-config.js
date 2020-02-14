@@ -1,7 +1,7 @@
 module.exports = {
   tables: [
     {
-      TableName: 'SentenceScoreDynamoDBTable-dev',
+      TableName: 'SentenceScoreDynamoDBTable-local-dev',
       KeySchema: [{ AttributeName: 'scoreId', KeyType: 'HASH' }],
       AttributeDefinitions: [
         { AttributeName: 'scoreId', AttributeType: 'S' },
@@ -28,7 +28,7 @@ module.exports = {
       ProvisionedThroughput: { ReadCapacityUnits: 1, WriteCapacityUnits: 1 },
     },
     {
-      TableName: 'SentenceSetFeedbackDynamoDBTable-dev',
+      TableName: 'SentenceSetFeedbackDynamoDBTable-local-dev',
       KeySchema: [{ AttributeName: 'feedbackId', KeyType: 'HASH' }],
       AttributeDefinitions: [
         { AttributeName: 'feedbackId', AttributeType: 'S' },

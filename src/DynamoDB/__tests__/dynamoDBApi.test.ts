@@ -78,7 +78,7 @@ describe('getSentenceSetFeedback', () => {
     await mockDynamoClient
       .put({
         Item: { feedbackId: '123', targetLanguage: 'BG' },
-        TableName: 'SentenceSetFeedbackDynamoDBTable-dev',
+        TableName: 'SentenceSetFeedbackDynamoDBTable-local-dev',
       })
       .promise();
     return getSentenceSetFeedback(Language.BULGARIAN, mockDynamoClient).then(
@@ -209,7 +209,7 @@ describe('getSentencePairScores', () => {
     await mockDynamoClient
       .put({
         Item: { scoreId: '123', targetLanguage: 'BG' },
-        TableName: 'SentenceScoreDynamoDBTable-dev',
+        TableName: 'SentenceScoreDynamoDBTable-local-dev',
       })
       .promise();
     return getSentencePairScores(Language.BULGARIAN, mockDynamoClient).then(

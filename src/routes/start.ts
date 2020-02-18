@@ -21,6 +21,7 @@ const evaluatorIds = [
   'BBC_Swahili_02',
   'BBC_Swahili_03',
   'BBC_Swahili_04',
+  'BBC_Swahili_05',
   'BBC_Gujarati_01',
   'BBC_Gujarati_02',
   'BBC_Gujarati_03',

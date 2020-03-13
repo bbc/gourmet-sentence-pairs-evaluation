@@ -2,9 +2,15 @@ import { Request, Response, Application } from 'express';
 import {
   getSentencePairScores,
   getSentenceSetFeedback,
+  getSentenceSets,
 } from '../DynamoDB/dynamoDBApi';
 import { logger } from '../utils/logger';
-import { SentencePairScore, SentenceSetFeedback } from '../models/models';
+import {
+  SentencePairScore,
+  SentenceSetFeedback,
+  SentenceSet,
+  EvaluatorSet,
+} from '../models/models';
 import { createObjectCsvWriter } from 'csv-writer';
 import { Language } from '../models/models';
 import { ExportRequest } from '../models/requests';
@@ -20,8 +26,36 @@ const buildExportDataRoute = (app: Application) => {
 const getExportData = (app: Application) => {
   app.get('/exportData', (req: Request, res: Response) => {
     const languageOptions = generateLanguageOptions();
-    res.status(200).render('exportData', { languageOptions });
+    getSentenceSets()
+      .then(sentenceSets => {
+        const evaluatorSets = sentenceSets
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map(sentenceSet => convertSentenceSetToEvaluatorSet(sentenceSet));
+        res
+          .status(200)
+          .render('exportData', { languageOptions, evaluatorSets });
+      })
+      .catch(error => {
+        logger.info(`Could not get sentence sets: Error: ${error}`);
+        res
+          .status(200)
+          .render('exportData', { languageOptions, evaluatorSets: [] });
+      });
   });
+};
+
+const convertSentenceSetToEvaluatorSet = (
+  sentenceSet: SentenceSet
+): EvaluatorSet => {
+  const evaluatorIds = Array.from(sentenceSet.evaluatorIds || []);
+  const evaluatorIdsAsString =
+    evaluatorIds.length === 0
+      ? 'NONE'
+      : evaluatorIds.reduce((acc, evaluator) => `${acc}, ${evaluator}`);
+  return {
+    setName: sentenceSet.name,
+    evaluators: evaluatorIdsAsString,
+  };
 };
 
 const postExportData = (app: Application) => {

@@ -1,7 +1,12 @@
 import * as supertest from 'supertest';
 import app from '../../app';
 import { SuperTest, Test } from 'supertest';
-import { SentencePairScore, SentenceSetFeedback } from '../../models/models';
+import {
+  SentencePairScore,
+  SentenceSetFeedback,
+  SentenceSet,
+  Language,
+} from '../../models/models';
 import { generateLanguageOptions } from '../exportData';
 
 jest.mock('../../DynamoDB/dynamoDBApi');
@@ -14,6 +19,18 @@ describe('GET /exportData', () => {
   });
 
   test('should return 200', async () => {
+    dynamoDBApi.getSentenceSets.mockImplementation(() => {
+      return Promise.resolve([
+        new SentenceSet(
+          'name',
+          Language.BULGARIAN,
+          Language.ENGLISH,
+          new Set(),
+          'setId',
+          new Set()
+        ),
+      ]);
+    });
     const response = await mockApp.get('/exportData');
     expect(response.status).toBe(200);
   });

@@ -68,6 +68,11 @@ class SentenceSetFeedback {
   ) {}
 }
 
+interface EvaluatorSet {
+  setName: string;
+  evaluators: string;
+}
+
 enum Language {
   BULGARIAN = 'bg',
   GUJARATI = 'gu',
@@ -83,4 +88,5 @@ export {
   Dataset,
   Language,
   SentenceSetFeedback,
+  EvaluatorSet,
 };

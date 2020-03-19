@@ -204,6 +204,7 @@ const putSentencePairScore = (
       original: sentencePairScore.original,
       targetLanguage: sentencePairScore.targetLanguage,
       sentencePairType: sentencePairScore.sentencePairType,
+      timestamp: Date.now(),
     },
     TableName: getSentencePairScoresTableName(),
   };

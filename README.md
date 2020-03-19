@@ -58,9 +58,9 @@ The names of the database tables are in the [`.env`](./.env) file. There are 4 t
 
 3. SENTENCE_SCORES_TABLE_NAME - Contains scores given, which sentence pair the score was for and who gave it.
 
-| scoreId | evaluatorId | q1Score  | sentencePairId |
-|---------|-------------|----------|----------------|
-| string  | string      | string   | string         |
+| scoreId | evaluatorId | humanTranslation | machineTranslation | original | q1Score | q2Score | sentencePairId | sentencePairType | targetLanguage | timestamp |
+|---------|-------------|------------------|--------------------|----------|---------|---------|----------------|------------------|----------------|-----------|
+| string  | string      | string           | string             | string   | string  | string  | string         | string           | string         | number    |
 
 4. SENTENCE_SET_FEEDBACK_TABLE_NAME - Contains free text feedback given at the end of evaluating a set of sentences
 

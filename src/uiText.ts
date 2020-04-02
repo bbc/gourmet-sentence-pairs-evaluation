@@ -13,8 +13,7 @@ const getErrorText = (errorCode: string): string => {
     case 'postDataset':
       return 'Could not save data set.';
     case 'JSONparse':
-      //write a descriptive error message
-      return 'Invalid JSON';
+      return 'Invalid JSON file submitted. Please review the file and try again.';
     case 'postExportDataFailCSVCreate':
       return 'Could not retrieve score data set. Please try again.';
     case 'postExportFailLanguage':

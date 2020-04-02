@@ -6,33 +6,47 @@ import { readFileSync, unlink } from 'fs';
 import { Instance } from 'multer';
 import { logger } from '../utils/logger';
 
+const JSONvalidate = (sentences: string): DatasetFile => {
+  try {
+    return JSON.parse(sentences);
+  } catch (error) {
+    logger.error(error);
+    throw new Error('JSONvalidate error');
+  }
+};
+
 const buildDatasetRoutes = (app: Application, upload: Instance) => {
   app.post(
     '/dataset',
     upload.single('sentences'),
     (req: DatasetRequest, res: Response) => {
       const sentences = readFileSync(req.file.path, 'utf-8');
-      const datasetSentences: DatasetFile = JSON.parse(sentences);
-      const datasetMetadata: DatasetBody = req.body;
-      submitDataset(datasetMetadata, datasetSentences)
-        .then(() => {
-          res.redirect('/success');
-        })
-        .catch(error => {
-          logger.error(
-            `Could not submit dataset:${JSON.stringify(
-              datasetMetadata
-            )}. Error: ${error}`
-          );
-          res.redirect(500, '/error?errorCode=postDataset');
-        })
-        .finally(() => {
-          unlink(req.file.path, err => {
-            if (err) {
-              logger.error(`Failed to delete file ${req.file.path}`);
-            }
+      try {
+        const datasetSentences: DatasetFile = JSONvalidate(sentences);
+        const datasetMetadata: DatasetBody = req.body;
+        submitDataset(datasetMetadata, datasetSentences)
+          .then(() => {
+            res.redirect('/success');
+          })
+          .catch(error => {
+            logger.error(
+              `Could not submit dataset:${JSON.stringify(
+                datasetMetadata
+              )}. Error: ${error}`
+            );
+            res.redirect(500, '/error?errorCode=postDataset');
+          })
+          .finally(() => {
+            unlink(req.file.path, err => {
+              if (err) {
+                logger.error(`Failed to delete file ${req.file.path}`);
+              }
+            });
           });
-        });
+      } catch (error) {
+        logger.error(error);
+        res.redirect('/error?errorCode=JSONparse');
+      }
     }
   );
 

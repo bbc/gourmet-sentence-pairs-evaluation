@@ -12,6 +12,9 @@ const getErrorText = (errorCode: string): string => {
       return 'Could not save your feedback, please contact us directly to give us feedback. Your scores for the sentence pairs evaluation have been saved you do not need to complete the test again.';
     case 'postDataset':
       return 'Could not save data set.';
+    case 'JSONparse':
+      //write a descriptive error message
+      return 'Invalid JSON';
     case 'postExportDataFailCSVCreate':
       return 'Could not retrieve score data set. Please try again.';
     case 'postExportFailLanguage':

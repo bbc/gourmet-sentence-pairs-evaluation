@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import { ArrayField, Field } from 'sparkson';
 
 interface SentencePairEvaluationRequestBody {
   id: string;
@@ -48,15 +49,20 @@ interface DatasetBody {
   targetLanguage: string;
 }
 
-interface DatasetFile {
-  sentences: DatasetSentence[];
+class DatasetFile {
+  constructor(
+    @ArrayField('sentences', DatasetSentence)
+    public sentences: DatasetSentence[]
+  ) {}
 }
 
-interface DatasetSentence {
-  original: string;
-  humanTranslation: string;
-  machineTranslation: string;
-  sentencePairType: string;
+class DatasetSentence {
+  constructor(
+    @Field('original') public original: string,
+    @Field('humanTranslation') public humanTranslation: string,
+    @Field('machineTranslation') public machineTranslation: string,
+    @Field('sentencePairType') public sentencePairType: string
+  ) {}
 }
 
 interface StartRequest extends Request {

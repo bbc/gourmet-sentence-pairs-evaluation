@@ -5,11 +5,10 @@ import { Language } from '../models/models';
 import { readFileSync, unlink } from 'fs';
 import { Instance } from 'multer';
 import { logger } from '../utils/logger';
-import { parse } from 'sparkson';
 
 const JSONvalidate = (sentences: string): DatasetFile => {
   try {
-    return parse(DatasetFile, JSON.parse(sentences));
+    return JSON.parse(sentences);
   } catch (error) {
     logger.error(error);
     throw new Error('JSONvalidate error');

@@ -49,6 +49,7 @@ interface DatasetBody {
 }
 
 interface DatasetFile {
+  possibleEvaluatorIds: string[];
   sentences: DatasetSentence[];
 }
 

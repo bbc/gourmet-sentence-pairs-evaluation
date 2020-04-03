@@ -6,7 +6,8 @@ class Dataset {
     public sentences: DatasetSentence[],
     public setName: string,
     public sourceLanguage: Language,
-    public targetLanguage: Language
+    public targetLanguage: Language,
+    public possibleEvaluatorIds: string[]
   ) {}
 }
 
@@ -17,6 +18,7 @@ class SentenceSet {
     public name: string,
     public sourceLanguage: Language,
     public targetLanguage: Language,
+    public possibleEvaluatorIds: Set<string>,
     public sentenceIds?: Set<string>,
     setId?: string,
     public evaluatorIds?: Set<string>

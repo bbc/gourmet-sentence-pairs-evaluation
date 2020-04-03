@@ -22,7 +22,8 @@ const cleanData = (
         datasetFile.sentences,
         dataset.setName,
         sourceLanguage,
-        targetLanguage
+        targetLanguage,
+        datasetFile.possibleEvaluatorIds
       )
     );
   } else {
@@ -67,7 +68,8 @@ const submitDataset = (
       sentencePairs,
       setName,
       cleanedData.value.sourceLanguage,
-      cleanedData.value.targetLanguage
+      cleanedData.value.targetLanguage,
+      cleanedData.value.possibleEvaluatorIds
     );
   } else {
     const errorMessage = `Could not clean data. Dataset:${JSON.stringify(

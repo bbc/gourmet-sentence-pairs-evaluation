@@ -47,6 +47,7 @@ const buildBeginEvaluationRoute = (app: Application) => {
       sentenceSet.name,
       sentenceSet.sourceLanguage,
       sentenceSet.targetLanguage,
+      sentenceSet.possibleEvaluatorIds,
       sentenceSet.sentenceIds,
       sentenceSet.setId,
       evaluatorIds

@@ -22,13 +22,15 @@ describe('cleanData', () => {
     };
 
     const file: DatasetFile = {
+      possibleEvaluatorIds: ['tester'],
       sentences: [sentence],
     };
     const expectedDataset: Dataset = new Dataset(
       [sentence],
       '',
       Language.ENGLISH,
-      Language.BULGARIAN
+      Language.BULGARIAN,
+      ['tester']
     );
     const expectedOutput = new Some(expectedDataset);
     expect(cleanData(input, file)).toEqual(expectedOutput);
@@ -48,6 +50,7 @@ describe('cleanData', () => {
     };
 
     const file: DatasetFile = {
+      possibleEvaluatorIds: ['tester'],
       sentences: [sentence],
     };
     const expectedOutput = new None();
@@ -68,6 +71,7 @@ describe('cleanData', () => {
     };
 
     const file: DatasetFile = {
+      possibleEvaluatorIds: ['tester'],
       sentences: [sentence],
     };
     const expectedOutput = new None();
@@ -88,13 +92,15 @@ describe('cleanData', () => {
     };
 
     const file: DatasetFile = {
+      possibleEvaluatorIds: ['tester'],
       sentences: [sentence],
     };
     const expectedDataset: Dataset = new Dataset(
       [sentence],
       '',
       Language.ENGLISH,
-      Language.BULGARIAN
+      Language.BULGARIAN,
+      ['tester']
     );
     const expectedOutput = new Some(expectedDataset);
     expect(cleanData(input, file)).toEqual(expectedOutput);
@@ -115,12 +121,14 @@ describe('cleanData', () => {
 
     const file: DatasetFile = {
       sentences: [sentence],
+      possibleEvaluatorIds: ['tester'],
     };
     const expectedDataset: Dataset = new Dataset(
       [sentence],
       '',
       Language.ENGLISH,
-      Language.BULGARIAN
+      Language.BULGARIAN,
+      ['tester']
     );
     const expectedOutput = new Some(expectedDataset);
     expect(cleanData(input, file)).toEqual(expectedOutput);
@@ -149,11 +157,14 @@ describe('submitDataset', () => {
 
     const file: DatasetFile = {
       sentences: [sentence],
+      possibleEvaluatorIds: ['tester'],
     };
 
     const mockCleaningFunction = (body: DatasetBody, file: DatasetFile) =>
       new Some(
-        new Dataset([sentence], '', Language.BULGARIAN, Language.BULGARIAN)
+        new Dataset([sentence], '', Language.BULGARIAN, Language.BULGARIAN, [
+          'tester',
+        ])
       );
 
     return submitDataset(input, file, mockCleaningFunction).then(id => {
@@ -183,6 +194,7 @@ describe('submitDataset', () => {
 
     const file: DatasetFile = {
       sentences: [sentence],
+      possibleEvaluatorIds: ['tester'],
     };
 
     const mockCleaningFunction = (body: DatasetBody, file: DatasetFile) =>
@@ -223,6 +235,7 @@ describe('submitDataset', () => {
 
     const file: DatasetFile = {
       sentences: [sentence],
+      possibleEvaluatorIds: ['tester'],
     };
 
     const mockCleaningFunction = (body: DatasetBody, file: DatasetFile) =>

@@ -76,6 +76,7 @@ const putSentenceSetAndPairs = (
   setName: string,
   sourceLanguage: Language,
   targetLanguage: Language,
+  possibleEvaluatorIds: string[],
   setId?: string
 ): Promise<string> => {
   return Promise.all(
@@ -87,6 +88,7 @@ const putSentenceSetAndPairs = (
       setName,
       sourceLanguage,
       targetLanguage,
+      new Set(possibleEvaluatorIds),
       new Set(sentencePairsIds),
       setId
     );
@@ -329,11 +331,16 @@ const convertAttributeMapToSentenceSet = (
   const evaluatorIdsSet: DocumentClient.StringSet = item['evaluatorIds'];
   const evaluatorIds =
     evaluatorIdsSet === undefined ? [] : evaluatorIdsSet.values;
+  const possibleEvaluatorIdsSet: DocumentClient.StringSet =
+    item['possibleEvaluatorIds'];
+  const possibleEvaluatorIds =
+    possibleEvaluatorIdsSet === undefined ? [] : possibleEvaluatorIdsSet.values;
 
   return new SentenceSet(
     item['name'],
     item['sourceLanguage'],
     item['targetLanguage'],
+    new Set(possibleEvaluatorIds),
     new Set(sentenceIds),
     item['setId'],
     new Set(evaluatorIds)
@@ -346,12 +353,16 @@ const convertAttributeMapToSentenceSet = (
 const constructSentenceSetItem = (sentenceSet: SentenceSet) => {
   const sentenceIds: Set<string> = sentenceSet.sentenceIds || new Set();
   const evaluatorIds: Set<string> = sentenceSet.evaluatorIds || new Set();
+  const possibleEvaluatorIds = dynamoClient.createSet(
+    Array.from(sentenceSet.possibleEvaluatorIds || new Set(['tester']))
+  );
   if (sentenceIds.size < 1 && evaluatorIds.size < 1) {
     return {
       setId: sentenceSet.setId,
       name: sentenceSet.name,
       sourceLanguage: sentenceSet.sourceLanguage.toUpperCase(),
       targetLanguage: sentenceSet.targetLanguage.toUpperCase(),
+      possibleEvaluatorIds,
     };
   }
   if (sentenceIds.size < 1) {
@@ -361,6 +372,7 @@ const constructSentenceSetItem = (sentenceSet: SentenceSet) => {
       sourceLanguage: sentenceSet.sourceLanguage.toUpperCase(),
       targetLanguage: sentenceSet.targetLanguage.toUpperCase(),
       evaluatorIds: dynamoClient.createSet(Array.from(evaluatorIds)),
+      possibleEvaluatorIds,
     };
   }
   if (evaluatorIds.size < 1) {
@@ -370,6 +382,7 @@ const constructSentenceSetItem = (sentenceSet: SentenceSet) => {
       name: sentenceSet.name,
       sourceLanguage: sentenceSet.sourceLanguage.toUpperCase(),
       targetLanguage: sentenceSet.targetLanguage.toUpperCase(),
+      possibleEvaluatorIds,
     };
   } else {
     return {
@@ -379,6 +392,7 @@ const constructSentenceSetItem = (sentenceSet: SentenceSet) => {
       sourceLanguage: sentenceSet.sourceLanguage.toUpperCase(),
       targetLanguage: sentenceSet.targetLanguage.toUpperCase(),
       evaluatorIds: dynamoClient.createSet(Array.from(evaluatorIds)),
+      possibleEvaluatorIds,
     };
   }
 };

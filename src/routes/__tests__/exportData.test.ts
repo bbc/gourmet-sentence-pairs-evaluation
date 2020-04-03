@@ -26,6 +26,7 @@ describe('GET /exportData', () => {
           Language.BULGARIAN,
           Language.ENGLISH,
           new Set(),
+          new Set(),
           'setId',
           new Set()
         ),

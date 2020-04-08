@@ -5,20 +5,23 @@ const buildStartRoute = (app: Application) => {
   app.get('/start', (req: Request, res: Response) => {
     const setId = req.query.setId;
     getSentenceSets().then(sentenceSets => {
-      const updatedSentenceSets = sentenceSets
+      const sentenceSetOptions = sentenceSets
         .sort((a, b) => a.name.localeCompare(b.name))
-        .map(set =>
-          Object.assign({}, set, { isSelected: set.setId === setId })
-        );
+        .map(set => ({ sentenceSet: set, isSelected: set.setId === setId }));
 
       // if setId is incorrect or not selected, default possibleEvaluatorIds to an empty set
-      const selectedSet = updatedSentenceSets.find(set => set.isSelected) || {
-        possibleEvaluatorIds: new Set(),
+      const selectedSet = sentenceSetOptions.find(set => set.isSelected) || {
+        sentenceSet: {
+          possibleEvaluatorIds: new Set(),
+        },
       };
-      const possibleEvaluatorIds = Array.from(selectedSet.possibleEvaluatorIds);
+
+      const possibleEvaluatorIds = Array.from(
+        selectedSet.sentenceSet.possibleEvaluatorIds
+      );
 
       res.render('start', {
-        sentenceSets: updatedSentenceSets,
+        sentenceSetOptions,
         possibleEvaluatorIds: [...possibleEvaluatorIds, 'tester'],
       });
     });

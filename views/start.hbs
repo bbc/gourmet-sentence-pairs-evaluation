@@ -1,91 +1,79 @@
 <!DOCTYPE html>
 <html>
 
-    <head>
-        <link rel="shortcut icon"
-              href="media/favicon.ico"
-              type="image/x-icon" />
-        <!-- Adding bootstrap CSS styles -->
-        <link rel="stylesheet"
-              href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-              integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-              crossorigin="anonymous">
+<head>
+    <link rel="shortcut icon" href="media/favicon.ico" type="image/x-icon" />
+    <!-- Adding bootstrap CSS styles -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-        <meta charset="utf-8">
-        <meta name="viewport"
-              content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <title>Sentence Pairs</title>
-        <link rel="stylesheet"
-              type="text/css"
-              href="main.css" />
-    </head>
+    <title>Sentence Pairs</title>
+    <link rel="stylesheet" type="text/css" href="main.css" />
+</head>
 
-    <body class="bg-grey">
-        <div>
-            <img class="gourmet_logo"
-                 src="./media/horizontal_light.png" />
-        </div>
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col">
-                    <h1 class="text-center text-primary-mid-green">Sentence Pair Evaluation</h1>
-                    <div class="row justify-content-center">
-                        <div class="col-sm-10 margin-top-5percent h5 text-primary-dark-grey">
-                            <p>The evaluation process is not timed and there is no time limit. However each series
-                                should be
-                                completed in an unbroken single sitting.</p>
-                            <p>Please start the series when you will be able to give it your full attention to
-                                completion.</p>
-                            <p>If you have been asked to complete multiple series you don’t need to do them in one
-                                continuous sitting.</p>
-                            <p>If you are ready to complete an evaluation now, enter your ID and select the series you
-                                have been asked to do then click ’start evaluation'.</p>
-                            <p>Thank you again for your time. Your language and linguistic skills are crucial to the
-                                success of this evaluation.</p>
+<body class="bg-grey">
+    <div>
+        <img class="gourmet_logo" src="./media/horizontal_light.png" />
+    </div>
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col">
+                <h1 class="text-center text-primary-mid-green">Sentence Pair Evaluation</h1>
+                <div class="row justify-content-center">
+                    <div class="col-sm-10 margin-top-5percent h5 text-primary-dark-grey">
+                        <p>The evaluation process is not timed and there is no time limit. However each series
+                            should be
+                            completed in an unbroken single sitting.</p>
+                        <p>Please start the series when you will be able to give it your full attention to
+                            completion.</p>
+                        <p>If you have been asked to complete multiple series you don’t need to do them in one
+                            continuous sitting.</p>
+                        <p>If you are ready to complete an evaluation now, enter your ID and select the series you
+                            have been asked to do then click ’start evaluation'.</p>
+                        <p>Thank you again for your time. Your language and linguistic skills are crucial to the
+                            success of this evaluation.</p>
+                    </div>
+                </div>
+                <form class="text-primary-dark-grey" action="/beginEvaluation" method="POST">
+                    <div class="row justify-content-center form-group">
+                        <div class="col-md-6">
+                            <label for="setId">Pick the set you have been asked to
+                                evaluate:</label>
+                            <select class="form-control" name="setId"
+                                onchange="javascript:location.search = '?setId=' + this.value;" required>
+                                <option disabled selected>Pick a set</option>
+                                {{#each sentenceSets}}
+                                <option {{#if this.isSelected}}selected{{/if}} value="{{this.setId}}">{{this.name}}
+                                </option>
+                                {{/each}}
+                            </select>
                         </div>
                     </div>
-                    <form class="text-primary-dark-grey"
-                          action="/beginEvaluation"
-                          method="POST">
-                        <div class="row justify-content-center form-group">
-                            <div class="col-md-6">
-                                <label for="evaluatorId">Select your evaluator ID:</label>
-                                <select class="form-control"
-                                        name="evaluatorId"
-                                        required>
-                                    <option></option>
-                                    {{#each evaluatorIds}}
-                                    <option value={{this}}>{{this}}</option>
-                                    {{/each}}
-                                </select>
-                            </div>
+                    <div class="row justify-content-center form-group">
+                        <div class="col-md-6">
+                            <label for="evaluatorId">Select your evaluator ID:</label>
+                            <select {{#unless possibleEvaluatorIds.length}}disabled{{/unless}} class="form-control"
+                                name="evaluatorId" required>
+                                <option disabled selected>Pick an evaluator ID</option>
+                                {{#each possibleEvaluatorIds}}
+                                <option value={{this}}>{{this}}</option>
+                                {{/each}}
+                            </select>
                         </div>
-                        <div class="row justify-content-center form-group">
-                            <div class="col-md-6">
-                                <label for="setId">Pick the set you have been asked to
-                                    evaluate:</label>
-                                <select class="form-control"
-                                        name="setId"
-                                        required>
-                                    <option></option>
-                                    {{#each sentenceSets}}
-                                    <option value="{{this.setId}}">{{this.name}}</option>
-                                    {{/each}}
-                                </select>
-                            </div>
+                    </div>
+                    <div class="row justify-content-center form-group">
+                        <div class="col-md-2">
+                            <button type="submit" class="btn button-primary btn-block">Start
+                                Evaluation</button>
                         </div>
-                        <div class="row justify-content-center form-group">
-                            <div class="col-md-2">
-                                <button type="submit"
-                                        class="btn button-primary btn-block">Start
-                                    Evaluation</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
-    </body>
+    </div>
+</body>
 
 </html>

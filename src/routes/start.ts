@@ -1,52 +1,27 @@
 import { Request, Response, Application } from 'express';
 import { getSentenceSets } from '../DynamoDB/dynamoDBApi';
-
 const buildStartRoute = (app: Application) => {
   app.get('/start', (req: Request, res: Response) => {
+    const setId = req.query.setId;
     getSentenceSets().then(sentenceSets => {
-      const setsOrderedByName = sentenceSets.sort((a, b) =>
-        a.name.localeCompare(b.name)
-      );
-      res.render('start', { sentenceSets: setsOrderedByName, evaluatorIds });
+      const updatedSentenceSets = sentenceSets
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map(set =>
+          Object.assign({}, set, { isSelected: set.setId === setId })
+        );
+
+      // if setId is incorrect or not selected, default possibleEvaluatorIds to an empty set
+      const selectedSet = updatedSentenceSets.find(set => set.isSelected) || {
+        possibleEvaluatorIds: new Set(),
+      };
+      const possibleEvaluatorIds = Array.from(selectedSet.possibleEvaluatorIds);
+
+      res.render('start', {
+        sentenceSets: updatedSentenceSets,
+        possibleEvaluatorIds,
+      });
     });
   });
 };
-
-const evaluatorIds = [
-  'BBC_Bulgarian_01',
-  'BBC_Bulgarian_02',
-  'BBC_Bulgarian_03',
-  'BBC_Bulgarian_04',
-  'BBC_Swahili_01',
-  'BBC_Swahili_02',
-  'BBC_Swahili_03',
-  'BBC_Swahili_04',
-  'BBC_Swahili_05',
-  'BBC_Gujarati_01',
-  'BBC_Gujarati_02',
-  'BBC_Gujarati_03',
-  'BBC_Gujarati_04',
-  'BBC_Turkish_01',
-  'BBC_Turkish_02',
-  'BBC_Turkish_03',
-  'BBC_Turkish_04',
-  'DW_Bulgarian_01',
-  'DW_Bulgarian_02',
-  'DW_Bulgarian_03',
-  'DW_Bulgarian_04',
-  'DW_Swahili_01',
-  'DW_Swahili_02',
-  'DW_Swahili_03',
-  'DW_Swahili_04',
-  'DW_Gujarati_01',
-  'DW_Gujarati_02',
-  'DW_Gujarati_03',
-  'DW_Gujarati_04',
-  'DW_Turkish_01',
-  'DW_Turkish_02',
-  'DW_Turkish_03',
-  'DW_Turkish_04',
-  'tester',
-];
 
 export { buildStartRoute };

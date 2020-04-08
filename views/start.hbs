@@ -56,8 +56,8 @@
                                         onchange="javascript:location.search = '?setId=' + this.value;"
                                         required>
                                     <option disabled selected>Pick a set</option>
-                                    {{#each sentenceSets}}
-                                    <option {{#if this.isSelected}}selected{{/if}} value="{{this.setId}}">{{this.name}}</option>
+                                    {{#each sentenceSetOptions}}
+                                    <option {{#if this.isSelected}}selected{{/if}} value="{{this.sentenceSet.setId}}">{{this.sentenceSet.name}}</option>
                                     {{/each}}
                                 </select>
                             </div>

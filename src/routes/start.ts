@@ -1,5 +1,6 @@
 import { Request, Response, Application } from 'express';
 import { getSentenceSets } from '../DynamoDB/dynamoDBApi';
+
 const buildStartRoute = (app: Application) => {
   app.get('/start', (req: Request, res: Response) => {
     const setId = req.query.setId;
@@ -18,7 +19,7 @@ const buildStartRoute = (app: Application) => {
 
       res.render('start', {
         sentenceSets: updatedSentenceSets,
-        possibleEvaluatorIds,
+        possibleEvaluatorIds: [...possibleEvaluatorIds, 'tester'],
       });
     });
   });

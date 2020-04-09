@@ -21,7 +21,7 @@ const logger: Logger = createLogger({
   }),
 });
 
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
   logger.add(new Console());
 } else {
   logger.add(

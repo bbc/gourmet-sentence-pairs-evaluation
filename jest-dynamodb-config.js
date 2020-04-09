@@ -35,6 +35,17 @@ module.exports = {
       ],
       ProvisionedThroughput: { ReadCapacityUnits: 1, WriteCapacityUnits: 1 },
     },
+    {
+      TableName: 'SentenceSetsDynamoDBTable-local-dev',
+      KeySchema: [
+        {
+          AttributeName: 'setId',
+          KeyType: 'HASH',
+        },
+      ],
+      AttributeDefinitions: [{ AttributeName: 'setId', AttributeType: 'S' }],
+      ProvisionedThroughput: { ReadCapacityUnits: 1, WriteCapacityUnits: 1 },
+    },
   ],
   port: 8000,
 };

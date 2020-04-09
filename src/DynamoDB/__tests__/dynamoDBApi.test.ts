@@ -3,11 +3,13 @@ import {
   putSentencePairScore,
   putSentenceSetFeedback,
   getSentenceSetFeedback,
+  putSentenceSet,
+  getSentenceSet,
 } from '../dynamoDBApi';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 
 import '../../config';
-import { SentencePairScore, Language } from '../../models/models';
+import { SentencePairScore, Language, SentenceSet } from '../../models/models';
 
 const config = {
   convertEmptyValues: true,
@@ -230,5 +232,19 @@ describe('getSentencePairScores', () => {
         ).toEqual(1);
       }
     );
+  });
+});
+
+describe('putSentenceSet', () => {
+  test('should populate the list of possible evaluator Ids with tester if the set of evaluator Ids is empty', () => {
+    return putSentenceSet(
+      new SentenceSet('name', Language.BULGARIAN, Language.ENGLISH, new Set()),
+      mockDynamoClient
+    ).then(id => {
+      return getSentenceSet(id, mockDynamoClient).then(sentenceSet => {
+        console.log(JSON.stringify(sentenceSet));
+        expect(sentenceSet.possibleEvaluatorIds).toEqual(new Set(['tester']));
+      });
+    });
   });
 });

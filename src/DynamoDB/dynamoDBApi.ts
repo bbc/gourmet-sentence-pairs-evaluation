@@ -42,7 +42,10 @@ const getSentenceSets = (): Promise<SentenceSet[]> => {
     });
 };
 
-const getSentenceSet = (setId: string): Promise<SentenceSet> => {
+const getSentenceSet = (
+  setId: string,
+  client: DocumentClient = dynamoClient
+): Promise<SentenceSet> => {
   const query = {
     TableName: getSentenceSetsTableName(),
     KeyConditionExpression: `setId = :id`,
@@ -51,7 +54,7 @@ const getSentenceSet = (setId: string): Promise<SentenceSet> => {
     },
   };
 
-  return dynamoClient
+  return client
     .query(query)
     .promise()
     .then(output => {
@@ -97,14 +100,18 @@ const putSentenceSetAndPairs = (
 };
 
 // tslint:disable-next-line:variable-name
-const putSentenceSet = (sentenceSet: SentenceSet): Promise<string> => {
+const putSentenceSet = (
+  sentenceSet: SentenceSet,
+  client: DocumentClient = dynamoClient
+): Promise<string> => {
   const item = constructSentenceSetItem(sentenceSet);
+  console.log(JSON.stringify(item));
   const query = {
     Item: item,
     TableName: getSentenceSetsTableName(),
   };
 
-  return dynamoClient
+  return client
     .put(query)
     .promise()
     .then(() => {
@@ -353,16 +360,20 @@ const convertAttributeMapToSentenceSet = (
 const constructSentenceSetItem = (sentenceSet: SentenceSet) => {
   const sentenceIds: Set<string> = sentenceSet.sentenceIds || new Set();
   const evaluatorIds: Set<string> = sentenceSet.evaluatorIds || new Set();
-  const possibleEvaluatorIds: DocumentClient.DynamoDbSet = dynamoClient.createSet(
-    Array.from(sentenceSet.possibleEvaluatorIds || new Set(['tester']))
-  );
+  // If there are no possible evaluator IDs provided create a single ID 'tester' as DynamoDB does not accept empty sets
+  // There needs to be at least one ID in order for the set to be evaluated.
+  const possibleEvaluatorIds =
+    sentenceSet.possibleEvaluatorIds.size < 1
+      ? ['tester']
+      : Array.from(sentenceSet.possibleEvaluatorIds);
+
   if (sentenceIds.size < 1 && evaluatorIds.size < 1) {
     return {
       setId: sentenceSet.setId,
       name: sentenceSet.name,
       sourceLanguage: sentenceSet.sourceLanguage.toUpperCase(),
       targetLanguage: sentenceSet.targetLanguage.toUpperCase(),
-      possibleEvaluatorIds,
+      possibleEvaluatorIds: dynamoClient.createSet(possibleEvaluatorIds),
     };
   }
   if (sentenceIds.size < 1) {
@@ -372,7 +383,7 @@ const constructSentenceSetItem = (sentenceSet: SentenceSet) => {
       sourceLanguage: sentenceSet.sourceLanguage.toUpperCase(),
       targetLanguage: sentenceSet.targetLanguage.toUpperCase(),
       evaluatorIds: dynamoClient.createSet(Array.from(evaluatorIds)),
-      possibleEvaluatorIds,
+      possibleEvaluatorIds: dynamoClient.createSet(possibleEvaluatorIds),
     };
   }
   if (evaluatorIds.size < 1) {
@@ -382,7 +393,7 @@ const constructSentenceSetItem = (sentenceSet: SentenceSet) => {
       name: sentenceSet.name,
       sourceLanguage: sentenceSet.sourceLanguage.toUpperCase(),
       targetLanguage: sentenceSet.targetLanguage.toUpperCase(),
-      possibleEvaluatorIds,
+      possibleEvaluatorIds: dynamoClient.createSet(possibleEvaluatorIds),
     };
   } else {
     return {
@@ -392,7 +403,7 @@ const constructSentenceSetItem = (sentenceSet: SentenceSet) => {
       sourceLanguage: sentenceSet.sourceLanguage.toUpperCase(),
       targetLanguage: sentenceSet.targetLanguage.toUpperCase(),
       evaluatorIds: dynamoClient.createSet(Array.from(evaluatorIds)),
-      possibleEvaluatorIds,
+      possibleEvaluatorIds: dynamoClient.createSet(possibleEvaluatorIds),
     };
   }
 };

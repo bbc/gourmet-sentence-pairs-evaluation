@@ -46,9 +46,9 @@ The names of the database tables are in the [`.env`](./.env) file. There are 4 t
 
 1. SENTENCE_SETS_TABLE_NAME - Contains the sets of sentences to be evaluated
 
-| setId  | name   | sentenceIds | sourceLanguage | targetLanguage | evaluatorIds |
-|--------|--------|-------------|----------------|----------------|--------------|
-| string | string | string set  | string         | string         | string set   |
+| setId  | name   | sentenceIds | sourceLanguage | targetLanguage | evaluatorIds |possibleEvaluatorIds|
+|--------|--------|-------------|----------------|----------------|--------------|--------------------|
+| string | string | string set  | string         | string         | string set   |string set          |
 
 2. SENTENCES_TABLE_NAME - Contains the sentences. Each sentence has an original sentence in the source language as well as a translation into the target language done by a human and another done by a machine.
 

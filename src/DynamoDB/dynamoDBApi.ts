@@ -353,7 +353,7 @@ const convertAttributeMapToSentenceSet = (
 const constructSentenceSetItem = (sentenceSet: SentenceSet) => {
   const sentenceIds: Set<string> = sentenceSet.sentenceIds || new Set();
   const evaluatorIds: Set<string> = sentenceSet.evaluatorIds || new Set();
-  const possibleEvaluatorIds = dynamoClient.createSet(
+  const possibleEvaluatorIds: DocumentClient.DynamoDbSet = dynamoClient.createSet(
     Array.from(sentenceSet.possibleEvaluatorIds || new Set(['tester']))
   );
   if (sentenceIds.size < 1 && evaluatorIds.size < 1) {

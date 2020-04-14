@@ -12,7 +12,7 @@ stage = t.add_parameter(Parameter(
     "Stage",
     Description="Development stage",
     Type="String",
-    Default="test",
+    Default="local-dev",
 ))
 
 sentenceTableHashkeyName = t.add_parameter(Parameter(

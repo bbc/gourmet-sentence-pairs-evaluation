@@ -108,7 +108,7 @@
             "Type": "String"
         },
         "Stage": {
-            "Default": "test",
+            "Default": "local-dev",
             "Description": "Development stage",
             "Type": "String"
         },

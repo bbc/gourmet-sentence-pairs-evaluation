@@ -1,9 +1,15 @@
-# Sentence Pairs Evaluation Tool
+# Sentence Pairs Evaluation Tool - Direct Assessment
 
-GoURMET project evaluation tool. The purpose is to evaluate a set of sentences comparing the quality of a machine translated sentence to a human translated sentence where the human translation is assumed to be the gold standard. For each case there must be a set of three sentences.
+This tool was build as part of the [GoURMET Project](https://gourmet-project.eu/) to complete Direct Assessment evaluation on machine translation models. The goal is to evaluate the models by comparing the quality of a machine translated sentences to a human translated sentences where the human translation is assumed to be the gold standard. For each case there must be a set of three sentences.
+
 1. A sentence in the source language
 2. The same sentence translated into the target language by a human
 3. The same sentence translated into the target language by a machine
+
+## Running and using the Direct Assessment Sentence Pair Tool
+
+This tool is open sourced under GPL v3. Please view the [usage docs](./docs/usage.md) for how to set up and run this software. Issues should be raised via the GitHub issues. Code changes can be proposed by opening a pull request.
+
 
 # Set up
 1. Install [node v10](https://nodejs.org/en/)
@@ -77,6 +83,16 @@ To make changes to the DNS template. Update the [./infrastructure/src/dns.py](./
 ## DynamoDB Tests
 
 The DynamoDB API is tested using [jest-dynamodb](https://github.com/shelfio/jest-dynamodb). This is specified as a preset in [`package.json`](./package.json). This allows an instance of DynamoDB to be run locally. The schema for this database is defined in [`jest-dynamodb-config.js`](./jest-dynamodb-config.js) 
+
+# Creating a Docker image
+
+The [Dockerfile](./Dockerfile) provides the template for creating a Docker image for the app. From the root directory of the project run
+
+```
+docker build -t newslabsgourmet/direct-assessment-sentence-pair-tool:CURRENT_VERSION_NUMBER .
+```
+
+to create a Docker image. The Docker image is hosted on [Dockerhub](https://hub.docker.com/r/newslabsgourmet/direct-assessment-sentence-pair-tool)
 
 # Using the App
 

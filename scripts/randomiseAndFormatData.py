@@ -10,10 +10,11 @@ This script assumes that there are at least 205 sentences available for evaluati
 used as internal calibration and the others will be valid sentences (full explanation below)
 
 Input:
-Text files containing an original sentence, the human translation and a machine translation.
-There can be multiple sentences per file. The names of the files must be specified on lines 51,52 
-and 53. A JSON file with the external collaboration sentences. The file name must be specified on 
-line 55 and the JSON is in the form:
+- Text files containing an original sentence, the human translation and a machine translation.
+There can be multiple sentences per file. The names of the files must be specified on lines 61,62
+and 63.
+- A JSON file with the external collaboration sentences. The file name must be specified on
+line 65 and the JSON is in the form:
 
 {
     "sentences": list<Sentences>
@@ -28,7 +29,7 @@ Where Sentences is of type:
 }
 
 Output:
-A json file
+- 2 JSON files. evaluationData1.json and evaluationData2.json, where JSON is in the form:
 
 {
     "sentences": list<Sentences>
@@ -48,12 +49,11 @@ evaluators familiar with the task. The remaining sentences will be a mix of vali
 i.e. sentences where the translation has been performed by a machine and external callibration
 sentences ('B') i.e. contrived examples.
 
-Output:
-2 JSON files. evaluationData1.json and evaluationData2.json
-These each contain 110 sentences for evaluation. 5 internal callibration sentences. These will be the
-same 5 sentences in both files and will always be the first 5. 100 valid sentences and 5 external calibration
-sentences shuffled together and in a random order. The external calibration sentences will be the same in
-both files.
+Each JSON output file contains 110 sentences for evaluation and is composed of:
+- 5 internal callibration sentences. These will be the same 5 sentences in both files and will always be the first 5.
+- 100 valid sentences and 5 external calibration sentences shuffled together and in a random order. 
+The external calibration sentences will be the same in both files.
+
 """
 
 

@@ -1,5 +1,8 @@
 # Sentence Pairs Evaluation Tool - Direct Assessment
 
+This project has received funding from the European Union’s Horizon 2020 research and innovation
+programme under grant agreement No 825299. <img src="./docs/images/EU_flag.jpg" width="25px">
+
 This tool was build as part of the [GoURMET Project](https://gourmet-project.eu/) to complete Direct Assessment evaluation on machine translation models. The goal is to evaluate the models by comparing the quality of a machine translated sentences to a human translated sentences where the human translation is assumed to be the gold standard. For each case there must be a set of three sentences.
 
 1. A sentence in the source language

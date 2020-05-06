@@ -1,6 +1,21 @@
-# Using the Sentence Pairs Direct Assessment Tool
+# Admin Guide
+
+This guide describes the administration tasks required to set up and use the Sentence Pairs Direct Assessment Tool for carrying out Direct Assessment This tool is open sourced under GPL v3. Issues should be raised via the GitHub issues. Code changes can be proposed by opening a pull request.
 
 To use the tool a database and client need to be set up as well as credentials to allow the client to connect to the database
+
+## Prerequisites
+
+1. [AWS Account](https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/)
+2. [Docker](https://docs.docker.com/get-docker/)
+
+## Solution Pricing
+
+The database used is [DynamoDB](https://aws.amazon.com/dynamodb/) this is a paid for AWS Service please be aware of the [costs](https://aws.amazon.com/dynamodb/pricing/) of database reads and writes before creating and using tables.
+
+## Architecture
+
+![](./images/basicArchitecture.png)
 
 ## Database set up
 
@@ -27,7 +42,7 @@ In order to allow client to access the DynamoDB database an [access key](https:/
 
 ## Setting up the Client 
 
-The client app is available as a Docker image from [https://hub.docker.com/r/newslabsgourmet/direct-assessment-sentence-pair-tool](https://hub.docker.com/r/newslabsgourmet/direct-assessment-sentence-pair-tool)
+The client app is available as a Docker image from [https://hub.docker.com/r/newslabsgourmet/direct-assessment-sentence-pair-tool](https://hub.docker.com/r/newslabsgourmet/direct-assessment-sentence-pair-tool).
 
 1. Pull the image using 
 

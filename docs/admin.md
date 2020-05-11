@@ -28,7 +28,7 @@ The database used to store data is [DynamoDB](https://aws.amazon.com/dynamodb/).
 
 ![](./images/cloudformation.png)
 
-The cloudformation step will create the relevant DynamoDB tables in AWS.
+The cloudformation step will create the [relevant DynamoDB tables](./development.md#database-tables) in AWS.
 
 ### Create Database Credentials
 

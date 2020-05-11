@@ -10,6 +10,7 @@ This tool was build as part of the [GoURMET Project](https://gourmet-project.eu/
 1. [What is Direct Assessment?](#what-is-direct-assessment)
 2. [Admin Guide](./docs/admin.md)
 3. [Developer Guide](./docs/development.md)
+4. [User Guide](./docs/users.md)
 
 ## What is Direct Assessment
 
@@ -25,7 +26,3 @@ The evaluator will be shown the human translated sentence and the machine transl
 2. The machine translated sentence is a well-written phrase or sentence that is grammatically and idiomatically correct
 
 A more in-depth explanation of Direct Assessment can be found in the papers [Continuous Measurement Scales in Human Evaluation of Machine Translation](https://www.aclweb.org/anthology/W13-2305/) and [Is all that Glitters in Machine Translation Quality Estimation really Gold?](https://www.aclweb.org/anthology/C16-1294/).
-
-## Creating Data Sets for the App
-
-The script [`randomiseAndFormatData.py`](./scripts/randomiseAndFormatData.py) can be used to turn text files into a JSON file to submit to the `/dataset` endpoint. It also randomises the order of the sentences. The script needs to be amended to specify the files that should be read in.

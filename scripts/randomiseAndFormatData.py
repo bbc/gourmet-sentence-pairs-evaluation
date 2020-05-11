@@ -13,6 +13,7 @@ Input:
 - Text files containing an original sentence, the human translation and a machine translation.
 There can be multiple sentences per file. The names of the files must be specified on lines 61,62
 and 63.
+- Text file containing the list of evaluator Ids for the data set. The name of this file must be specified on line 66
 - A JSON file with the external collaboration sentences. The file name must be specified on
 line 65 and the JSON is in the form:
 
@@ -56,13 +57,13 @@ The external calibration sentences will be the same in both files.
 
 """
 
-
 # Specify the files that are to be read in. The list must be in the same order for original, human translation and machine translation.
 original_filenames = ["bulgarian1EN.txt"]
 human_translation_filenames = ["bulgarian1HT.txt"]
 machine_translation_filenames = ["bulgarian1MT.txt"]
 
-external_callibration_json_file = "externalCalibration.json"
+external_callibration_json_file = "perfect.json"
+evaluator_ids_file = "possibleEvaluatorIds.txt"
 
 if(len(original_filenames) != len(human_translation_filenames) or len(human_translation_filenames) != len(machine_translation_filenames)):
     sys.exit("Files do not exist for every variation of the articles.")
@@ -89,9 +90,7 @@ for file_set in file_sets:
         file_set['machine_translation'], "r").readlines()
 
     if(len(original) != len(human_translation) or len(human_translation) != len(machine_translation)):
-        sys.exit(
-            f'Files do not have the same number of lines in file set: {file_set}.')
-
+        sys.exit(f'Files do not have the same number of lines in file set: {file_set}.')
     for i in range(len(original)):
         sentences.append({
             "original": original[i],
@@ -130,12 +129,16 @@ random.shuffle(valid_and_external_callibration_sentences_set_1)
 valid_and_external_callibration_sentences_set_2 = valid_sentences[100:200] + external_callibration_sentences
 random.shuffle(valid_and_external_callibration_sentences_set_2)
 
+# Read in evaluator Ids
+with open(evaluator_ids_file) as f:
+    evaluator_ids = f.read().splitlines()
+
 # Create first data set
 evaluationData1 = open('evaluationData1.json', 'w')
-evaluationData1.write(json.dumps({"sentences": internal_callibration_sentences + valid_and_external_callibration_sentences_set_1}))
+evaluationData1.write(json.dumps({"possibleEvaluatorIds": evaluator_ids, "sentences": internal_callibration_sentences + valid_and_external_callibration_sentences_set_1}))
 evaluationData1.close()
 
 # Create second data set
 evaluationData2 = open('evaluationData2.json', 'w')
-evaluationData2.write(json.dumps({"sentences": internal_callibration_sentences + valid_and_external_callibration_sentences_set_2}))
+evaluationData2.write(json.dumps({"possibleEvaluatorIds": evaluator_ids, "sentences": internal_callibration_sentences + valid_and_external_callibration_sentences_set_2}))
 evaluationData2.close()

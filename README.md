@@ -9,6 +9,7 @@ This tool was build as part of the [GoURMET Project](https://gourmet-project.eu/
 
 1. [What is Direct Assessment?](#what-is-direct-assessment)
 2. [Admin Guide](./docs/admin.md)
+3. [Developer Guide](./docs/development.md)
 
 ## What is Direct Assessment
 
@@ -28,7 +29,3 @@ A more in-depth explanation of Direct Assessment can be found in the papers [Con
 ## Creating Data Sets for the App
 
 The script [`randomiseAndFormatData.py`](./scripts/randomiseAndFormatData.py) can be used to turn text files into a JSON file to submit to the `/dataset` endpoint. It also randomises the order of the sentences. The script needs to be amended to specify the files that should be read in.
-
-## Developing the Direct Assessment Sentence Pair Tool
-
-Details on maintaining and developing the tool are in the [development docs](./docs/development.md)

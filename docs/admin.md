@@ -7,7 +7,7 @@ To use the tool a database and client need to be set up as well as credentials t
 ## Prerequisites
 
 1. [AWS Account](https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/)
-2. [Docker](https://docs.docker.com/get-docker/)
+2. [Docker](https://docs.docker.com/get-docker/) installed on your machine.
 
 ## Solution Pricing
 

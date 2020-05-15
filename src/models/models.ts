@@ -44,6 +44,7 @@ class SentencePair {
 }
 
 class SentencePairScore {
+  public timestamp: number;
   constructor(
     public sentencePairId: string,
     public evaluatorId: string,
@@ -54,9 +55,11 @@ class SentencePairScore {
     public machineTranslation: string,
     public original: string,
     public sentencePairType: string,
-    public scoreId?: string
+    public scoreId?: string,
+    timestamp?: number
   ) {
     this.scoreId = scoreId === undefined ? uuidv1() : scoreId;
+    this.timestamp = timestamp === undefined ? -1 : timestamp;
   }
 }
 

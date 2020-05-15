@@ -7,7 +7,7 @@ import {
   SentenceSet,
   Language,
 } from '../../models/models';
-import { generateLanguageOptions } from '../exportData';
+import { generateLanguageOptions, removeDuplicateAnswers } from '../exportData';
 
 jest.mock('../../DynamoDB/dynamoDBApi');
 const dynamoDBApi = require('../../DynamoDB/dynamoDBApi');
@@ -161,5 +161,80 @@ describe('generateLanguageOptions', () => {
     ];
 
     expect(generateLanguageOptions()).toEqual(expectedResponse);
+  });
+});
+
+describe('removeDuplicateAnswers', () => {
+  test('should remove newer duplicate answers created with the same evaluatorId', () => {
+    const sentencePair1ScoreDuplicate = new SentencePairScore(
+      'sentenceId1',
+      'evaluatorId1',
+      100,
+      40,
+      'target',
+      'humanTranslation',
+      'machineTranslation',
+      'original',
+      'type',
+      'scoreId',
+      200
+    );
+
+    const sentencePair1ScoreEarliest = new SentencePairScore(
+      'sentenceId1',
+      'evaluatorId1',
+      100,
+      40,
+      'target',
+      'humanTranslation',
+      'machineTranslation',
+      'original',
+      'type',
+      'scoreId',
+      100
+    );
+
+    const sentencePair1Score = new SentencePairScore(
+      'sentenceId1',
+      'evaluatorId2',
+      70,
+      40,
+      'target',
+      'humanTranslation',
+      'machineTranslation',
+      'original',
+      'type',
+      'scoreId',
+      123
+    );
+
+    const sentencePair2Score = new SentencePairScore(
+      'sentenceId2',
+      'evaluatorId1',
+      90,
+      30,
+      'target',
+      'humanTranslation',
+      'machineTranslation',
+      'original',
+      'type',
+      'scoreId',
+      100
+    );
+
+    const sentencePairsScores = [
+      sentencePair1ScoreDuplicate,
+      sentencePair1ScoreEarliest,
+      sentencePair1Score,
+      sentencePair2Score,
+    ];
+
+    const expectedResult = [
+      sentencePair1ScoreEarliest,
+      sentencePair1Score,
+      sentencePair2Score,
+    ];
+
+    expect(removeDuplicateAnswers(sentencePairsScores)).toEqual(expectedResult);
   });
 });

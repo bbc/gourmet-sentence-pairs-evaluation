@@ -306,7 +306,8 @@ const convertAttributeMapToSentencePairScore = (
     item['machineTranslation'] || 'undefined',
     item['original'] || 'undefined',
     item['sentencePairType'] || 'A',
-    item['scoreId'] || 'undefined'
+    item['scoreId'] || 'undefined',
+    Number(item['timestamp'] || -1)
   );
 };
 

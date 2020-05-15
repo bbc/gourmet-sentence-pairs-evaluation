@@ -14,7 +14,7 @@ import {
 import { createObjectCsvWriter } from 'csv-writer';
 import { Language } from '../models/models';
 import { ExportRequest } from '../models/requests';
-import { groupBy, flatten } from 'underscore';
+import { groupBy, flatten, sortBy } from 'underscore';
 import { createWriteStream } from 'fs';
 import * as archiver from 'archiver';
 
@@ -126,6 +126,10 @@ const createScoresCSVFile = (
     language
   );
 
+  const filteredScores = removeDuplicateAnswers(
+    scoresWithHumanReadableSentenceId
+  );
+
   const csvWriter = createObjectCsvWriter({
     path: fileName,
     header: [
@@ -142,7 +146,34 @@ const createScoresCSVFile = (
     encoding: 'utf8',
   });
 
-  return csvWriter.writeRecords(scoresWithHumanReadableSentenceId);
+  return csvWriter.writeRecords(filteredScores);
+};
+
+const removeDuplicateAnswers = (
+  scores: SentencePairScore[]
+): SentencePairScore[] => {
+  const scoresGroupedBySegmentId = Object.values(
+    groupBy<SentencePairScore>(scores, 'sentencePairId')
+  );
+
+  const filteredScores: SentencePairScore[][] = scoresGroupedBySegmentId.map(
+    score => {
+      const scoresGroupedByEvaluatorId = Object.values(
+        groupBy<SentencePairScore>(score, 'evaluatorId')
+      );
+      const sentenceScores: SentencePairScore[] = scoresGroupedByEvaluatorId.map(
+        sentenceScore => {
+          const earliestSentenceScore = sortBy<SentencePairScore>(
+            sentenceScore,
+            'timestamp'
+          );
+          return earliestSentenceScore[0];
+        }
+      );
+      return sentenceScores;
+    }
+  );
+  return flatten(filteredScores);
 };
 
 /**
@@ -213,4 +244,8 @@ const generateLanguageOptions = () => {
   return languageOptions;
 };
 
-export { buildExportDataRoute, generateLanguageOptions };
+export {
+  buildExportDataRoute,
+  generateLanguageOptions,
+  removeDuplicateAnswers,
+};

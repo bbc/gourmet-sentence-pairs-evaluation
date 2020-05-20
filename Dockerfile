@@ -3,11 +3,12 @@ FROM node:10
 WORKDIR /app
 COPY . /app
 
-ENV NODE_ENV=development
+ENV NODE_ENV=development \
+    ENABLE_AUTH=false \
+    USERNAME=user \
+    PASSWORD=password
 
-RUN yarn install
-RUN yarn lint
-RUN yarn build
+RUN yarn install && yarn lint && yarn build
 
 EXPOSE 8080
 

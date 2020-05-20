@@ -58,4 +58,20 @@ There are multiple parameters that need to be provided to the run command:
 * -e AWS_ACCESS_KEY_ID=AWS_KEY_ID Provide the secret access key ID created when creating DynamoDB credentials
 * -e AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY Provide the secret access key created when creating DynamoDB credentials
 
+There are also optional parameters that can be provided to enable basic user authentication. The details are covered in [security](#security). These are:
+
+* -e ENABLE_AUTH. To specify that authentication is required. By default auth is not enabled
+* -e USERNAME. To specify the username. By default the username is `user`
+* -e PASSWORD. To specify the password. By default password is `password`
+
 3. The Sentence Pairs Direct Assessment App will now be running on [http://localhost:8080](http:localhost:8080) using the DynamoDB created in AWS for storage.
+
+## Security
+
+The software comes with optional [basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication). This is enabled via the `ENABLE_AUTH` environment variable. If it is set to true when the user tries to access the site they will be presented with a login pop up. Once the user has logged in they will be able to freely access all of the site.
+
+![](./images/login.png)
+
+The `USERNAME` and `PASSWORD` environment variables must also be specified via environment variables. The docker command to run a container with authentication is:
+
+```docker run -p 8080:8080 -e AWS_ACCESS_KEY_ID=AWS_KEY_ID -e AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY -e ENABLE_AUTH=true -e USERNAME=admin -e PASSWORD=strongpassword  newslabsgourmet/direct-assessment-sentence-pair-tool```

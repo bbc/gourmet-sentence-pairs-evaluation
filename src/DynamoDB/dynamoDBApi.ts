@@ -3,7 +3,6 @@ import {
   SentencePair,
   SentenceSet,
   SentencePairScore,
-  Language,
   SentenceSetFeedback,
 } from '../models/models';
 import * as uuidv1 from 'uuid/v1';
@@ -77,8 +76,8 @@ const getSentenceSet = (
 const putSentenceSetAndPairs = (
   sentencePairs: SentencePair[],
   setName: string,
-  sourceLanguage: Language,
-  targetLanguage: Language,
+  sourceLanguage: string,
+  targetLanguage: string,
   possibleEvaluatorIds: string[],
   setId?: string
 ): Promise<string> => {
@@ -175,7 +174,7 @@ const putSentencePair = (
 };
 
 const getSentencePairScores = (
-  targetLanguage: Language,
+  targetLanguage: string,
   client: DocumentClient = dynamoClient
 ): Promise<SentencePairScore[]> => {
   return client
@@ -227,7 +226,7 @@ const putSentencePairScore = (
 };
 
 const getSentenceSetFeedback = (
-  targetLanguage: Language,
+  targetLanguage: string,
   client: DocumentClient = dynamoClient
 ): Promise<SentenceSetFeedback[]> => {
   return client

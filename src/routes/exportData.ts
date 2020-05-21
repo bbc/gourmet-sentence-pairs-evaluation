@@ -12,7 +12,6 @@ import {
   EvaluatorSet,
 } from '../models/models';
 import { createObjectCsvWriter } from 'csv-writer';
-import { Language } from '../models/models';
 import { ExportRequest } from '../models/requests';
 import { groupBy, flatten, sortBy } from 'underscore';
 import { createWriteStream } from 'fs';
@@ -25,21 +24,24 @@ const buildExportDataRoute = (app: Application) => {
 
 const getExportData = (app: Application) => {
   app.get('/exportData', (req: Request, res: Response) => {
-    const languageOptions = generateLanguageOptions();
     getSentenceSets()
       .then(sentenceSets => {
         const evaluatorSets = sentenceSets
           .sort((a, b) => a.name.localeCompare(b.name))
           .map(sentenceSet => convertSentenceSetToEvaluatorSet(sentenceSet));
+        const languages = evaluatorSets.map(set => set.targetLanguage);
+        const languageOptions: string[] = languages.filter(
+          (item, index) => languages.indexOf(item) === index
+        );
         res
           .status(200)
-          .render('exportData', { languageOptions, evaluatorSets });
+          .render('exportData', { evaluatorSets, languageOptions });
       })
       .catch(error => {
         logger.info(`Could not get sentence sets: Error: ${error}`);
         res
           .status(200)
-          .render('exportData', { languageOptions, evaluatorSets: [] });
+          .render('exportData', { evaluatorSets: [], languageOptions: [] });
       });
   });
 };
@@ -55,25 +57,17 @@ const convertSentenceSetToEvaluatorSet = (
   return {
     setName: sentenceSet.name,
     evaluators: evaluatorIdsAsString,
+    targetLanguage: sentenceSet.targetLanguage,
   };
 };
 
 const postExportData = (app: Application) => {
   app.post('/exportData', (req: ExportRequest, res: Response) => {
-    const language = req.body.language.toUpperCase();
-    const languageEnum: Language = (Language as any)[language];
-    if (languageEnum === undefined) {
-      logger.error(
-        `Invalid language parameter could not convert ${language} into Language enum`
-      );
-      res.redirect(404, '/error?errorCode=postExportFailLanguage');
-    } else {
-      sendData(languageEnum, res);
-    }
+    sendData(req.body.language, res);
   });
 };
 
-const sendData = (language: Language, res: Response) => {
+const sendData = (language: string, res: Response) => {
   const zipFileName = `/tmp/${language}.zip`;
   Promise.all([generateScoresCSV(language), generateFeedbackCSV(language)])
     .then(filesToZip => zipFiles(filesToZip, zipFileName))
@@ -89,14 +83,14 @@ const sendData = (language: Language, res: Response) => {
     });
 };
 
-const generateScoresCSV = (language: Language): Promise<string> => {
+const generateScoresCSV = (language: string): Promise<string> => {
   const filename = `/tmp/${language}-sentence-pair-scores.csv`;
   return getSentencePairScores(language)
     .then(scores => createScoresCSVFile(scores, filename, language))
     .then(_ => filename);
 };
 
-const generateFeedbackCSV = (language: Language): Promise<string> => {
+const generateFeedbackCSV = (language: string): Promise<string> => {
   const filename = `/tmp/${language}-feedback.csv`;
   return getSentenceSetFeedback(language)
     .then(feedback => createFeedbackCSVFile(feedback, filename))
@@ -119,7 +113,7 @@ const zipFiles = (filesToZip: string[], zipFileName: string): Promise<void> => {
 const createScoresCSVFile = (
   scores: SentencePairScore[],
   fileName: string,
-  language: Language
+  language: string
 ): Promise<void> => {
   const scoresWithHumanReadableSentenceId = makeSentenceIdsHumanReadable(
     scores,
@@ -182,7 +176,7 @@ const removeDuplicateAnswers = (
  */
 const makeSentenceIdsHumanReadable = (
   scores: SentencePairScore[],
-  language: Language
+  language: string
 ): SentencePairScore[] => {
   const scoresGroupedBySentencePairId = groupBy<SentencePairScore>(
     scores,
@@ -230,22 +224,4 @@ const createFeedbackCSVFile = (
   return csvWriter.writeRecords(feedback);
 };
 
-const generateLanguageOptions = () => {
-  const languages = Object.keys(Language);
-  // Get all possible values for Language enum
-  const languageOptions = languages.map((languageName, i) => {
-    return {
-      displayName:
-        languageName.charAt(0).toUpperCase() +
-        languageName.slice(1).toLowerCase(),
-      language: languageName,
-    };
-  });
-  return languageOptions;
-};
-
-export {
-  buildExportDataRoute,
-  generateLanguageOptions,
-  removeDuplicateAnswers,
-};
+export { buildExportDataRoute, removeDuplicateAnswers };

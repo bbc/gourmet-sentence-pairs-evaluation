@@ -5,8 +5,8 @@ class Dataset {
   constructor(
     public sentences: DatasetSentence[],
     public setName: string,
-    public sourceLanguage: Language,
-    public targetLanguage: Language,
+    public sourceLanguage: string,
+    public targetLanguage: string,
     public possibleEvaluatorIds: string[]
   ) {}
 }
@@ -16,8 +16,8 @@ class SentenceSet {
 
   constructor(
     public name: string,
-    public sourceLanguage: Language,
-    public targetLanguage: Language,
+    public sourceLanguage: string,
+    public targetLanguage: string,
     public possibleEvaluatorIds: Set<string>,
     public sentenceIds?: Set<string>,
     setId?: string,
@@ -34,8 +34,8 @@ class SentencePair {
     public original: string,
     public humanTranslation: string,
     public machineTranslation: string,
-    public sourceLanguage: Language,
-    public targetLanguage: Language,
+    public sourceLanguage: string,
+    public targetLanguage: string,
     public sentencePairType: string,
     sentenceId?: string
   ) {
@@ -76,14 +76,7 @@ class SentenceSetFeedback {
 interface EvaluatorSet {
   setName: string;
   evaluators: string;
-}
-
-enum Language {
-  BULGARIAN = 'bg',
-  GUJARATI = 'gu',
-  SWAHILI = 'sw',
-  TURKISH = 'tr',
-  ENGLISH = 'en',
+  targetLanguage: string;
 }
 
 export {
@@ -91,7 +84,6 @@ export {
   SentencePair,
   SentencePairScore,
   Dataset,
-  Language,
   SentenceSetFeedback,
   EvaluatorSet,
 };

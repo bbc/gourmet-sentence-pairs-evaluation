@@ -20,6 +20,8 @@ The Data set must be a json file with the following structure:
 ```
 {
     "possibleEvaluatorIds": list[string],
+    "sourceLanguage": string,
+    "targetLanguage": string,
     "sentences": list[Sentences]
 }
 ```
@@ -39,28 +41,30 @@ For Example:
 
 ```json
 {
-    "possibleEvaluatorIds": ["evaluator1", "evaluator2"],
-    "sentences": [
-        {
-            "original": "Only a few weeks ago, Andrei Vaganov and Yevgeny Yerofeyev had no problem with the Russian authorities.",
-            "humanTranslation": "Допреди няколко седмици Андрей Ваганов и Евгений Ерофеев нямали проблеми с руските власти.",
-            "machineTranslation": "Само преди няколко седмици Андрей Ваганов и Евгений Йерфеев нямаха проблем с руските власти.",
-            "sentencePairType": "A"
-        },
-        {
-            "original": "The couple had married in Denmark and lived with their two adopted sons in Moscow.",
-            "humanTranslation": "Двамата се оженили в Дания и заживели с двамата си осиновени синове в Москва.",
-            "machineTranslation": "Двойката е омъжена в Дания и живее с двамата си осиновени синове в Москва.",
-            "sentencePairType": "A"
-        }
-    ]
+  "possibleEvaluatorIds": ["evaluator1", "evaluator2"],
+  "sourceLanguage": "English",
+  "targetLanguage": "Bulgarian",
+  "sentences": [
+    {
+      "original": "Only a few weeks ago, Andrei Vaganov and Yevgeny Yerofeyev had no problem with the Russian authorities.",
+      "humanTranslation": "Допреди няколко седмици Андрей Ваганов и Евгений Ерофеев нямали проблеми с руските власти.",
+      "machineTranslation": "Само преди няколко седмици Андрей Ваганов и Евгений Йерфеев нямаха проблем с руските власти.",
+      "sentencePairType": "A"
+    },
+    {
+      "original": "The couple had married in Denmark and lived with their two adopted sons in Moscow.",
+      "humanTranslation": "Двамата се оженили в Дания и заживели с двамата си осиновени синове в Москва.",
+      "machineTranslation": "Двойката е омъжена в Дания и живее с двамата си осиновени синове в Москва.",
+      "sentencePairType": "A"
+    }
+  ]
 }
 ```
 
 Parts of the data structure:
 
 - possibleEvaluatorIds: A participant will select an evaluator ID when starting the Direct Assessment exercise. This determines the list of evaluator IDs that will be available for a given data set. The Tool will always provide the evaluator ID 'tester'. This is used for testing purposes and should not be used by an actual participant as their scores will not be shown in the results
-- sentencePairType: A way to mark sentences of different types. For example if as the Evaluation Coordinator you wanted to introduce some nonsense sentences or perfect translations to use as a benchmark. 
+- sentencePairType: A way to mark sentences of different types. For example if as the Evaluation Coordinator you wanted to introduce some nonsense sentences or perfect translations to use as a benchmark.
 
 At the BBC data set JSON is generated using the [`randomiseAndFormatData.py`](../scripts/randomiseAndFormatData.py) script. The comments in the [script](../scripts/randomiseAndFormatData.py) document how to use it. The [exampleData directory](../scripts/exampleData) provides examples of input and output. While this script is specific to the way the BBC uses the Direct Assessment Tool for evaluation the script can be adapted and generalised to fit other use cases.
 

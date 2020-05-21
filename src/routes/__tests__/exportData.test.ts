@@ -5,9 +5,8 @@ import {
   SentencePairScore,
   SentenceSetFeedback,
   SentenceSet,
-  Language,
 } from '../../models/models';
-import { generateLanguageOptions, removeDuplicateAnswers } from '../exportData';
+import { removeDuplicateAnswers } from '../exportData';
 
 jest.mock('../../DynamoDB/dynamoDBApi');
 const dynamoDBApi = require('../../DynamoDB/dynamoDBApi');
@@ -23,8 +22,8 @@ describe('GET /exportData', () => {
       return Promise.resolve([
         new SentenceSet(
           'name',
-          Language.BULGARIAN,
-          Language.ENGLISH,
+          'bg',
+          'en',
           new Set(),
           new Set(),
           'setId',
@@ -73,9 +72,7 @@ describe('POST /exportData', () => {
       ]);
     });
 
-    const response = await mockApp
-      .post('/exportData')
-      .send({ language: 'SWAHILI' });
+    const response = await mockApp.post('/exportData').send({ language: 'sw' });
     expect(response.status).toBe(200);
     expect(response.header['content-disposition']).toEqual(
       'attachment; filename="sw.zip"'
@@ -137,30 +134,6 @@ describe('POST /exportData', () => {
     expect(response.header['location']).toEqual(
       '/error?errorCode=postExportDataFailCSVCreate'
     );
-  });
-
-  test('should redirect to the error page with a 404 if the language value sent is not valid', async () => {
-    const response = await mockApp
-      .post('/exportData')
-      .send({ language: 'FAKE' });
-    expect(response.status).toBe(404);
-    expect(response.header['location']).toEqual(
-      '/error?errorCode=postExportFailLanguage'
-    );
-  });
-});
-
-describe('generateLanguageOptions', () => {
-  test('should return a list with an object for all language options available according to the Language enum', () => {
-    const expectedResponse = [
-      { displayName: 'Bulgarian', language: 'BULGARIAN' },
-      { displayName: 'Gujarati', language: 'GUJARATI' },
-      { displayName: 'Swahili', language: 'SWAHILI' },
-      { displayName: 'Turkish', language: 'TURKISH' },
-      { displayName: 'English', language: 'ENGLISH' },
-    ];
-
-    expect(generateLanguageOptions()).toEqual(expectedResponse);
   });
 });
 

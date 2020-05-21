@@ -1,4 +1,4 @@
-import { Dataset, SentencePair, Language } from './models/models';
+import { Dataset, SentencePair } from './models/models';
 import { putSentenceSetAndPairs } from './DynamoDB/dynamoDBApi';
 import { DatasetBody, DatasetFile } from './models/requests';
 import { Some, None, Option } from './models/generics';
@@ -10,19 +10,16 @@ const cleanData = (
   dataset: DatasetBody,
   datasetFile: DatasetFile
 ): Option<Dataset> => {
-  const sourceLanguage: Language = (Language as any)[
-    dataset.sourceLanguage.toUpperCase()
-  ];
-  const targetLanguage: Language = (Language as any)[
-    dataset.targetLanguage.toUpperCase()
-  ];
-  if (targetLanguage !== undefined && sourceLanguage !== undefined) {
+  if (
+    datasetFile.targetLanguage !== undefined &&
+    datasetFile.sourceLanguage !== undefined
+  ) {
     return new Some(
       new Dataset(
         datasetFile.sentences,
         dataset.setName,
-        sourceLanguage,
-        targetLanguage,
+        datasetFile.sourceLanguage,
+        datasetFile.targetLanguage,
         datasetFile.possibleEvaluatorIds
       )
     );

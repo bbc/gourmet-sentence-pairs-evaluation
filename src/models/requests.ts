@@ -50,6 +50,8 @@ interface DatasetBody {
 
 interface DatasetFile {
   possibleEvaluatorIds: string[];
+  targetLanguage: string;
+  sourceLanguage: string;
   sentences: DatasetSentence[];
 }
 

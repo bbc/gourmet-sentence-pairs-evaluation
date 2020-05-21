@@ -1,7 +1,6 @@
 import { Request, Response, Application } from 'express';
 import { DatasetBody, DatasetFile, DatasetRequest } from '../models/requests';
 import { submitDataset } from '../processDataset';
-import { Language } from '../models/models';
 import { readFileSync, unlink } from 'fs';
 import { Instance } from 'multer';
 import { logger } from '../utils/logger';
@@ -51,17 +50,7 @@ const buildDatasetRoutes = (app: Application, upload: Instance) => {
   );
 
   app.get('/dataset', (req: Request, res: Response) => {
-    const languages = Object.keys(Language);
-    // Get all possible values for Language enum
-    const languageOptions = languages.map(languageName => {
-      return {
-        displayName:
-          languageName.charAt(0).toUpperCase() +
-          languageName.slice(1).toLowerCase(),
-        language: languageName,
-      };
-    });
-    res.render('dataset', { languageOptions });
+    res.render('dataset');
   });
 };
 

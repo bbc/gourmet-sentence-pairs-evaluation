@@ -1,5 +1,5 @@
 import { cleanData, submitDataset } from '../processDataset';
-import { Dataset, Language } from '../models/models';
+import { Dataset } from '../models/models';
 import { DatasetBody, DatasetFile, DatasetSentence } from '../models/requests';
 import { Some, None } from '../models/generics';
 
@@ -24,112 +24,12 @@ describe('cleanData', () => {
     const file: DatasetFile = {
       possibleEvaluatorIds: ['tester'],
       sentences: [sentence],
+      sourceLanguage: 'en',
+      targetLanguage: 'bg',
     };
-    const expectedDataset: Dataset = new Dataset(
-      [sentence],
-      '',
-      Language.ENGLISH,
-      Language.BULGARIAN,
-      ['tester']
-    );
-    const expectedOutput = new Some(expectedDataset);
-    expect(cleanData(input, file)).toEqual(expectedOutput);
-  });
-
-  test("should return None if the source language is not defined in the 'Language' enum", () => {
-    const input: DatasetBody = {
-      setName: '',
-      sourceLanguage: 'GREEK',
-      targetLanguage: 'BULGARIAN',
-    };
-    const sentence: DatasetSentence = {
-      original: 'Sentence1',
-      humanTranslation: 'human',
-      machineTranslation: 'machine',
-      sentencePairType: 'A',
-    };
-
-    const file: DatasetFile = {
-      possibleEvaluatorIds: ['tester'],
-      sentences: [sentence],
-    };
-    const expectedOutput = new None();
-    expect(cleanData(input, file)).toEqual(expectedOutput);
-  });
-
-  test("should return None if the target language is not defined in the 'Language' enum", () => {
-    const input: DatasetBody = {
-      setName: '',
-      sourceLanguage: 'ENGLISH',
-      targetLanguage: 'GREEK',
-    };
-    const sentence: DatasetSentence = {
-      original: 'Sentence1',
-      humanTranslation: 'human',
-      machineTranslation: 'machine',
-      sentencePairType: 'A',
-    };
-
-    const file: DatasetFile = {
-      possibleEvaluatorIds: ['tester'],
-      sentences: [sentence],
-    };
-    const expectedOutput = new None();
-    expect(cleanData(input, file)).toEqual(expectedOutput);
-  });
-
-  test('should not fail if the source language is lower case', () => {
-    const input: DatasetBody = {
-      setName: '',
-      sourceLanguage: 'english',
-      targetLanguage: 'BULGARIAN',
-    };
-    const sentence: DatasetSentence = {
-      original: 'Sentence1',
-      humanTranslation: 'human',
-      machineTranslation: 'machine',
-      sentencePairType: 'A',
-    };
-
-    const file: DatasetFile = {
-      possibleEvaluatorIds: ['tester'],
-      sentences: [sentence],
-    };
-    const expectedDataset: Dataset = new Dataset(
-      [sentence],
-      '',
-      Language.ENGLISH,
-      Language.BULGARIAN,
-      ['tester']
-    );
-    const expectedOutput = new Some(expectedDataset);
-    expect(cleanData(input, file)).toEqual(expectedOutput);
-  });
-
-  test('should not fail if the target language is lower case', () => {
-    const input: DatasetBody = {
-      setName: '',
-      sourceLanguage: 'ENGLISH',
-      targetLanguage: 'bulgarian',
-    };
-    const sentence: DatasetSentence = {
-      original: 'Sentence1',
-      humanTranslation: 'human',
-      machineTranslation: 'machine',
-      sentencePairType: 'A',
-    };
-
-    const file: DatasetFile = {
-      sentences: [sentence],
-      possibleEvaluatorIds: ['tester'],
-    };
-    const expectedDataset: Dataset = new Dataset(
-      [sentence],
-      '',
-      Language.ENGLISH,
-      Language.BULGARIAN,
-      ['tester']
-    );
+    const expectedDataset: Dataset = new Dataset([sentence], '', 'en', 'bg', [
+      'tester',
+    ]);
     const expectedOutput = new Some(expectedDataset);
     expect(cleanData(input, file)).toEqual(expectedOutput);
   });
@@ -157,15 +57,13 @@ describe('submitDataset', () => {
 
     const file: DatasetFile = {
       sentences: [sentence],
+      sourceLanguage: 'en',
+      targetLanguage: 'bg',
       possibleEvaluatorIds: ['tester'],
     };
 
     const mockCleaningFunction = (body: DatasetBody, file: DatasetFile) =>
-      new Some(
-        new Dataset([sentence], '', Language.BULGARIAN, Language.BULGARIAN, [
-          'tester',
-        ])
-      );
+      new Some(new Dataset([sentence], '', 'bg', 'bg', ['tester']));
 
     return submitDataset(input, file, mockCleaningFunction).then(id => {
       expect(id).toEqual(datasetIDInDB);
@@ -194,6 +92,8 @@ describe('submitDataset', () => {
 
     const file: DatasetFile = {
       sentences: [sentence],
+      sourceLanguage: 'en',
+      targetLanguage: 'bg',
       possibleEvaluatorIds: ['tester'],
     };
 
@@ -235,6 +135,8 @@ describe('submitDataset', () => {
 
     const file: DatasetFile = {
       sentences: [sentence],
+      sourceLanguage: 'en',
+      targetLanguage: 'bg',
       possibleEvaluatorIds: ['tester'],
     };
 

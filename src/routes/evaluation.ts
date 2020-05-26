@@ -1,4 +1,4 @@
-import { Request, Response, Application } from 'express';
+import { Request, Response, Router } from 'express';
 import {
   getSentenceSet,
   getSentencePair,
@@ -11,8 +11,8 @@ import {
 import { logger } from '../utils/logger';
 import { SentencePairScore } from '../models/models';
 
-const buildEvaluationRoutes = (app: Application) => {
-  app.post(
+const buildEvaluationRoutes = (router: Router) => {
+  router.post(
     '/evaluation',
     (req: SentencePairEvaluationRequest, res: Response) => {
       const body: SentencePairEvaluationRequestBody = req.body;
@@ -44,7 +44,7 @@ const buildEvaluationRoutes = (app: Application) => {
       putSentencePairScore(sentencePairScore)
         .then(() =>
           res.redirect(
-            `/evaluation?setId=${setId}&evaluatorId=${evaluatorId}&setSize=${setSize}&sentenceNum=${sentenceNum}`
+            `/auth/evaluation?setId=${setId}&evaluatorId=${evaluatorId}&setSize=${setSize}&sentenceNum=${sentenceNum}`
           )
         )
         .catch(error => {
@@ -56,7 +56,7 @@ const buildEvaluationRoutes = (app: Application) => {
     }
   );
 
-  app.get('/evaluation', (req: Request, res: Response) => {
+  router.get('/evaluation', (req: Request, res: Response) => {
     const setId: string = req.query.setId;
     const evaluatorId: string = req.query.evaluatorId;
     const setSize: number = Number(req.query.setSize || 0);
@@ -91,7 +91,7 @@ const buildEvaluationRoutes = (app: Application) => {
             });
         } else {
           res.redirect(
-            `/feedback?setId=${setId}&evaluatorId=${evaluatorId}&targetLanguage=${sentenceSet.targetLanguage}`
+            `/auth/feedback?setId=${setId}&evaluatorId=${evaluatorId}&targetLanguage=${sentenceSet.targetLanguage}`
           );
         }
       })

@@ -46,18 +46,20 @@
                         </div>
                     </div>
                     <form class="text-primary-dark-grey"
-                          action="/beginEvaluation"
+                          action="/auth/beginEvaluation"
                           method="POST">
                         <div class="row justify-content-center form-group">
                             <div class="col-md-6">
                                 <label for="setId">Pick the set you have been asked to evaluate:</label>
-                                <select class="form-control"       
+                                <select class="form-control"
                                         name="setId"
                                         onchange="javascript:location.search = '?setId=' + this.value;"
                                         required>
-                                    <option disabled selected>Pick a set</option>
+                                    <option disabled
+                                            selected>Pick a set</option>
                                     {{#each sentenceSetOptions}}
-                                    <option {{#if this.isSelected}}selected{{/if}} value="{{this.sentenceSet.setId}}">{{this.sentenceSet.name}}</option>
+                                    <option {{#if this.isSelected}}selected{{/if}}
+                                            value="{{this.sentenceSet.setId}}">{{this.sentenceSet.name}}</option>
                                     {{/each}}
                                 </select>
                             </div>
@@ -65,11 +67,12 @@
                         <div class="row justify-content-center form-group">
                             <div class="col-md-6">
                                 <label for="evaluatorId">Select your evaluator ID:</label>
-                                <select {{#unless possibleEvaluatorIds.length}}disabled{{/unless}} 
+                                <select {{#unless possibleEvaluatorIds.length}}disabled{{/unless}}
                                         class="form-control"
                                         name="evaluatorId"
                                         required>
-                                    <option disabled selected>Pick an evaluator ID</option>
+                                    <option disabled
+                                            selected>Pick an evaluator ID</option>
                                     {{#each possibleEvaluatorIds}}
                                     <option value={{this}}>{{this}}</option>
                                     {{/each}}

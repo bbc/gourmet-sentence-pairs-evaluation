@@ -112,3 +112,13 @@ The Docker image is hosted on [Dockerhub](https://hub.docker.com/r/newslabsgourm
 ```
 docker push newslabsgourmet/direct-assessment-sentence-pair-tool:CURRENT_VERSION_NUMBER
 ```
+
+## Log In and Secure Router
+
+The application allows users to view and submit evaluation data. The BBC use case requires users from multiple organisations to access this tool. All pages that should only be available to authorized users are protected using [basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) which requires a user to provide a username and password before accessing a page.
+
+### Implementation
+
+The `/auth` path of the application is password protected using the [`express-basic-auth`](https://www.npmjs.com/package/express-basic-auth) library. The [secure router](../src/utils/secureRouter.ts) implements the basic auth and is used to serve password protected sub paths e.g. `/auth/evaluation`, `\auth\feedback` etc. so that multiple pages can be password protected.
+
+Authentication of the app is turned on and off by setting the `ENABLE_AUTH` environment variable to 'true' or 'false'. The username and password are set using the environment variables `USERNAME` and `PASSWORD`.

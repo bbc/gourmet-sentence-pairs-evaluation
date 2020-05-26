@@ -1,66 +1,78 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-    <link rel="shortcut icon" href="media/favicon.ico" type="image/x-icon" />
-    <!-- Adding bootstrap CSS styles -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <head>
+        <link rel="shortcut icon"
+              href="media/favicon.ico"
+              type="image/x-icon" />
+        <!-- Adding bootstrap CSS styles -->
+        <link rel="stylesheet"
+              href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+              integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+              crossorigin="anonymous">
 
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta charset="utf-8">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Sentence Pairs</title>
-    <link rel="stylesheet" type="text/css" href="main.css" />
-</head>
+        <title>Sentence Pairs</title>
+        <link rel="stylesheet"
+              type="text/css"
+              href="main.css" />
+    </head>
 
-<body class="bg-grey">
-    <div>
-        <img class="gourmet_logo" src="./media/horizontal_light.png" />
-    </div>
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col">
-                <div class="row">
-                    <div class="col">
-                        <h1 class="text-center text-primary-mid-green">Export Data and Feedback</h1>
-                        <h2 class="text-center text-primary-dark-grey">Downloads may take a few minutes depending on
-                            the size of the data set.</h2>
-                        <div class="row margin-top-5percent">
-                            <h4>Current Evaluators:</h4>
-                            <div class="row">
-                                {{#each evaluatorSets}}
-                                <div class="col-sm-3">
-                                    {{this.setName}}:
+    <body class="bg-grey">
+        <div>
+            <img class="gourmet_logo"
+                 src="./media/horizontal_light.png" />
+        </div>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col">
+                    <div class="row">
+                        <div class="col">
+                            <h1 class="text-center text-primary-mid-green">Export Data and Feedback</h1>
+                            <h2 class="text-center text-primary-dark-grey">Downloads may take a few minutes depending on
+                                the size of the data set.</h2>
+                            <div class="row margin-top-5percent">
+                                <h4>Current Evaluators:</h4>
+                                <div class="row">
+                                    {{#each evaluatorSets}}
+                                    <div class="col-sm-3">
+                                        {{this.setName}}:
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <p>{{this.evaluators}}</p>
+                                    </div>
+                                    {{/each}}
                                 </div>
-                                <div class="col-sm-9">
-                                    <p>{{this.evaluators}}</p>
-                                </div>
-                                {{/each}}
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row justify-content-center margin-top-5percent">
-                    <div class="col-4">
-                        <form action="./exportData" method="POST">
-                            <div class="form-group">
-                                <label for="language">Select Language:</label>
-                                <select class="form-control" name="language" required>
-                                    {{#each languageOptions}}
-                                    <option value={{this}}>{{this}}</option>
-                                    {{/each}}
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <button type="submit" class="btn button-primary btn-block">Download</button>
-                            </div>
-                        </form>
+                    <div class="row justify-content-center margin-top-5percent">
+                        <div class="col-4">
+                            <form action="./exportData"
+                                  method="POST">
+                                <div class="form-group">
+                                    <label for="language">Select Language:</label>
+                                    <select class="form-control"
+                                            name="language"
+                                            required>
+                                        {{#each languageOptions}}
+                                        <option value={{this}}>{{this}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit"
+                                            class="btn button-primary btn-block">Download</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</body>
+    </body>
 
 </html>

@@ -13,16 +13,23 @@ const buildStartRoute = (app: Application) => {
       const selectedSet = sentenceSetOptions.find(set => set.isSelected) || {
         sentenceSet: {
           possibleEvaluatorIds: new Set(),
+          evaluatorIds: new Set(),
         },
       };
 
       const possibleEvaluatorIds = Array.from(
         selectedSet.sentenceSet.possibleEvaluatorIds
       );
+      const usedEvaluatorIds = Array.from(
+        selectedSet.sentenceSet.evaluatorIds || new Set()
+      );
+      const unusedEvaluatorIds = possibleEvaluatorIds.filter(
+        item => !usedEvaluatorIds.includes(item)
+      );
 
       res.render('start', {
         sentenceSetOptions,
-        possibleEvaluatorIds: [...possibleEvaluatorIds, 'tester'],
+        possibleEvaluatorIds: [...unusedEvaluatorIds, 'tester'],
       });
     });
   });

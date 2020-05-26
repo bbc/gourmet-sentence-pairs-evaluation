@@ -1,11 +1,11 @@
-import { Response, Application } from 'express';
+import { Response, Router } from 'express';
 import { getSentenceSet, putSentenceSet } from '../DynamoDB/dynamoDBApi';
 import { StartRequest } from '../models/requests';
 import { SentenceSet } from '../models/models';
 import { logger } from '../utils/logger';
 
-const buildBeginEvaluationRoute = (app: Application) => {
-  app.post('/beginEvaluation', (req: StartRequest, res: Response) => {
+const buildBeginEvaluationRoute = (router: Router) => {
+  router.post('/beginEvaluation', (req: StartRequest, res: Response) => {
     const setId = req.body.setId;
     const evaluatorId = req.body.evaluatorId;
     getSentenceSet(setId)
@@ -16,7 +16,7 @@ const buildBeginEvaluationRoute = (app: Application) => {
               sentenceSet.sentenceIds || new Set()
             );
             res.redirect(
-              `/evaluation?setId=${setId}&evaluatorId=${evaluatorId}&setSize=${sentenceIdsList.length}&currentSentenceNum=0`
+              `/auth/evaluation?setId=${setId}&evaluatorId=${evaluatorId}&setSize=${sentenceIdsList.length}&currentSentenceNum=0`
             );
           })
           .catch(error => {

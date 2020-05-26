@@ -1,4 +1,4 @@
-import { Request, Response, Application } from 'express';
+import { Request, Response, Router } from 'express';
 import {
   getSentencePairScores,
   getSentenceSetFeedback,
@@ -17,13 +17,13 @@ import { groupBy, flatten, sortBy } from 'underscore';
 import { createWriteStream } from 'fs';
 import * as archiver from 'archiver';
 
-const buildExportDataRoute = (app: Application) => {
-  getExportData(app);
-  postExportData(app);
+const buildExportDataRoute = (router: Router) => {
+  getExportData(router);
+  postExportData(router);
 };
 
-const getExportData = (app: Application) => {
-  app.get('/exportData', (req: Request, res: Response) => {
+const getExportData = (router: Router) => {
+  router.get('/exportData', (req: Request, res: Response) => {
     getSentenceSets()
       .then(sentenceSets => {
         const evaluatorSets = sentenceSets
@@ -61,8 +61,8 @@ const convertSentenceSetToEvaluatorSet = (
   };
 };
 
-const postExportData = (app: Application) => {
-  app.post('/exportData', (req: ExportRequest, res: Response) => {
+const postExportData = (router: Router) => {
+  router.post('/exportData', (req: ExportRequest, res: Response) => {
     sendData(req.body.language, res);
   });
 };

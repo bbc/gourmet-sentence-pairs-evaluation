@@ -68,7 +68,7 @@ There are also optional parameters that can be provided to enable basic user aut
 
 ## Security
 
-The software comes with optional [basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication). This is enabled via the `ENABLE_AUTH` environment variable. If it is set to true when the user tries to access the site they will be presented with a login pop up. Once the user has logged in they will be able to freely access all of the site.
+The software comes with optional [basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication). This is enabled via the `ENABLE_AUTH` environment variable. If it is set to true when the user tries to access pages on the site that allow them to view or submit evaluation data they will be presented with a login pop up. They will only need to login once. Once the user has logged in they will be able to freely access all of the site.
 
 ![](./images/login.png)
 

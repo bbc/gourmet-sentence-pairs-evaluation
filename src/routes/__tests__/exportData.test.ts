@@ -31,7 +31,7 @@ describe('GET /exportData', () => {
         ),
       ]);
     });
-    const response = await mockApp.get('/exportData');
+    const response = await mockApp.get('/auth/exportData');
     expect(response.status).toBe(200);
   });
 });
@@ -72,7 +72,9 @@ describe('POST /exportData', () => {
       ]);
     });
 
-    const response = await mockApp.post('/exportData').send({ language: 'sw' });
+    const response = await mockApp
+      .post('/auth/exportData')
+      .send({ language: 'sw' });
     expect(response.status).toBe(200);
     expect(response.header['content-disposition']).toEqual(
       'attachment; filename="sw.zip"'
@@ -98,7 +100,7 @@ describe('POST /exportData', () => {
     });
 
     const response = await mockApp
-      .post('/exportData')
+      .post('/auth/exportData')
       .send({ language: 'SWAHILI' });
     expect(response.status).toBe(500);
     expect(response.header['location']).toEqual(
@@ -128,7 +130,7 @@ describe('POST /exportData', () => {
     });
 
     const response = await mockApp
-      .post('/exportData')
+      .post('/auth/exportData')
       .send({ language: 'SWAHILI' });
     expect(response.status).toBe(500);
     expect(response.header['location']).toEqual(

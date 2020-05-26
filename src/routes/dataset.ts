@@ -1,4 +1,4 @@
-import { Request, Response, Application } from 'express';
+import { Request, Response, Router } from 'express';
 import { DatasetBody, DatasetFile, DatasetRequest } from '../models/requests';
 import { submitDataset } from '../processDataset';
 import { readFileSync, unlink } from 'fs';
@@ -14,8 +14,8 @@ const JSONvalidate = (sentences: string): DatasetFile => {
   }
 };
 
-const buildDatasetRoutes = (app: Application, upload: Instance) => {
-  app.post(
+const buildDatasetRoutes = (router: Router, upload: Instance) => {
+  router.post(
     '/dataset',
     upload.single('sentences'),
     (req: DatasetRequest, res: Response) => {
@@ -49,7 +49,7 @@ const buildDatasetRoutes = (app: Application, upload: Instance) => {
     }
   );
 
-  app.get('/dataset', (req: Request, res: Response) => {
+  router.get('/dataset', (req: Request, res: Response) => {
     res.render('dataset');
   });
 };

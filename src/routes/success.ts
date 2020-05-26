@@ -5,7 +5,7 @@ const buildSuccessRoute = (app: Application) => {
     res.render('infoButtonGeneric', {
       title: 'Successfully Submitted Dataset',
       subtitle: '',
-      url: '/dataset',
+      url: '/auth/dataset',
       buttonText: 'Submit another data set',
     });
   });

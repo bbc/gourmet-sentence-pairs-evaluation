@@ -1,8 +1,8 @@
-import { Request, Response, Application } from 'express';
+import { Request, Response, Router } from 'express';
 import { getSentenceSets } from '../DynamoDB/dynamoDBApi';
 
-const buildStartRoute = (app: Application) => {
-  app.get('/start', (req: Request, res: Response) => {
+const buildStartRoute = (router: Router) => {
+  router.get('/start', (req: Request, res: Response) => {
     const setId = req.query.setId;
     getSentenceSets().then(sentenceSets => {
       const sentenceSetOptions = sentenceSets

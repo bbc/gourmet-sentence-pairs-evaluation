@@ -75,7 +75,7 @@
   },
   "spec": {
     "requires": [
-      "cloud-httpd24-ssl-services-devs-staff"
+      "cloud-httpd24-ssl-no-certs"
     ],
     "executable": [
       "./bake-scripts/*"

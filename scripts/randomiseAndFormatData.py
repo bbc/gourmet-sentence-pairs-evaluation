@@ -3,20 +3,27 @@ import random
 import json
 
 """
+REQUIREMENTS:
+The script must be run with python3.
+
+SCRIPT PURPOSE:
+
 Script for randomising evaluation data sentence order, formatting it as JSON and
 tagging the sentences so the data can be imported into the Sentence Pairs Evaluation Tool.
 
 This script assumes that there are at least 205 sentences available for evaluation. 5 will be
 used as internal calibration and the others will be valid sentences (full explanation below)
 
-Input:
-- Source Language and Target Language. Set on line 61 and 62. Typically specified as ISO codes: https://en.wikipedia.org/wiki/List_of_ISO_639-2_codes
+INPUT:
+
+- Source Language and Target Language. Set on line 69 and 70. Typically specified as ISO 
+codes: https://en.wikipedia.org/wiki/List_of_ISO_639-2_codes. E.G. en for English.
 - Text files containing an original sentence, the human translation and a machine translation.
-There can be multiple sentences per file. The names of the files must be specified on lines 65,66
-and 67.
-- Text file containing the list of evaluator Ids for the data set. The name of this file must be specified on line 70
+There can be multiple sentences per file. The names of the files must be specified on lines 73, 74
+and 75.
+- Text file containing the list of evaluator Ids for the data set. The name of this file must be specified on line 78
 - A JSON file with the external collaboration sentences. The file name must be specified on
-line 69 and the JSON is in the form:
+line 77 and the JSON is in the form:
 
 {
     "sentences": list<Sentences>
@@ -30,7 +37,8 @@ Where Sentences is of type:
     "machineTranslation": string,
 }
 
-Output:
+OUTPUT:
+
 - 2 JSON files. evaluationData1.json and evaluationData2.json, where JSON is in the form:
 
 {
@@ -58,8 +66,8 @@ The external calibration sentences will be the same in both files.
 
 """
 
-source_language="en"
-target_language="ky"
+source_language=
+target_language=
 
 # Specify the files that are to be read in. The list must be in the same order for original, human translation and machine translation.
 original_filenames = ["bulgarian1EN.txt"]

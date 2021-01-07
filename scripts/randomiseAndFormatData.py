@@ -147,10 +147,12 @@ with open(evaluator_ids_file) as f:
 
 # Create first data set
 evaluationData1 = open('evaluationData1.json', 'w')
-evaluationData1.write(json.dumps({"sourceLanguage": source_language, "targetLanguage": target_language, "possibleEvaluatorIds": evaluator_ids, "sentences": internal_callibration_sentences + valid_and_external_callibration_sentences_set_1}))
+evaluationData1.write(json.dumps({"sourceLanguage": source_language, "targetLanguage": target_language, "possibleEvaluatorIds": evaluator_ids,
+                                  "sentences": internal_callibration_sentences + valid_and_external_callibration_sentences_set_1}, ensure_ascii=False))
 evaluationData1.close()
 
 # Create second data set
 evaluationData2 = open('evaluationData2.json', 'w')
-evaluationData2.write(json.dumps({"sourceLanguage": source_language, "targetLanguage": target_language,  "possibleEvaluatorIds": evaluator_ids, "sentences": internal_callibration_sentences + valid_and_external_callibration_sentences_set_2}))
+evaluationData2.write(json.dumps({"sourceLanguage": source_language, "targetLanguage": target_language,  "possibleEvaluatorIds": evaluator_ids,
+                                  "sentences": internal_callibration_sentences + valid_and_external_callibration_sentences_set_2}, ensure_ascii=False))
 evaluationData2.close()

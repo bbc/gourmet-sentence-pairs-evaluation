@@ -61,6 +61,8 @@ const buildEvaluationRoutes = (router: Router) => {
     const evaluatorId: string = req.query.evaluatorId;
     const setSize: number = Number(req.query.setSize || 0);
     const sentenceNum: number = Number(req.query.sentenceNum || 0);
+    const RTL_LANGS = ['ur', 'ps'];
+
     getSentenceSet(setId)
       .then(sentenceSet => {
         const idList: string[] = Array.from(
@@ -75,6 +77,9 @@ const buildEvaluationRoutes = (router: Router) => {
                 sentence2: sentencePair.machineTranslation,
                 original: sentencePair.original,
                 targetLanguage: sentencePair.targetLanguage,
+                isRtl: RTL_LANGS.includes(
+                  sentencePair.targetLanguage.toLowerCase()
+                ),
                 setId,
                 sentencePairType: sentencePair.sentencePairType,
                 sentencePairId,

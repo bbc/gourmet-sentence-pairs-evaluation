@@ -41,12 +41,12 @@
                     <div class="evaluation__form">
                         <div class="row">
                             <div class="col-sm-12">
-                                <p class="text-grey">{{sentence1}}</p>
+                                <p class="text-grey {{#if isRtl}} text__rtl {{/if}}">{{sentence1}}</p>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-12">
-                                <p class="text-black">{{sentence2}}</p>
+                                <p class="text-black {{#if isRtl}} text__rtl {{/if}}">{{sentence2}}</p>
                             </div>
                         </div>
                         <div class="row margin-top-5percent">

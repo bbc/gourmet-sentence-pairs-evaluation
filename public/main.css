@@ -114,3 +114,8 @@ html {
   height: 7vh; /* Set the fixed height of the footer here */
   line-height: 7vh; /* Vertically center the text there */
 }
+
+.text__rtl {
+  direction: rtl;
+  text-align: right;
+}
